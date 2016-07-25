@@ -63,7 +63,6 @@ unsigned int edit_distance_bpv(T &cmap, int64_t const *vec, size_t const &vecsiz
 /// c.f. http://handasse.blogspot.com/2009/04/c_29.html
 template<typename T>
 unsigned int edit_distance_dp(T const *str1, size_t const size1, T const *str2, size_t const size2) {
-    // vectorより固定長配列の方が速いが、文字列が長い時の保険でのみ呼ばれるのでサイズを決め打ちできない
     vector< vector<uint32_t> > d(size1 + 1, vector<uint32_t>(size2 + 1));
     for (int i = 0; i < size1 + 1; i++) d[i][0] = i;
     for (int i = 0; i < size2 + 1; i++) d[0][i] = i;

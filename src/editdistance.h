@@ -19,6 +19,10 @@ unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int
 
 #ifdef __cplusplus
 }
+
+template<typename T>
+unsigned int edit_distance_dp(T const *str1, size_t const size1, T const *str2, size_t const size2);
+
 #endif
 
 #endif
