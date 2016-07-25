@@ -27,7 +27,7 @@
 using namespace std;
 
 template<typename T, typename TVALUE>
-unsigned int edit_distance_bpv(T &cmap, int64_t const *vec, size_t const &vecsize, unsigned int const &tmax, unsigned int const &tlen) {
+unsigned int edit_distance_bpv(T &cmap, char const *vec, size_t const &vecsize, unsigned int const &tmax, unsigned int const &tlen) {
     int D = tmax * 64 + tlen;
     TVALUE D0, HP, HN, VP, VN;
     uint64_t top = (1L << (tlen - 1));  // 末尾のvectorに適用
@@ -84,8 +84,8 @@ struct varr {
 
 
 template<size_t N>
-unsigned int edit_distance_map_(int64_t const *a, size_t const asize, int64_t const *b, size_t const bsize) {
-    typedef map<int64_t, varr<N> > cmap_v;
+unsigned int edit_distance_map_(char const *a, size_t const asize, char const *b, size_t const bsize) {
+    typedef map<char, varr<N> > cmap_v;
     cmap_v cmap;
     unsigned int tmax = (asize - 1) >> 6;
     unsigned int tlen = asize - tmax * 64;
@@ -96,21 +96,16 @@ unsigned int edit_distance_map_(int64_t const *a, size_t const asize, int64_t co
     return edit_distance_bpv<cmap_v, typename cmap_v::mapped_type>(cmap, b, bsize, tmax, tlen);
 }
 
-unsigned int edit_distance(const char *str1, size_t const size1, const char *str2, size_t const size2){
-    return edit_distance_dp(str1, size1, str2, size2);
-}
-
-
-unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int64_t *b, const unsigned int bsize) {
+unsigned int edit_distance(const char *a, const unsigned int asize, const char *b, const unsigned int bsize) {
     if(asize == 0) return bsize;
     else if(bsize == 0) return asize;
-    int64_t const *ap, *bp;
+    char const *ap, *bp;
     unsigned int const *asizep, *bsizep;
     if(asize < bsize) ap = b, bp = a, asizep = &bsize, bsizep = &asize;
     else ap = a, bp = b, asizep = &asize, bsizep = &bsize;
     size_t vsize = ((*asizep - 1) >> 6) + 1;
     if(vsize > 10) {
-        int64_t const *_ = ap;
+        char const *_ = ap;
         unsigned int const *__ = asizep;
         ap = bp, bp = _, asizep = bsizep, bsizep = __;
         vsize = ((*asizep - 1) >> 6) + 1;
@@ -126,5 +121,5 @@ unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int
     else if(vsize == 8) return edit_distance_map_<8>(ap, *asizep, bp, *bsizep);
     else if(vsize == 9) return edit_distance_map_<9>(ap, *asizep, bp, *bsizep);
     else if(vsize == 10) return edit_distance_map_<10>(ap, *asizep, bp, *bsizep);
-    return edit_distance_dp<int64_t>(ap, *asizep, bp, *bsizep); 
+    return edit_distance_dp<char>(ap, *asizep, bp, *bsizep); 
 }

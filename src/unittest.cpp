@@ -1,5 +1,6 @@
 #include "unittest.h"
 #include "editdistance.h"
+#include <time.h>
 
 UnitTest::UnitTest(){
 
@@ -29,9 +30,15 @@ bool UnitTest::editdistance(){
         };
 
     for(int i=0;i<3;i++){
-        int ret  = edit_distance(str1[i], strlen(str1[i]), str2[i], strlen(str2[i]));
+        int ret  = 0;
+        clock_t t1 = clock();
+        for (int p=0;p<100000;p++){
+            ret = edit_distance(str1[i], strlen(str1[i]), str2[i], strlen(str2[i]));
+        }
+        clock_t t2 = clock();
+        printf("test 100000 edit_distance, takes %d ms\n", (t2-t1)/1000);
         if(ret != result[i]){
-            printf("Fail: (edit_distance_dp), expect %d, but got %d: \n%s\n%s\n", result[i], ret, str1[i], str2[i]);
+            printf("Fail: (edit_distance), expect %d, but got %d: \n%s\n%s\n", result[i], ret, str1[i], str2[i]);
             return false;
         }
     }

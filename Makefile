@@ -16,7 +16,7 @@ ${BIN_TARGET}:${OBJ}
 	$(CC) $(OBJ) -lz -o $@
     
 ${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp make_obj_dir
-	$(CC) $(CFLAGS) -c  $< -o $@
+	$(CC) $(CFLAGS) -O3 -c  $< -o $@
 .PHONY:clean
 clean:
 	rm obj/*.o
