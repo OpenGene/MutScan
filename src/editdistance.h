@@ -13,4 +13,6 @@ unsigned int edit_distance(const char *a, const unsigned int asize, const char *
 // void create_patternmap(struct PatternMap *pm, const int64_t *a, const unsigned int size);
 // unsigned int edit_distance_by_patternmap(struct PatternMap *mp, const int64_t *b, const unsigned int size);
 
+bool editdistance_test();
+
 #endif

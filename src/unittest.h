@@ -9,8 +9,6 @@ class UnitTest{
 public:
     UnitTest();
     void run();
-private:
-    bool editdistance();
 };
 
 #endif
