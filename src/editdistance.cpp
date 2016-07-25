@@ -96,6 +96,10 @@ unsigned int edit_distance_map_(int64_t const *a, size_t const asize, int64_t co
     return edit_distance_bpv<cmap_v, typename cmap_v::mapped_type>(cmap, b, bsize, tmax, tlen);
 }
 
+unsigned int edit_distance(const char *str1, size_t const size1, const char *str2, size_t const size2){
+    return edit_distance_dp(str1, size1, str2, size2);
+}
+
 
 unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int64_t *b, const unsigned int bsize) {
     if(asize == 0) return bsize;
