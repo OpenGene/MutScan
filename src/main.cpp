@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "zlib/zlib.h"
 #include "fastqreader.h"
 
 int main(int argc, char* argv[]){
