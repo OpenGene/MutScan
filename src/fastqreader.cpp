@@ -36,7 +36,7 @@ void FastqReader::init(){
 		gzrewind(mZipFile);
 	}
 	else if (isFastq(mFilename)){
-		mFile.open(mFilename, ifstream::in);
+		mFile.open(mFilename.c_str(), ifstream::in);
 		mZipped = false;
 	}
 }

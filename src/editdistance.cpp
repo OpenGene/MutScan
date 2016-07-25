@@ -14,6 +14,7 @@
 
 
 #include <stdint.h>
+#include <stdio.h>
 #include <cstdlib>
 #include <cstring>
 #include <string>
