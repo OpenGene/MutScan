@@ -101,14 +101,11 @@ unsigned int edit_distance_map_(int64_t const *a, size_t const asize, int64_t co
 unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int64_t *b, const unsigned int bsize) {
     if(asize == 0) return bsize;
     else if(bsize == 0) return asize;
-    // 要素数の大きいほうがa
     int64_t const *ap, *bp;
     unsigned int const *asizep, *bsizep;
     if(asize < bsize) ap = b, bp = a, asizep = &bsize, bsizep = &asize;
     else ap = a, bp = b, asizep = &asize, bsizep = &bsize;
-    // 必要な配列サイズを調べる
-    size_t vsize = ((*asizep - 1) >> 6) + 1;  // 64までは1, 128までは2, ...
-    // bit-parallelでできそうな限界を超えたら要素数の小さい方をaとする。
+    size_t vsize = ((*asizep - 1) >> 6) + 1;
     if(vsize > 10) {
         int64_t const *_ = ap;
         unsigned int const *__ = asizep;
@@ -126,18 +123,5 @@ unsigned int edit_distance(const int64_t *a, const unsigned int asize, const int
     else if(vsize == 8) return edit_distance_map_<8>(ap, *asizep, bp, *bsizep);
     else if(vsize == 9) return edit_distance_map_<9>(ap, *asizep, bp, *bsizep);
     else if(vsize == 10) return edit_distance_map_<10>(ap, *asizep, bp, *bsizep);
-    return edit_distance_dp<int64_t>(ap, *asizep, bp, *bsizep);  // dynamic programmingに任せる
+    return edit_distance_dp<int64_t>(ap, *asizep, bp, *bsizep); 
 }
-
-// void create_patternmap(PatternMap *pm, int64_t const *a, unsigned int const size) {
-//     pm->tmax_ = (size - 1) >> 6;
-//     pm->tlen_ = size - pm->tmax_ * 64;
-//     for(size_t i = 0; i < pm->tmax_; ++i) {
-//         for(size_t j = 0; j < 64; ++j) pm->p_[a[i * 64 + j]][i] |= (1L << j);
-//     }
-//     for(size_t i = 0; i < pm->tlen_; ++i) pm->p_[a[pm->tmax_ * 64 + i]][pm->tmax_] |= (1L << i);
-// }
-
-// unsigned int edit_distance_by_patternmap(PatternMap *pm, const int64_t *b, const unsigned int size) {
-//     return edit_distance_bpv<uint64_t[256][4], uint64_t[4]>(pm->p_, b, size, pm->tmax_, pm->tlen_);
-// }
