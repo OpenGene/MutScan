@@ -1,5 +1,6 @@
 #include "unittest.h"
 #include "editdistance.h"
+#include "sequence.h"
 #include <time.h>
 
 UnitTest::UnitTest(){
@@ -9,6 +10,7 @@ UnitTest::UnitTest(){
 void UnitTest::run(){
     bool passed = true;
     passed &= editdistance();
+    passed &= Sequence::test();
     printf("%s\n", passed?"PASSED":"FAILED");
 }
 
