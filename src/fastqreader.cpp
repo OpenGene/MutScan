@@ -1,26 +1,16 @@
 #include "fastqreader.h"
 #include "util.h"
 
-FastqReader::FastqReader(string filename){
+FastqReader::FastqReader(string filename, bool hasQuality){
 	mFilename = filename;
 	mZipFile = NULL;
 	mZipped = false;
-	mHasQuality = true;
+	mHasQuality = hasQuality;
 	init();
 }
 
 FastqReader::~FastqReader(){
-	if (mZipped){
-		if (mZipFile){
-			gzclose(mZipFile);
-			mZipFile = NULL;
-		}
-	}
-	else {
-		if (mFile.is_open()){
-			mFile.close();
-		}
-	}
+	close();
 }
 
 void FastqReader::init(){
@@ -41,36 +31,56 @@ void FastqReader::init(){
 	}
 }
 
+bool FastqReader::getLine(char* line, int maxLine){
+	if(mZipped)
+		return gzgets(mZipFile, line, maxLine);
+	else
+		return mFile.getline(line, maxLine);
+}
+
 Read* FastqReader::read(){
 	const int maxLine = 1000;
+	char line[maxLine];
 	if (mZipped){
 		if (mZipFile == NULL)
 			return NULL;
-
-		char line[maxLine];
-
-		if(!gzgets(mZipFile, line, maxLine))return NULL;
-		string name(line);
-
-		if (!gzgets(mZipFile, line, maxLine))return NULL;
-		string sequence(line);
-
-		if (!gzgets(mZipFile, line, maxLine))return NULL;
-		string strand(line);
-
-		if (mHasQuality){
-			if (!gzgets(mZipFile, line, maxLine))return NULL;
-			string quality(line);
-			Read* read = new Read(name, sequence, strand, quality);
-			return read;
-		}
-		else {
-			Read* read = new Read(name, sequence, strand);
-			return read;
-		}
-
 	}
+
+	if(!getLine(line, maxLine))return NULL;
+	string name(line);
+
+	if (!getLine(line, maxLine))return NULL;
+	string sequence(line);
+
+	if (!getLine(line, maxLine))return NULL;
+	string strand(line);
+
+	if (mHasQuality){
+		if (!getLine(line, maxLine))return NULL;
+		string quality(line);
+		Read* read = new Read(name, sequence, strand, quality);
+		return read;
+	}
+	else {
+		Read* read = new Read(name, sequence, strand);
+		return read;
+	}
+
 	return NULL;
+}
+
+void FastqReader::close(){
+	if (mZipped){
+		if (mZipFile){
+			gzclose(mZipFile);
+			mZipFile = NULL;
+		}
+	}
+	else {
+		if (mFile.is_open()){
+			mFile.close();
+		}
+	}
 }
 
 bool FastqReader::isZipFastq(string filename) {
@@ -101,4 +111,24 @@ bool FastqReader::isFastq(string filename) {
 
 bool FastqReader::isZipped(){
 	return mZipped;
+}
+
+bool FastqReader::test(){
+	FastqReader reader1("testdata/R1.fq");
+	FastqReader reader2("testdata/R1.fq");
+	Read* r1 = NULL;
+	Read* r2 = NULL;
+	while(true){
+		r1=reader1.read();
+		r2=reader2.read();
+		if(r1 == NULL || r2 == NULL)
+			break;
+		r1->print();
+		r2->print();
+		if(r1->mSeq.mStr != r2->mSeq.mStr){
+			return false;
+		}
+		delete r1, r2;
+	}
+	return true;
 }

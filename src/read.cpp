@@ -31,9 +31,9 @@ Read::Read(string name, Sequence seq, string strand){
 }
 
 void Read::print(){
-	std::cout << mName;
-	std::cout << mSeq.mStr;
-	std::cout << mStrand;
+	std::cout << mName << endl;
+	std::cout << mSeq.mStr << endl;
+	std::cout << mStrand << endl;
 	if(mHasQuality)
-		std::cout << mQuality;
+		std::cout << mQuality << endl;
 }
