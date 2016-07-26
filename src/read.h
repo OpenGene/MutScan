@@ -5,18 +5,21 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
+#include "sequence.h"
 
 using namespace std;
 
 class Read{
 public:
 	Read(string name, string seq, string strand, string quality);
+    Read(string name, Sequence seq, string strand, string quality);
 	Read(string name, string seq, string strand);
+    Read(string name, Sequence seq, string strand);
 	void print();
 
 public:
 	string mName;
-	string mSeq;
+	Sequence mSeq;
 	string mStrand;
 	string mQuality;
 	bool mHasQuality;

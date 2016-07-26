@@ -1,40 +1,43 @@
 #include "sequence.h"
 
+Sequence::Sequence(){
+}
+
 Sequence::Sequence(string seq){
-    mSeq = seq;
+    mStr = seq;
 }
 
 void Sequence::print(){
-    std::cout << mSeq;
+    std::cout << mStr;
 }
 
 int Sequence::length(){
-    return mSeq.length();
+    return mStr.length();
 }
 
 Sequence Sequence::reverseComplement(){
-    string str(mSeq.length(), 0);
-    for(int c=0;c<mSeq.length();c++){
-        char base = mSeq[c];
+    string str(mStr.length(), 0);
+    for(int c=0;c<mStr.length();c++){
+        char base = mStr[c];
         switch(base){
             case 'A':
             case 'a':
-                str[mSeq.length()-c-1] = 'T';
+                str[mStr.length()-c-1] = 'T';
                 break;
             case 'T':
             case 't':
-                str[mSeq.length()-c-1] = 'A';
+                str[mStr.length()-c-1] = 'A';
                 break;
             case 'C':
             case 'c':
-                str[mSeq.length()-c-1] = 'G';
+                str[mStr.length()-c-1] = 'G';
                 break;
             case 'G':
             case 'g':
-                str[mSeq.length()-c-1] = 'C';
+                str[mStr.length()-c-1] = 'C';
                 break;
             default:
-                str[mSeq.length()-c-1] = 'N';
+                str[mStr.length()-c-1] = 'N';
         }
     }
     return Sequence(str);
@@ -47,12 +50,12 @@ Sequence Sequence::operator~(){
 bool Sequence::test(){
     Sequence s("AAAATTTTCCCCGGGG");
     Sequence rc = ~s;
-    if (s.mSeq != "AAAATTTTCCCCGGGG" ){
-        cout << "Failed in reverseComplement() expect AAAATTTTCCCCGGGG, but get "<< s.mSeq;
+    if (s.mStr != "AAAATTTTCCCCGGGG" ){
+        cout << "Failed in reverseComplement() expect AAAATTTTCCCCGGGG, but get "<< s.mStr;
         return false;
     }
-    if (rc.mSeq != "CCCCGGGGAAAATTTT" ){
-        cout << "Failed in reverseComplement() expect CCCCGGGGAAAATTTT, but get "<< rc.mSeq;
+    if (rc.mStr != "CCCCGGGGAAAATTTT" ){
+        cout << "Failed in reverseComplement() expect CCCCGGGGAAAATTTT, but get "<< rc.mStr;
         return false;
     }
     return true;

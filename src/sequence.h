@@ -10,6 +10,7 @@ using namespace std;
 
 class Sequence{
 public:
+    Sequence();
     Sequence(string seq);
     void print();
     int length();
@@ -20,7 +21,7 @@ public:
     static bool test();
 
 public:
-    string mSeq;
+    string mStr;
 };
 
 #endif
