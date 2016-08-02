@@ -125,6 +125,10 @@ unsigned int edit_distance(const char *a, const unsigned int asize, const char *
     return edit_distance_dp<char>(ap, *asizep, bp, *bsizep); 
 }
 
+unsigned int edit_distance(string a, string b) {
+    return edit_distance(a.c_str(), a.length(), b.c_str(), b.length());
+}
+
 bool editdistance_test(){
     char* str1[3] = {
         "CCTATCAGGGAGCTGTGGGCCAGCCAGGAGGCAGCACATGCCCAATCCCAGGCCCCTCCCGTTGTAAGTTCCCGTTCTACCCGACAGGGACCTGCTGACAAAAGACAGGGCTGGAGAGCCAGCCTGAAGGCCCTGGGACCCTTCTATCCAC",
