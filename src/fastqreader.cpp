@@ -123,8 +123,6 @@ bool FastqReader::test(){
 		r2=reader2.read();
 		if(r1 == NULL || r2 == NULL)
 			break;
-		r1->print();
-		r2->print();
 		if(r1->mSeq.mStr != r2->mSeq.mStr){
 			return false;
 		}

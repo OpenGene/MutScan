@@ -12,6 +12,7 @@ class Overlap{
 public:
     Overlap(int offset, int overlapLen, int distance);
     static Overlap fit(Sequence R1, Sequence R2);
+    static bool test();
 
 public:
     int mOffset;
