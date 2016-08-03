@@ -1,2 +1,2 @@
 #name, left_seq_of_mutation_point, mutation_seq, right_seq_of_mutation_point
-TestMutation, AAAGGGGTAAAGGAGAGACATCGC, TTT, ATAAAACCTTGAATAGGAATA
+TestMutation, TGAAAGGGGTAAAGGAGAGAAATCGC, TTT, ATAAAACCTTGAAAAGGAATATTCAAAT
