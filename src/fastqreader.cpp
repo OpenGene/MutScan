@@ -32,10 +32,18 @@ void FastqReader::init(){
 }
 
 bool FastqReader::getLine(char* line, int maxLine){
+	bool status = true;
 	if(mZipped)
-		return gzgets(mZipFile, line, maxLine);
+		status = gzgets(mZipFile, line, maxLine);
 	else
-		return mFile.getline(line, maxLine);
+		status = mFile.getline(line, maxLine);
+
+	// remove the line break in the tail
+	int readed = strlen(line);
+	if(line[readed-1] == '\n')
+		line[readed-1] = '\0';
+
+	return status;
 }
 
 Read* FastqReader::read(){

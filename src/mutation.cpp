@@ -14,7 +14,7 @@ Mutation::Mutation(string name, string left, string center, string right){
     mName = name;
 }
 
-int Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
+Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
     char phredQualReq= (char)(qualReq + 33);
     int readLen = r->mSeq.length();
     int lLen = mLeft.length();
@@ -48,12 +48,13 @@ int Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
         }
         if(!qualityPassed)
             continue;
-
-        if (edit_distance(seqData + start - lLen, pLen, patternData, pLen) <= distanceReq){
-            cout<<endl<<"Mutation: "<<mName<<endl;
+        int ed = edit_distance(seqData + start - lLen, pLen, patternData, pLen);
+        if ( ed <= distanceReq){
             r->print();
+            return new Match(r, start-lLen, ed);
         }
     }
+    return NULL;
 }
 
 vector<Mutation> Mutation::parseFile(string filename) {
@@ -81,4 +82,8 @@ vector<Mutation> Mutation::parseFile(string filename) {
     }
     file.close();
     return mutations;
+}
+
+void Mutation::print(){
+    cout<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight<<endl;
 }

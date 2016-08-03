@@ -10,19 +10,14 @@ using namespace std;
 
 class Match{
 public:
-    Match(Read* r1, Read* r2, int distance, int pos, int type, bool reversed);
+    Match(Read* r, int pos, int distance, bool reversed = false);
     ~Match();
-    enum {
-        Read1,
-        Read2,
-        Merged
-    };
+    void print();
+    void setReversed(bool flag);
 
 private:
-    Read* mRead1;
-    Read* mRead2;
+    Read* mRead;
     int mDistance;
-    int mType;
     bool mReversed;
     int mPos;
 };
