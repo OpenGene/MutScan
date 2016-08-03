@@ -19,6 +19,7 @@ int Mutation::searchInRead(Read* r, int distance){
     int rLen = mRight.length();
     int pLen = mPattern.length();
     string seq = r->mSeq.mStr;
+    // substitution or insertion
     if(cLen > 0) {
         for(int start = lLen; start + cLen + rLen < readLen; start++){
             if(seq.substr(start, cLen) == mCenter){
@@ -28,6 +29,8 @@ int Mutation::searchInRead(Read* r, int distance){
                 }
             }
         }
+    } else {
+        
     }
 }
 
