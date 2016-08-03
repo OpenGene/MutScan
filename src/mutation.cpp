@@ -5,9 +5,10 @@
 #include "util.h"
 
 Mutation::Mutation(string name, string left, string center, string right){
-	mLeft = left;
-	mCenter = center;
-    mRight = right;
+	//we shift 2 bases from left and right to center to require 100% match of these bases
+    mLeft = left.substr(0, left.length()-2);
+	mCenter = left.substr(left.length()-2, 2) + center + right.substr(0, 2);
+    mRight = right.substr(2, right.length()-2);
     mPattern = left + center + right;
     mName = name;
 }
@@ -19,18 +20,13 @@ int Mutation::searchInRead(Read* r, int distance){
     int rLen = mRight.length();
     int pLen = mPattern.length();
     string seq = r->mSeq.mStr;
-    // substitution or insertion
-    if(cLen > 0) {
-        for(int start = lLen; start + cLen + rLen < readLen; start++){
-            if(seq.substr(start, cLen) == mCenter){
-                if (edit_distance(seq.substr(start - lLen, pLen), mPattern) <= distance){
-                    cout<<"Mutation: "<<mName<<endl;
-                    r->print();
-                }
+    for(int start = lLen; start + cLen + rLen < readLen; start++){
+        if(seq.substr(start, cLen) == mCenter){
+            if (edit_distance(seq.substr(start - lLen, pLen), mPattern) <= distance){
+                cout<<endl<<"Mutation: "<<mName<<endl;
+                r->print();
             }
         }
-    } else {
-        
     }
 }
 

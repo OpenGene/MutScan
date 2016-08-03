@@ -1,7 +1,7 @@
 #include "match.h"
 
 Match::Match(Read* r1, Read* r2, int distance, int pos, int type, bool reversed){
-	if(r1){
+    if(r1){
         mRead1 = new Read(*r1);
     } else
         mRead1 = NULL;
@@ -18,7 +18,7 @@ Match::Match(Read* r1, Read* r2, int distance, int pos, int type, bool reversed)
 }
 
 Match::~Match(){
-	if(mRead1){
+    if(mRead1){
         delete mRead1;
     }
     if(mRead2){
