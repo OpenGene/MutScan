@@ -48,7 +48,7 @@ bool MutScan::scan(){
 
         processed += 1;
         if(processed % 1000000 == 0) {
-            cout<<"processed "<<processed<<" reads"<<endl;
+            //cout<<"processed "<<processed<<" reads"<<endl;
         }
 	}
 
