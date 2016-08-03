@@ -137,7 +137,8 @@ bool FastqReader::test(){
 		if(r1->mSeq.mStr != r2->mSeq.mStr){
 			return false;
 		}
-		delete r1, r2;
+		delete r1;
+		delete r2;
 	}
 	return true;
 }

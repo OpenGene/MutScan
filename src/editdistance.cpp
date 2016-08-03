@@ -153,7 +153,7 @@ bool editdistance_test(){
             ret = edit_distance(str1[i], strlen(str1[i]), str2[i], strlen(str2[i]));
         }
         clock_t t2 = clock();
-        printf("test 100000 edit_distance, takes %d ms\n", (t2-t1)/1000);
+        printf("test 100000 edit_distance, takes %lu ms\n", (t2-t1)/1000);
         if(ret != result[i]){
             printf("Fail: (edit_distance), expect %d, but got %d: \n%s\n%s\n", result[i], ret, str1[i], str2[i]);
             return false;
