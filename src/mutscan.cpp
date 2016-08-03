@@ -20,11 +20,10 @@ bool MutScan::scan(){
         Read* rcr1 = r1->reverseComplement();
         Read* rcr2 = r2->reverseComplement();
         for(int i=0;i<mutationList.size();i++){
-        	Mutation mutation = mutationList[i];
-	        mutation.searchInRead(r1);
-	        mutation.searchInRead(r2);
-            mutation.searchInRead(rcr1);
-            mutation.searchInRead(rcr2);
+	        mutationList[i].searchInRead(r1);
+	        mutationList[i].searchInRead(r2);
+            mutationList[i].searchInRead(rcr1);
+            mutationList[i].searchInRead(rcr2);
 	    }
         delete r1;
         delete r2;
