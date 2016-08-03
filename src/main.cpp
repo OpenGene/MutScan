@@ -9,13 +9,14 @@ int main(int argc, char* argv[]){
         tester.run();
         return 0;
     }
-	if(argc<3){
-		printf("Usage:\n\tmutscan <read1_file> <read2_file>\n");
+	if(argc<4){
+		printf("Usage:\n\tmutscan <mutation_file> <read1_file> <read2_file>\n");
         printf("Testing:\n\tmutscan test\n");
 		exit(1);
 	}
-    string r1file(argv[1]);
-    string r2file(argv[2]);
-    MutScan scanner(r1file, r2file);
+    string mutationFile(argv[1]);
+    string r1file(argv[2]);
+    string r2file(argv[3]);
+    MutScan scanner(mutationFile, r1file, r2file);
     scanner.scan();
 }
