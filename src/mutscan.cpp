@@ -21,6 +21,8 @@ bool MutScan::scan(){
 	        mutation.searchInRead(r1);
 	        mutation.searchInRead(r2);
 	    }
+        delete r1;
+        delete r2;
 	}
 	return true;
 }

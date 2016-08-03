@@ -15,6 +15,7 @@ public:
     Read(string name, Sequence seq, string strand, string quality);
 	Read(string name, string seq, string strand);
     Read(string name, Sequence seq, string strand);
+    Read(Read &r);
 	void print();
 
 public:

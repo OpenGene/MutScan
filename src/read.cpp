@@ -30,6 +30,13 @@ Read::Read(string name, Sequence seq, string strand){
 	mHasQuality = false;
 }
 
+Read::Read(Read &r) {
+	mName = r.mName;
+	mSeq = r.mSeq;
+	mStrand = r.mStrand;
+	mQuality = r.mQuality;
+}
+
 void Read::print(){
 	std::cout << mName << endl;
 	std::cout << mSeq.mStr << endl;
