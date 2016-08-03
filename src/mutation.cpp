@@ -14,7 +14,8 @@ Mutation::Mutation(string name, string left, string center, string right){
     mName = name;
 }
 
-int Mutation::searchInRead(Read* r, int distance){
+int Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
+    char phredQualReq= (char)(qualReq + 33);
     int readLen = r->mSeq.length();
     int lLen = mLeft.length();
     int cLen = mCenter.length();
@@ -24,6 +25,7 @@ int Mutation::searchInRead(Read* r, int distance){
     const char* seqData = seq.c_str();
     const char* centerData = mCenter.c_str();
     const char* patternData = mPattern.c_str();
+    const char* qualData = r->mQuality.c_str();
     for(int start = lLen; start + cLen + rLen < readLen; start++){
         // check string identity in a fast way
         bool identical = true;
@@ -36,7 +38,18 @@ int Mutation::searchInRead(Read* r, int distance){
         if(!identical)
             continue;
 
-        if (edit_distance(seqData + start - lLen, pLen, patternData, pLen) <= distance){
+        // check quality in a fast way
+        bool qualityPassed = true;
+        for (int i=0;i<cLen;i++){
+            if (qualData[start + i] < phredQualReq){
+                qualityPassed = false;
+                break;
+            }
+        }
+        if(!qualityPassed)
+            continue;
+
+        if (edit_distance(seqData + start - lLen, pLen, patternData, pLen) <= distanceReq){
             cout<<endl<<"Mutation: "<<mName<<endl;
             r->print();
         }
