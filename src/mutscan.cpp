@@ -59,7 +59,7 @@ bool MutScan::scan(){
             cout<<endl<<"---------------"<<endl;
             mutationList[i].print();
             for(int m=0; m<matches.size(); m++){
-                cout<<matches[m]<<endl;
+                cout<<m+1<<", ";
                 matches[m]->print();
             }
         }

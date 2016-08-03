@@ -14,9 +14,9 @@ Match::~Match(){
 void Match::print(){
     cout<<"pos: "<<mPos<<", distance: "<<mDistance;
     if(mReversed)
-        cout<<" forward";
+        cout<<", forward";
     else
-        cout<<" reversed";
+        cout<<", reversed";
     cout<<endl;
     mRead->print();
 }
