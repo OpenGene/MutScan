@@ -50,7 +50,6 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
             continue;
         int ed = edit_distance(seqData + start - lLen, pLen, patternData, pLen);
         if ( ed <= distanceReq){
-            r->print();
             return new Match(r, start-lLen, ed);
         }
     }

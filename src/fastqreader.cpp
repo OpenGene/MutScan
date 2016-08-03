@@ -1,5 +1,6 @@
 #include "fastqreader.h"
 #include "util.h"
+#include <string.h>
 
 FastqReader::FastqReader(string filename, bool hasQuality){
 	mFilename = filename;
