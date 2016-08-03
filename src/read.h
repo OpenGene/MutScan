@@ -17,6 +17,7 @@ public:
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
 	void print();
+    Read* reverseComplement();
 
 public:
 	string mName;
