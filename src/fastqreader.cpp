@@ -41,10 +41,12 @@ bool FastqReader::getLine(char* line, int maxLine){
 
 	// trim \n, \r or \r\n in the tail
 	int readed = strlen(line);
-	if(line[readed-1] == '\n' || line[readed-1] == '\r'){
-		line[readed-1] = '\0';
-		if(line[readed-2] == '\r')
-			line[readed-2] = '\0';
+	if(readed >=2 ){
+		if(line[readed-1] == '\n' || line[readed-1] == '\r'){
+			line[readed-1] = '\0';
+			if(line[readed-2] == '\r')
+				line[readed-2] = '\0';
+		}
 	}
 
 	return status;
