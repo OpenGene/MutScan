@@ -28,7 +28,7 @@ private:
     string mPattern;
     string mName;
 
-    const int mShift = 2;
+    int mShift;
 };
 
 

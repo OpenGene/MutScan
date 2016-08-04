@@ -7,6 +7,7 @@
 
 Mutation::Mutation(string name, string left, string center, string right){
 	//we shift some bases from left and right to center to require 100% match of these bases
+    mShift = 2;
     mLeft = left.substr(0, left.length()-mShift);
 	mCenter = left.substr(left.length()-mShift, mShift) + center + right.substr(0, mShift);
     mRight = right.substr(mShift, right.length()-mShift);
