@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "util.h"
+#include <string.h>
 
 Mutation::Mutation(string name, string left, string center, string right){
 	//we shift some bases from left and right to center to require 100% match of these bases
