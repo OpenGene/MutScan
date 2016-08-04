@@ -27,6 +27,8 @@ private:
     string mRight;
     string mPattern;
     string mName;
+
+    const int mShift = 2;
 };
 
 

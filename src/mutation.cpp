@@ -7,10 +7,9 @@
 
 Mutation::Mutation(string name, string left, string center, string right){
 	//we shift some bases from left and right to center to require 100% match of these bases
-    const int shift = 2;
-    mLeft = left.substr(0, left.length()-shift);
-	mCenter = left.substr(left.length()-shift, shift) + center + right.substr(0, shift);
-    mRight = right.substr(shift, right.length()-shift);
+    mLeft = left.substr(0, left.length()-mShift);
+	mCenter = left.substr(left.length()-mShift, mShift) + center + right.substr(0, mShift);
+    mRight = right.substr(mShift, right.length()-mShift);
     mPattern = left + center + right;
     mName = name;
 }
@@ -41,7 +40,7 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
 
         // check quality in a fast way
         bool qualityPassed = true;
-        for (int i=0;i<cLen;i++){
+        for (int i=mShift; i<cLen-mShift; i++){
             if (qualData[start + i] < phredQualReq){
                 qualityPassed = false;
                 break;
