@@ -25,7 +25,7 @@ inline string trim(const string& str)
     string::size_type pos = str.find_first_not_of(' ');
     if (pos == string::npos)
     {
-        return str;
+        return string("");
     }
     string::size_type pos2 = str.find_last_not_of(' ');
     if (pos2 != string::npos)
