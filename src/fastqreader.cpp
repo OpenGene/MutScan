@@ -129,7 +129,7 @@ bool FastqReader::isZipped(){
 
 bool FastqReader::test(){
 	FastqReader reader1("testdata/R1.fq");
-	FastqReader reader2("testdata/R1.fq");
+	FastqReader reader2("testdata/R1.fq.gz");
 	Read* r1 = NULL;
 	Read* r2 = NULL;
 	while(true){
