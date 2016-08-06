@@ -3,7 +3,9 @@ Detect important mutations by scanning FastQ files directly
 
 # Build
 ```shell
+# download Release, or clone from github:
 git clone https://github.com/OpenGene/MutScan.git
+cd MutScan
 make
 ```
 
