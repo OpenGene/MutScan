@@ -1,8 +1,9 @@
 # MutScan
 Detect important mutations by scanning FastQ files directly
 
-# Make
+# Build
 ```shell
+git clone https://github.com/OpenGene/MutScan.git
 make
 ```
 
@@ -10,7 +11,7 @@ make
 ```shell
 mutscan <mutation_file> <read1_file> <read2_file>
 ```
-The result, contains the detected mutations and their support reads, will be printed directly, you can use `>` to redirect it to a file, like:
+The result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
 mutscan <mutation_file> <read1_file> <read2_file> > result.txt
 ```
