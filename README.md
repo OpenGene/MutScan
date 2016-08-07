@@ -20,7 +20,7 @@ options:
 ```
 The result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
-mutscan mutscan --read1=string --read2=string --mutation=string > result.txt
+mutscan --read1=string --read2=string --mutation=string > result.txt
 ```
 
 # Mutation file
