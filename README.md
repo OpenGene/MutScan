@@ -11,7 +11,7 @@ make
 
 #Usage
 ```shell
-usage: mutscan --read1=string --read2=string --mutation=string [options] ... 
+usage: mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> [options] ... 
 options:
   -1, --read1       read1 file name (string)
   -2, --read2       read2 file name (string)
@@ -20,7 +20,7 @@ options:
 ```
 The result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
-mutscan --read1=string --read2=string --mutation=string > result.txt
+mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> > result.txt
 ```
 
 # Mutation file
