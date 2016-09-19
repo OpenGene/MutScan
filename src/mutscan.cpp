@@ -10,7 +10,11 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File){
 bool MutScan::scan(){
     FastqReader reader1(mRead1File);
     FastqReader reader2(mRead2File);
-    vector<Mutation> mutationList = Mutation::parseFile(mMutationFile);
+    vector<Mutation> mutationList;
+    if(mMutationFile!="")
+        mutationList = Mutation::parseFile(mMutationFile);
+    else
+        mutationList = Mutation::parseBuiltIn();
     vector<Match*> *mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){
         mutationMatches[i] = vector<Match*>();

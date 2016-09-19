@@ -19,6 +19,7 @@ public:
     //return NULL if not found
     Match* searchInRead(Read* r, int distanceReq = 2, int qualReq=20);
     static vector<Mutation> parseFile(string filename);
+    static vector<Mutation> parseBuiltIn();
     void print();
 
 private:

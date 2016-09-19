@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
     cmdline::parser cmd;
     cmd.add<string>("read1", '1', "read1 file name", true, "");
     cmd.add<string>("read2", '2', "read2 file name", true, "");
-    cmd.add<string>("mutation", 'm', "mutation file name", true, "");
+    cmd.add<string>("mutation", 'm', "mutation file name", false, "");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
     string r2file = cmd.get<string>("read2");

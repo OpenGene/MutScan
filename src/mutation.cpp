@@ -4,6 +4,7 @@
 #include <fstream>
 #include "util.h"
 #include <string.h>
+#include "builtinmutation.h"
 
 Mutation::Mutation(string name, string left, string center, string right){
 	//we shift some bases from left and right to center to require 100% match of these bases
@@ -90,6 +91,30 @@ vector<Mutation> Mutation::parseFile(string filename) {
         mutations.push_back(mut);
     }
     file.close();
+    return mutations;
+}
+
+vector<Mutation> Mutation::parseBuiltIn() {
+    vector<Mutation> mutations;
+    vector<string> lines;
+    split(BUILT_IN_MUTATIONS, lines, "\n");
+    for(int i=0;i<lines.size();i++){
+        string linestr = lines[i];
+        vector<string> splitted;
+        split(linestr, splitted, ",");
+        // a valid line need 4 columns: name, left, center, right
+        if(splitted.size()<4)
+            continue;
+        // comment line
+        if(starts_with(splitted[0], "#"))
+            continue;
+        string name = trim(splitted[0]);
+        string left = trim(splitted[1]);
+        string center = trim(splitted[2]);
+        string right = trim(splitted[3]);
+        Mutation mut(name, left, center, right);
+        mutations.push_back(mut);
+    }
     return mutations;
 }
 
