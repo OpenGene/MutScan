@@ -22,7 +22,7 @@ public:
     static vector<Mutation> parseBuiltIn();
     void print();
 
-private:
+public:
     string mLeft;
     string mCenter;
     string mRight;

@@ -64,7 +64,7 @@ bool MutScan::scan(){
             mutationList[i].print();
             for(int m=0; m<matches.size(); m++){
                 cout<<m+1<<", ";
-                matches[m]->print();
+                matches[m]->print(mutationList[i].mLeft.length(), mutationList[i].mCenter.length(), mutationList[i].mRight.length());
             }
         }
     }

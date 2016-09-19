@@ -12,7 +12,7 @@ class Match{
 public:
     Match(Read* r, int pos, int distance, bool reversed = false);
     ~Match();
-    void print();
+    void print(int leftlen, int centerlen, int rightlen);
     void setReversed(bool flag);
 
 private:

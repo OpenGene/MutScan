@@ -1,4 +1,5 @@
 #include "match.h"
+#include <vector>
 
 Match::Match(Read* r, int pos, int distance, bool reversed){
     mRead = new Read(*r);
@@ -11,14 +12,19 @@ Match::~Match(){
     delete mRead;
 }
 
-void Match::print(){
+void Match::print(int leftlen, int centerlen, int rightlen){
     cout<<"pos: "<<mPos<<", distance: "<<mDistance;
     if(mReversed)
         cout<<", reverse";
     else
         cout<<", forward";
     cout<<endl;
-    mRead->print();
+    vector<int> breaks;
+    breaks.push_back(mPos);
+    breaks.push_back( mPos+leftlen );
+    breaks.push_back( mPos+leftlen+centerlen );
+    breaks.push_back( mPos+leftlen+centerlen+rightlen);
+    mRead->printWithBreaks(breaks);
 }
 
 void Match::setReversed(bool flag){

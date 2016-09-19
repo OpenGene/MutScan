@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "sequence.h"
+#include <vector>
 
 using namespace std;
 
@@ -16,8 +17,13 @@ public:
 	Read(string name, string seq, string strand);
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
+    int length();
 	void print();
+    void printWithBreaks(vector<int>& breaks);
     Read* reverseComplement();
+
+private:
+    string makeStringWithBreaks(const string origin, vector<int>& breaks);
 
 public:
 	string mName;

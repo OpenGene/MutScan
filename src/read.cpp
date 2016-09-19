@@ -35,6 +35,11 @@ Read::Read(Read &r) {
 	mSeq = r.mSeq;
 	mStrand = r.mStrand;
 	mQuality = r.mQuality;
+	mHasQuality = r.mHasQuality;
+}
+
+int Read::length(){
+	return mSeq.length();
 }
 
 void Read::print(){
@@ -43,6 +48,24 @@ void Read::print(){
 	std::cout << mStrand << endl;
 	if(mHasQuality)
 		std::cout << mQuality << endl;
+}
+
+void Read::printWithBreaks(vector<int>& breaks){
+	std::cout << mName << endl;
+	std::cout << makeStringWithBreaks(mSeq.mStr, breaks)<< endl;
+	std::cout << mStrand << endl;
+	if(mHasQuality)
+		std::cout << makeStringWithBreaks(mQuality, breaks) << endl;
+}
+
+string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
+	string ret = origin.substr(0, breaks[0]);
+	for(int i=0;i<breaks.size()-1;i++){
+		ret += " " + origin.substr(breaks[i], breaks[i+1]-breaks[i]);
+	}
+	if(breaks[breaks.size()-1]>0)
+		ret += " " + origin.substr(breaks[breaks.size()-1], origin.length() - breaks[breaks.size()-1]);
+	return ret;
 }
 
 Read* Read::reverseComplement(){
