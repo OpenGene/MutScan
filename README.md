@@ -34,4 +34,7 @@ EGFR-pos-7-55241677-18-c.2125G>A-p.E709K-COSM12988, CCCAACCAAGCTCTCTTGAGGATCTTGA
 EGFR-pos-7-55241707-18-c.2155G>A-p.G719S-COSM6252, GAAACTGAATTCAAAAAGATCAAAGTGCTG, A, GCTCCGGTGCGTTCGGCACGGTGTATAAGG
 EGFR-pos-7-55241707-18-c.2155G>T-p.G719C-COSM6253, GAAACTGAATTCAAAAAGATCAAAGTGCTG, T, GCTCCGGTGCGTTCGGCACGGTGTATAAGG
 ```
-A default CSV file contains important actionable cancer gene targets is already provided in `mutation/cancer.csv`
+A default CSV file contains important actionable cancer gene targets is already provided in `mutation/cancer.csv`. If you want to use this mutation file directly, the argument `mutation_file_name` can be omitted:
+```shell
+mutscan -1 <read1_file_name> -2 <read2_file_name>
+```
