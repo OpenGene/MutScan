@@ -57,6 +57,18 @@ bool MutScan::scan(){
         }
 	}
 
+    textReport(mutationList, mutationMatches);
+    htmlReport(mutationList, mutationMatches);
+
+    // free memory
+    for(int i=0;i<mutationList.size();i++){
+        mutationMatches[i].clear();
+    }
+
+	return true;
+}
+
+void MutScan::textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
     //output result
     for(int i=0;i<mutationList.size();i++){
         vector<Match*> matches = mutationMatches[i];
@@ -69,5 +81,8 @@ bool MutScan::scan(){
             }
         }
     }
-	return true;
+}
+
+void MutScan::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+
 }

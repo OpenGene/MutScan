@@ -13,6 +13,8 @@ class MutScan{
 public:
     MutScan(string mutationFile, string read1File, string read2File, string html);
     bool scan();
+    void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
+    void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
     string mMutationFile;
