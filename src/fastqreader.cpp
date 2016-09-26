@@ -36,8 +36,10 @@ bool FastqReader::getLine(char* line, int maxLine){
 	bool status = true;
 	if(mZipped)
 		status = gzgets(mZipFile, line, maxLine);
-	else
-		status = mFile.getline(line, maxLine);
+	else {
+		mFile.getline(line, maxLine);
+		status = !mFile.fail();
+	}
 
 	// trim \n, \r or \r\n in the tail
 	int readed = strlen(line);
@@ -144,4 +146,35 @@ bool FastqReader::test(){
 		delete r2;
 	}
 	return true;
+}
+
+FastqReaderPair::FastqReaderPair(FastqReader* left, FastqReader* right){
+	mLeft = left;
+	mRight = right;
+}
+
+FastqReaderPair::FastqReaderPair(string leftName, string rightName){
+	mLeft = new FastqReader(leftName);
+	mRight = new FastqReader(rightName);
+}
+
+FastqReaderPair::~FastqReaderPair(){
+	if(mLeft){
+		delete mLeft;
+		mLeft = NULL;
+	}
+	if(mRight){
+		delete mRight;
+		mRight = NULL;
+	}
+}
+
+ReadPair* FastqReaderPair::read(){
+	Read* l = mLeft->read();
+	Read* r = mRight->read();
+	if(!l || !r){
+		return NULL;
+	} else {
+		return new ReadPair(l, r);
+	}
 }

@@ -35,11 +35,6 @@ Read::Read(Read &r) {
 	mSeq = r.mSeq;
 	mStrand = r.mStrand;
 	mQuality = r.mQuality;
-	mHasQuality = r.mHasQuality;
-}
-
-int Read::length(){
-	return mSeq.length();
 }
 
 void Read::print(){
@@ -49,6 +44,7 @@ void Read::print(){
 	if(mHasQuality)
 		std::cout << mQuality << endl;
 }
+
 
 void Read::printWithBreaks(vector<int>& breaks){
 	std::cout << mName << endl;
@@ -74,4 +70,53 @@ Read* Read::reverseComplement(){
 	qual.assign(mQuality.rbegin(), mQuality.rend());
 	string strand = (mStrand=="+") ? "-" : "+";
 	return new Read(mName, seq, strand, qual);
+}
+
+string Read::lastIndex(){
+	int len = mName.length();
+	if(len<5)
+		return "";
+	for(int i=len-5;i>=0;i--){
+		if(mName[i]==':' or mName[i]=='+'){
+			return mName.substr(i+1, len-i);
+		}
+	}
+}
+
+int Read::lowQualCount(int qual){
+	int count = 0;
+	for(int q=0;q<mQuality.size();q++){
+		if(mQuality[q] < qual + 33)
+			count++;
+	}
+	return count;
+}
+
+int Read::length(){
+	return mSeq.length();
+}
+
+bool Read::test(){
+	Read r("@NS500713:64:HFKJJBGXY:1:11101:20469:1097 1:N:0:TATAGCCT+GGTCCCGA",
+		"CTCTTGGACTCTAACACTGTTTTTTCTTATGAAAACACAGGAGTGATGACTAGTTGAGTGCATTCTTATGAGACTCATAGTCATTCTATGATGTAGTTTTCCTTAGGAGGACATTTTTTACATGAAATTATTAACCTAAATAGAGTTGATC",
+		"+",
+		"AAAAA6EEEEEEEEEEEEEEEEE#EEEEEEEEEEEEEEEEE/EEEEEEEEEEEEEEEEAEEEAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE<EEEEAEEEEEEEEEEEEEEEAEEE/EEEEEEEEEEAAEAEAAEEEAEEAA");
+	string idx = r.lastIndex();
+	return idx == "GGTCCCGA";
+}
+
+ReadPair::ReadPair(Read* left, Read* right){
+	mLeft = left;
+	mRight = right;
+}
+
+ReadPair::~ReadPair(){
+	if(mLeft){
+		delete mLeft;
+		mLeft = NULL;
+	}
+	if(mRight){
+		delete mRight;
+		mRight = NULL;
+	}
 }

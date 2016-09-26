@@ -18,7 +18,6 @@ public:
 	//this function is not thread-safe
 	//do not call read() of a same FastqReader object from different threads concurrently
 	Read* read();
-	void close();
 
 public:
 	static bool isZipFastq(string filename);
@@ -27,6 +26,7 @@ public:
 
 private:
 	void init();
+	void close();
 	bool getLine(char* line, int maxLine);
 
 private:
@@ -36,6 +36,17 @@ private:
 	bool mZipped;
 	bool mHasQuality;
 
+};
+
+class FastqReaderPair{
+public:
+	FastqReaderPair(FastqReader* left, FastqReader* right);
+	FastqReaderPair(string leftName, string rightName);
+	~FastqReaderPair();
+	ReadPair* read();
+public:
+	FastqReader* mLeft;
+	FastqReader* mRight;
 };
 
 #endif

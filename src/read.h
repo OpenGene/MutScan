@@ -17,10 +17,17 @@ public:
 	Read(string name, string seq, string strand);
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
-    int length();
 	void print();
-    void printWithBreaks(vector<int>& breaks);
     Read* reverseComplement();
+    string firstIndex();
+    string lastIndex();
+    // default is Q20
+    int lowQualCount(int qual=20);
+    int length();
+    void printWithBreaks(vector<int>& breaks);
+
+public:
+    static bool test();
 
 private:
     string makeStringWithBreaks(const string origin, vector<int>& breaks);
@@ -31,6 +38,15 @@ public:
 	string mStrand;
 	string mQuality;
 	bool mHasQuality;
+};
+
+class ReadPair{
+public:
+    ReadPair(Read* left, Read* right);
+    ~ReadPair();
+public:
+    Read* mLeft;
+    Read* mRight;
 };
 
 #endif
