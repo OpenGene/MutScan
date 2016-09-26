@@ -18,6 +18,11 @@ public:
     void run();
 
 private:
+    void printHeader();
+    void printCSS();
+    void printFooter();
+
+private:
     string mFilename;
     vector<Mutation> mMutationList;
     vector<Match*>* mMutationMatches;

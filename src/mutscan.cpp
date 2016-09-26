@@ -86,6 +86,9 @@ void MutScan::textReport(vector<Mutation>& mutationList, vector<Match*> *mutatio
 }
 
 void MutScan::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+    if(mHtmlFile == "")
+        return;
+
     HtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
     reporter.run();
 }
