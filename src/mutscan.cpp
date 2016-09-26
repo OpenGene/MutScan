@@ -1,10 +1,11 @@
 #include "mutscan.h"
 #include "fastqreader.h"
 
-MutScan::MutScan(string mutationFile, string read1File, string read2File){
+MutScan::MutScan(string mutationFile, string read1File, string read2File, string html){
     mRead1File = read1File;
     mRead2File = read2File;
     mMutationFile = mutationFile;
+    mHtmlFile = html;
 }
 
 bool MutScan::scan(){

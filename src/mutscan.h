@@ -11,13 +11,14 @@ using namespace std;
 
 class MutScan{
 public:
-    MutScan(string mutationFile, string read1File, string read2File);
+    MutScan(string mutationFile, string read1File, string read2File, string html);
     bool scan();
 
 private:
     string mMutationFile;
     string mRead1File;
     string mRead2File;
+    string mHtmlFile;
 };
 
 
