@@ -1,0 +1,28 @@
+#ifndef HTML_REPORTER_H
+#define HTML_REPORTER_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include "read.h"
+#include "mutation.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class HtmlReporter{
+public:
+    HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
+    ~HtmlReporter();
+    void run();
+
+private:
+    string mFilename;
+    vector<Mutation> mMutationList;
+    vector<Match*>* mMutationMatches;
+    ofstream mFile;
+};
+
+
+#endif

@@ -1,6 +1,7 @@
 #include "mutscan.h"
 #include "fastqreader.h"
 #include <iostream>
+#include "htmlreporter.h"
 
 MutScan::MutScan(string mutationFile, string read1File, string read2File, string html){
     mRead1File = read1File;
@@ -85,7 +86,6 @@ void MutScan::textReport(vector<Mutation>& mutationList, vector<Match*> *mutatio
 }
 
 void MutScan::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
-    ofstream file;
-    file.open(mHtmlFile.c_str(), ifstream::out);
-    file.close();
+    HtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
+    reporter.run();
 }
