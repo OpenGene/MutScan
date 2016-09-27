@@ -27,6 +27,27 @@ void Match::print(int leftlen, int centerlen, int rightlen){
     mRead->printWithBreaks(breaks);
 }
 
+void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen){
+    file<<"d: ";
+    // for alignment display
+    if(mDistance<10)
+        file<<"0";
+    file<<mDistance;
+    if(mReversed)
+        file<<", <--";
+    else
+        file<<", -->";
+
+    file<<"</td>";
+
+    vector<int> breaks;
+    breaks.push_back(mPos);
+    breaks.push_back( mPos+leftlen );
+    breaks.push_back( mPos+leftlen+centerlen );
+    breaks.push_back( mPos+leftlen+centerlen+rightlen);
+    mRead->printHtmlTDWithBreaks(file, breaks);
+}
+
 void Match::setReversed(bool flag){
     mReversed = flag;
 }

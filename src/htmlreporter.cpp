@@ -13,8 +13,36 @@ HtmlReporter::~HtmlReporter(){
 
 void HtmlReporter::run() {
     printHeader();
-    mFile<<"Testhtml";
+    printMutations();
     printFooter();
+}
+
+void HtmlReporter::printMutations() {
+    for(int i=0;i<mMutationList.size();i++){
+        vector<Match*> matches = mMutationMatches[i];
+        if(matches.size()>0){
+            printMutation(mMutationList[i], matches);
+        }
+    }
+}
+
+void HtmlReporter::printMutation(Mutation& mutation, vector<Match*>& matches){
+    mFile << "<table>";
+    mFile << "<tr class='header'>";
+    mFile << "<td>" << "" << "</td>";
+    mFile << "<td>" << "" << "</td>";
+    mFile << "<td>" << mutation.mLeft << "</td>";
+    mFile << "<td>" << mutation.mCenter << "</td>";
+    mFile << "<td>" << mutation.mRight << "</td>";
+    mFile << "<td>" << "" << "</td>";
+    mFile << "</tr>";
+    for(int m=0; m<matches.size(); m++){
+        mFile << "<tr>";
+        mFile << "<td>" << m+1 << ", ";
+        matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length());
+        mFile << "</tr>";
+    }
+    mFile << "</table>";
 }
 
 void HtmlReporter::printHeader(){
@@ -27,18 +55,12 @@ void HtmlReporter::printHeader(){
 
 void HtmlReporter::printCSS(){
     mFile << "<style type=\"text/css\">";
-    mFile << "td {border:1px solid #dddddd;color:#999999;text-align:center;padding-left:2px;padding-right:2px;font-size:8px;}";
+    mFile << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
     mFile << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
-    mFile << ".finding_table td{padding:10px;border:1px solid #999999;border-collapse:collapse;font-size:16px;color:#666666;}";
-    mFile << ".finding_table{width:95%;padding:30px;}";
-    mFile << ".mutation_table td{padding:5px;font-size:12px;color:#666666;}";
     mFile << "img {padding:30px;}";
-    mFile << "img {padding:30px;}";
-    mFile << ".header {color:#669933;font-weight:bold;font-size:8px;padding:1px;}";
-    mFile << ".odd {background:#eeeeee;}";
-    mFile << ".cosmic {font-weight:bold;color:#FF6600;}";
-    mFile << ".label {background:#666666;color:#FFFFFF;}";
-    mFile << ".sampleid {color:#996657;font-size:8px;}";
+    mFile << ".alignleft {text-align:left;}";
+    mFile << ".alignright {text-align:right;}";
+    mFile << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}";
     mFile << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
     mFile << "#container {width:100%;text-align:center;padding:1px;}";
     mFile << "#menu {width:100%;text-align:left;padding:10px;font-size:28px;line-height:55px;}";

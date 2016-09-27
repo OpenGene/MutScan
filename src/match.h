@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string>
 #include "read.h"
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -13,6 +15,7 @@ public:
     Match(Read* r, int pos, int distance, bool reversed = false);
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
+    void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen);
     void setReversed(bool flag);
 
 private:

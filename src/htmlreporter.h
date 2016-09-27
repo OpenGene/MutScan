@@ -21,6 +21,8 @@ private:
     void printHeader();
     void printCSS();
     void printFooter();
+    void printMutations();
+    void printMutation(Mutation& mutation, vector<Match*>& matches);
 
 private:
     string mFilename;

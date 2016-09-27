@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "sequence.h"
 #include <vector>
 
@@ -25,6 +26,7 @@ public:
     int lowQualCount(int qual=20);
     int length();
     void printWithBreaks(vector<int>& breaks);
+    void printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks);
 
 public:
     static bool test();
