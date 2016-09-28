@@ -34,6 +34,7 @@ public:
 private:
     string makeStringWithBreaks(const string origin, vector<int>& breaks);
     string makeHtmlSeqWithQual(int start, int length);
+    string qualityColor(char qual);
 
 public:
 	string mName;

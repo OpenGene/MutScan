@@ -77,9 +77,22 @@ void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks) {
 string Read::makeHtmlSeqWithQual(int start, int length) {
     stringstream ss;
 	for(int i=start;i<start+length && i<mSeq.length(); i++) {
-		ss << "<a title='" << mQuality[i] << "'>" << mSeq.mStr[i] << "</a>";
+		ss << "<a title='" << mQuality[i] << "'><font color='" << qualityColor(mQuality[i]) << "'>"<< mSeq.mStr[i] << "</font></a>";
 	}
 	return ss.str();
+}
+
+string Read::qualityColor(char qual) {
+	if(qual >= 'A') // >= Q32, extremely high quality
+		return "#78C6B9";
+	if(qual >= ';') // Q26 ~ Q31, high quality
+		return "#33BBE2";
+	if(qual >= '5') // Q20 ~ Q25, moderate quality
+		return "#666666";
+	if(qual >= '0') // Q15 ~ Q19, low quality
+		return "#E99E5B";
+	else // <= Q14, extremely low quality
+		return "#FF0000";
 }
 
 Read* Read::reverseComplement(){
