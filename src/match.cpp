@@ -28,11 +28,7 @@ void Match::print(int leftlen, int centerlen, int rightlen){
 }
 
 void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen){
-    file<<"d: ";
-    // for alignment display
-    if(mDistance<10)
-        file<<"0";
-    file<<mDistance;
+    file<<"d:" << mDistance;
     if(mReversed)
         file<<", <--";
     else

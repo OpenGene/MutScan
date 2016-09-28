@@ -1,4 +1,5 @@
 #include "read.h"
+#include <sstream>
 
 Read::Read(string name, string seq, string strand, string quality){
 	mName = name;
@@ -65,12 +66,20 @@ string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
 }
 
 void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks) {
-	file << "<td class='alignright'>" << mSeq.mStr.substr(0, breaks[0]) << "</td>";
+	file << "<td class='alignright'>" << makeHtmlSeqWithQual(0, breaks[0]) << "</td>";
 	for(int i=0;i<breaks.size()-1;i++){
-		file << "<td>" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
+		file << "<td>" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
 	}
 	if(breaks[breaks.size()-1]>0)
-		file << "<td class='alignleft'>" << mSeq.mStr.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
+		file << "<td class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
+}
+
+string Read::makeHtmlSeqWithQual(int start, int length) {
+    stringstream ss;
+	for(int i=start;i<start+length && i<mSeq.length(); i++) {
+		ss << "<a title='" << mQuality[i] << "'>" << mSeq.mStr[i] << "</a>";
+	}
+	return ss.str();
 }
 
 Read* Read::reverseComplement(){
