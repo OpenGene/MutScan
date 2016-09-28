@@ -4,7 +4,7 @@ HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vect
     mMutationList = mutationList;
     mMutationMatches = mutationMatches;
     mFilename = filename;
-    mFile.open(mFilename, ifstream::out);
+    mFile.open(mFilename.c_str(), ifstream::out);
 }
 
 HtmlReporter::~HtmlReporter(){
