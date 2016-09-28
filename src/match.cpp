@@ -28,13 +28,14 @@ void Match::print(int leftlen, int centerlen, int rightlen){
 }
 
 void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen){
+    file<<"<a title='"<<mRead->mName<<"'>";
     file<<"d:" << mDistance;
     if(mReversed)
         file<<", <--";
     else
         file<<", -->";
 
-    file<<"</td>";
+    file<<"</a></td>";
 
     vector<int> breaks;
     breaks.push_back(mPos);

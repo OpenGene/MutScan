@@ -7,6 +7,8 @@
 #include "read.h"
 #include <vector>
 #include "match.h"
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -21,6 +23,7 @@ public:
     static vector<Mutation> parseFile(string filename);
     static vector<Mutation> parseBuiltIn();
     void print();
+    void printHtml(ofstream& file);
 
 public:
     string mLeft;

@@ -121,3 +121,7 @@ vector<Mutation> Mutation::parseBuiltIn() {
 void Mutation::print(){
     cout<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight<<endl;
 }
+
+void Mutation::printHtml(ofstream& file){
+    file<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight;
+}

@@ -18,6 +18,15 @@ void HtmlReporter::run() {
 }
 
 void HtmlReporter::printMutations() {
+    // print menu
+    mFile<<"<div id='menu'><p>Found " << mMutationList.size() << " mutations:</p><ul>";
+    for(int i=0;i<mMutationList.size();i++){
+        vector<Match*> matches = mMutationMatches[i];
+        if(matches.size()>0){
+            mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << mMutationList[i].mName << " (" << matches.size() << " reads support)" << "</a></li>";
+        }
+    }
+    mFile<<"</ul></div>";
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
         if(matches.size()>0){
@@ -27,6 +36,10 @@ void HtmlReporter::printMutations() {
 }
 
 void HtmlReporter::printMutation(Mutation& mutation, vector<Match*>& matches){
+    mFile << "<div class='mutation_block'>";
+    mFile << "<div class='mutation_head'><a name='" << mutation.mName << "'>";
+    mFile << mutation.mName;
+    mFile << "</a></div>";
     mFile << "<table>";
     mFile << "<tr class='header'>";
     mFile << "<td>" << "" << "</td>";
@@ -46,7 +59,7 @@ void HtmlReporter::printMutation(Mutation& mutation, vector<Match*>& matches){
         matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length());
         mFile << "</tr>";
     }
-    mFile << "</table>";
+    mFile << "</table></div>";
 }
 
 void HtmlReporter::printHeader(){
@@ -66,9 +79,12 @@ void HtmlReporter::printCSS(){
     mFile << ".alignright {text-align:right;}";
     mFile << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}";
     mFile << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
-    mFile << "#container {width:100%;text-align:center;padding:1px;}";
-    mFile << "#menu {width:100%;text-align:left;padding:10px;font-size:28px;line-height:55px;}";
-    mFile << ".highlight {width:100%;text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
+    mFile << "#container {text-align:center;padding:1px;font-family:Arial;}";
+    mFile << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
+    mFile << ".menu-item {text-align:left;padding:10px;font-size:28px;line-height:55px;}";
+    mFile << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
+    mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
+    mFile << ".mutation_block {}";
     mFile << "</style>";
 }
 
