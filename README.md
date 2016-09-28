@@ -11,16 +11,21 @@ make
 
 #Usage
 ```shell
-usage: mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> [options] ... 
+usage: mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> -h <html_report_filename>[options] ... 
 options:
   -1, --read1       read1 file name (string)
   -2, --read2       read2 file name (string)
-  -m, --mutation    mutation file name (string)
+  -m, --mutation    optional, mutation file name (string)
+  -h, --html        optional, filename of html report, no html report if not specified (string)
   -?, --help        print this message
 ```
-The result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
+The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
 mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> > result.txt
+```
+And you can make a HTML file report with `-h` argument, like:
+```
+mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> -h report.html
 ```
 
 # Mutation file
@@ -38,3 +43,6 @@ A default CSV file contains important actionable cancer gene targets is already 
 ```shell
 mutscan -1 <read1_file_name> -2 <read2_file_name>
 ```
+
+# HTML output
+If `-h` or `--html` argument is given, then a HTML report will be generated, and written to the given filename.
