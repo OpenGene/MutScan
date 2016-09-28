@@ -1,10 +1,17 @@
 # MutScan
 Detect important mutations by scanning FastQ files directly
 
+# Download
+```shell
+# download use http
+https://github.com/OpenGene/MutScan/archive/master.zip
+
+# or download use git
+git clone https://github.com/OpenGene/MutScan.git
+```
+
 # Build
 ```shell
-# download Release, or clone from github:
-git clone https://github.com/OpenGene/MutScan.git
 cd MutScan
 make
 ```
