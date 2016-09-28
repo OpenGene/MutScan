@@ -22,7 +22,7 @@ private:
     void printCSS();
     void printFooter();
     void printMutations();
-    void printMutation(Mutation& mutation, vector<Match*>& matches);
+    void printMutation(int id, Mutation& mutation, vector<Match*>& matches);
 
 private:
     string mFilename;

@@ -18,31 +18,43 @@ void HtmlReporter::run() {
 }
 
 void HtmlReporter::printMutations() {
-    // print menu
-    mFile<<"<div id='menu'><p>Found " << mMutationList.size() << " mutations:</p><ul>";
+    // calculate the found mutation
+    int found = 0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
         if(matches.size()>0){
-            mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << mMutationList[i].mName << " (" << matches.size() << " reads support)" << "</a></li>";
+            found++;
+        }
+    }
+    // print menu
+    mFile<<"<div id='menu'><p>Found "<< found << " mutations:</p><ul>";
+    int id = 0;
+    for(int i=0;i<mMutationList.size();i++){
+        vector<Match*> matches = mMutationMatches[i];
+        if(matches.size()>0){
+            id++;
+            mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << id << ", " << mMutationList[i].mName << " (" << matches.size() << " reads support)" << "</a></li>";
         }
     }
     mFile<<"</ul></div>";
+    id=0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
         if(matches.size()>0){
-            printMutation(mMutationList[i], matches);
+            id++;
+            printMutation(id, mMutationList[i], matches);
         }
     }
 }
 
-void HtmlReporter::printMutation(Mutation& mutation, vector<Match*>& matches){
+void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& matches){
     mFile << "<div class='mutation_block'>";
     mFile << "<div class='mutation_head'><a name='" << mutation.mName << "'>";
-    mFile << mutation.mName;
+    mFile << id << ", " << mutation.mName<< " (" << matches.size() << " reads support)" ;
     mFile << "</a></div>";
     mFile << "<table>";
     mFile << "<tr class='header'>";
-    mFile << "<td>" << "" << "</td>";
+    mFile << "<td class='match_brief'>" << "Distance_Strand" << "</td>";
     mFile << "<td>" << "" << "</td>";
     mFile << "<td>" << mutation.mLeft << "</td>";
     mFile << "<td>" << mutation.mCenter << "</td>";
@@ -81,10 +93,11 @@ void HtmlReporter::printCSS(){
     mFile << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
     mFile << "#container {text-align:center;padding:1px;font-family:Arial;}";
     mFile << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
-    mFile << ".menu-item {text-align:left;padding:10px;font-size:28px;line-height:55px;}";
+    mFile << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}";
     mFile << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
     mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
     mFile << ".mutation_block {}";
+    mFile << ".match_brief {font-size:8px}";
     mFile << "</style>";
 }
 

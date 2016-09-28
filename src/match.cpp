@@ -35,7 +35,7 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     else
         file<<", -->";
 
-    file<<"</a></td>";
+    file<<"</a></span>";
 
     vector<int> breaks;
     breaks.push_back(mPos);
