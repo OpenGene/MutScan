@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
     }
     cmdline::parser cmd;
     cmd.add<string>("read1", '1', "read1 file name", true, "");
-    cmd.add<string>("read2", '2', "read2 file name", true, "");
+    cmd.add<string>("read2", '2', "read2 file name", false, "");
     cmd.add<string>("mutation", 'm', "mutation file name", false, "");
     cmd.add<string>("html", 'h', "filename of html report, no html report if not specified", false, "");
     cmd.parse_check(argc, argv);

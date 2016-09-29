@@ -17,6 +17,10 @@ public:
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
+    bool scanPairEnd();
+    bool scanSingleEnd();
+
+private:
     string mMutationFile;
     string mRead1File;
     string mRead2File;

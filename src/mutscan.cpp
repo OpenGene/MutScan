@@ -11,6 +11,13 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File, string
 }
 
 bool MutScan::scan(){
+    if(mRead2File != "")
+        return scanPairEnd();
+    else
+        return scanSingleEnd();
+}
+
+bool MutScan::scanPairEnd(){
     FastqReader reader1(mRead1File);
     FastqReader reader2(mRead2File);
     vector<Mutation> mutationList;
@@ -68,6 +75,54 @@ bool MutScan::scan(){
     }
 
 	return true;
+}
+
+
+bool MutScan::scanSingleEnd(){
+    FastqReader reader1(mRead1File);
+    vector<Mutation> mutationList;
+    if(mMutationFile!="")
+        mutationList = Mutation::parseFile(mMutationFile);
+    else
+        mutationList = Mutation::parseBuiltIn();
+    vector<Match*> *mutationMatches = new vector<Match*>[mutationList.size()];
+    for(int i=0;i<mutationList.size();i++){
+        mutationMatches[i] = vector<Match*>();
+    }
+    int processed = 0;
+    while(true){
+        Read* r1 = reader1.read();
+        if(!r1)
+            break;
+        Read* rcr1 = r1->reverseComplement();
+        for(int i=0;i<mutationList.size();i++){
+            Match* matchR1 = mutationList[i].searchInRead(r1);
+            if(matchR1)
+                mutationMatches[i].push_back(matchR1);
+            Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
+            if(matchRcr1){
+                matchRcr1->setReversed(true);
+                mutationMatches[i].push_back(matchRcr1);
+            }
+        }
+        delete r1;
+        delete rcr1;
+
+        processed += 1;
+        if(processed % 1000000 == 0) {
+            //cout<<"processed "<<processed<<" reads"<<endl;
+        }
+    }
+
+    textReport(mutationList, mutationMatches);
+    htmlReport(mutationList, mutationMatches);
+
+    // free memory
+    for(int i=0;i<mutationList.size();i++){
+        mutationMatches[i].clear();
+    }
+
+    return true;
 }
 
 void MutScan::textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
