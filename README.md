@@ -25,7 +25,7 @@ make
 usage: mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> -h <html_report_filename>[options] ... 
 options:
   -1, --read1       read1 file name (string)
-  -2, --read2       read2 file name (string)
+  -2, --read2       optional, read2 file name (string)
   -m, --mutation    optional, mutation file name (string)
   -h, --html        optional, filename of html report, no html report if not specified (string)
   -?, --help        print this message
@@ -37,6 +37,11 @@ mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> > resu
 And you can make a HTML file report with `-h` argument, like:
 ```
 mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> -h report.html
+```
+## single-end and pair-end
+For single-end sequencing data, `-2` argument is omitted:
+```
+mutscan -1 <read1_file_name> -m <mutation_file_name>
 ```
 
 # Mutation file
