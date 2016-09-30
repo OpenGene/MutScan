@@ -14,10 +14,17 @@
 
 using namespace std;
 
-static const int kReadRepositorySize  = 100000000;
+static const int kReadRepositorySize  = 1000000;
+
+struct ReadPack {
+    Read** data;
+    int count;
+};
+
+typedef struct ReadPack ReadPack;
 
 struct ReadRepository {
-    Read** read_buffer;
+    ReadPack** read_buffer;
     size_t read_position;
     size_t write_position;
     size_t read_counter;
@@ -37,13 +44,14 @@ public:
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
-    bool scanSingleEnd(Read* r1);
+    bool scanSingleEnd(ReadPack* r1);
     void initReadRepository();
     void destroyReadRepository();
-    void produceRead(Read* read);
-    Read* consumeRead();
+    void produceRead(ReadPack* read);
+    void consumeRead();
     void producerTask();
     void consumerTask();
+    void pushMatch(int i, Match* m);
 
 private:
     string mMutationFile;
@@ -54,6 +62,7 @@ private:
     bool mProduceFinished;
     vector<Mutation> mutationList;
     vector<Match*> *mutationMatches;
+    std::mutex mMutationMtx;
 };
 
 

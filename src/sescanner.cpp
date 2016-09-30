@@ -29,23 +29,15 @@ bool SingleEndScanner::scan(){
     initReadRepository();
     std::thread producer(std::bind(&SingleEndScanner::producerTask, this));
     std::thread consumer1(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer2(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer3(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer4(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer5(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer6(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer7(std::bind(&SingleEndScanner::consumerTask, this));
-    std::thread consumer8(std::bind(&SingleEndScanner::consumerTask, this));
+    //std::thread consumer2(std::bind(&SingleEndScanner::consumerTask, this));
+    //std::thread consumer3(std::bind(&SingleEndScanner::consumerTask, this));
+    //std::thread consumer4(std::bind(&SingleEndScanner::consumerTask, this));
 
     producer.join();
     consumer1.join();
-    consumer2.join();
-    consumer3.join();
-    consumer4.join();
-    consumer5.join();
-    consumer6.join();
-    consumer7.join();
-    consumer8.join();
+    //consumer2.join();
+    //consumer3.join();
+    //consumer4.join();
 
     textReport(mutationList, mutationMatches);
     htmlReport(mutationList, mutationMatches);
@@ -56,27 +48,40 @@ bool SingleEndScanner::scan(){
     }
 }
 
-bool SingleEndScanner::scanSingleEnd(Read* r1){
-    Read* rcr1 = r1->reverseComplement();
-    for(int i=0;i<mutationList.size();i++){
-        Match* matchR1 = mutationList[i].searchInRead(r1);
-        if(matchR1)
-            mutationMatches[i].push_back(matchR1);
-        Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
-        if(matchRcr1){
-            matchRcr1->setReversed(true);
-            mutationMatches[i].push_back(matchRcr1);
+void SingleEndScanner::pushMatch(int i, Match* m){
+    std::unique_lock<std::mutex> lock(mMutationMtx);
+    cout<<"add"<<endl;
+    mutationMatches[i].push_back(m);
+    lock.unlock();
+}
+
+bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
+    for(int p=0;p<pack->count;p++){
+        Read* r1 = pack->data[p];
+        Read* rcr1 = r1->reverseComplement();
+        for(int i=0;i<mutationList.size();i++){
+            Match* matchR1 = mutationList[i].searchInRead(r1);
+            if(matchR1)
+                pushMatch(i, matchR1);
+            Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
+            if(matchRcr1){
+                matchRcr1->setReversed(true);
+                pushMatch(i, matchRcr1);
+            }
         }
+        //delete r1;
+        //delete rcr1;
     }
-    delete r1;
-    delete rcr1;
+
+    //delete pack->data;
+    //delete pack;
 
     return true;
 }
 
 void SingleEndScanner::initReadRepository() {
-    mRepo.read_buffer = new Read*[kReadRepositorySize];
-    memset(mRepo.read_buffer, 0, sizeof(Read*)*kReadRepositorySize);
+    mRepo.read_buffer = new ReadPack*[kReadRepositorySize];
+    memset(mRepo.read_buffer, 0, sizeof(ReadPack*)*kReadRepositorySize);
     mRepo.write_position = 0;
     mRepo.read_position = 0;
     mRepo.read_counter = 0;
@@ -88,14 +93,14 @@ void SingleEndScanner::destroyReadRepository() {
     mRepo.read_buffer = NULL;
 }
 
-void SingleEndScanner::produceRead(Read* read){
+void SingleEndScanner::produceRead(ReadPack* pack){
     std::unique_lock<std::mutex> lock(mRepo.mtx);
-    while(((mRepo.write_position + 1) % kReadRepositorySize)
+    /*while(((mRepo.write_position + 1) % kReadRepositorySize)
         == mRepo.read_position) {
         (mRepo.repo_not_full).wait(lock);
-    }
+    }*/
 
-    (mRepo.read_buffer)[mRepo.write_position] = read;
+    (mRepo.read_buffer)[mRepo.write_position] = pack;
     (mRepo.write_position)++;
 
     if (mRepo.write_position == kReadRepositorySize)
@@ -105,8 +110,8 @@ void SingleEndScanner::produceRead(Read* read){
     lock.unlock();
 }
 
-Read* SingleEndScanner::consumeRead(){
-    Read* data;
+void SingleEndScanner::consumeRead(){
+    ReadPack* data;
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     // read buffer is empty, just wait here.
     while(mRepo.write_position == mRepo.read_position) {
@@ -115,28 +120,46 @@ Read* SingleEndScanner::consumeRead(){
 
     data = (mRepo.read_buffer)[mRepo.read_position];
     (mRepo.read_position)++;
+    lock.unlock();
+
     scanSingleEnd(data);
 
     if (mRepo.read_position >= kReadRepositorySize)
         mRepo.read_position = 0;
 
-    (mRepo.repo_not_full).notify_all();
-    lock.unlock();
-
-    return data;
+    //(mRepo.repo_not_full).notify_all();
 }
 
 void SingleEndScanner::producerTask()
 {
+    const int packsize = 1000;
+    Read** data = new Read*[packsize];
+    memset(data, 0, sizeof(Read*)*packsize);
     FastqReader reader1(mRead1File);
-    int i=0;
+    int count=0;
     while(true){
         Read* read = reader1.read();
-        if(!read)
+        if(!read){
+            // the last pack
+            if(count>0){
+                ReadPack* pack = new ReadPack;
+                pack->data = data;
+                pack->count = count;
+                produceRead(pack);
+            }
             break;
-        i++;
-        //cout<<"read: "<<i<<endl;
-        produceRead(read);
+        }
+        data[count] = read;
+        count++;
+        // a full pack
+        if(count == packsize){
+            ReadPack* pack = new ReadPack;
+            pack->data = data;
+            pack->count = count;
+            produceRead(pack);
+            // reset count to 0
+            count = 0;
+        }
     }
     mProduceFinished = true;
 }
@@ -146,15 +169,15 @@ void SingleEndScanner::consumerTask()
     bool ready_to_exit = false;
     while(1) {
         std::unique_lock<std::mutex> lock(mRepo.read_counter_mtx);
-        if(mRepo.write_position == mRepo.read_position && mProduceFinished){
+        if(mProduceFinished && mRepo.write_position == mRepo.read_position){
             lock.unlock();
             break;
         }
 
-        Read* read = consumeRead();
-        ++(mRepo.read_counter);
-
         lock.unlock();
+
+        consumeRead();
+        ++(mRepo.read_counter);
 
     }
 }
