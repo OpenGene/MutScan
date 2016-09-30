@@ -10,10 +10,10 @@ TARGET = mutscan
 BIN_TARGET = ${TARGET}
 
 CC = g++
-CFLAGS = -g -Wall -I${DIR_INC}
+CFLAGS = -std=c++11 -g -Wall -I${DIR_INC}
 
 ${BIN_TARGET}:${OBJ}
-	$(CC) $(OBJ) -lz -o $@
+	$(CC) $(OBJ) -lz -lpthread -o $@
     
 ${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp make_obj_dir
 	$(CC) $(CFLAGS) -O3 -c  $< -o $@

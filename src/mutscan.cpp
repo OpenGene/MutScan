@@ -2,6 +2,8 @@
 #include "fastqreader.h"
 #include <iostream>
 #include "htmlreporter.h"
+#include "sescanner.h"
+
 
 MutScan::MutScan(string mutationFile, string read1File, string read2File, string html){
     mRead1File = read1File;
@@ -13,8 +15,11 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File, string
 bool MutScan::scan(){
     if(mRead2File != "")
         return scanPairEnd();
-    else
-        return scanSingleEnd();
+    else{
+        //return scanSingleEnd();
+        SingleEndScanner sescanner( mMutationFile, mRead1File, mRead2File, mHtmlFile);
+        sescanner.scan();
+    }
 }
 
 bool MutScan::scanPairEnd(){
