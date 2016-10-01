@@ -16,12 +16,12 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File, string
 
 bool MutScan::scan(){
     if(mRead2File != ""){
-        return scanPairEnd();
+        //return scanPairEnd();
         PairEndScanner pescanner( mMutationFile, mRead1File, mRead2File, mHtmlFile, mThreadNum);
         return pescanner.scan();
     }
     else{
-        return scanSingleEnd();
+        //return scanSingleEnd();
         SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, mThreadNum);
         return sescanner.scan();
     }

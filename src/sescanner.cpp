@@ -28,12 +28,10 @@ SingleEndScanner::SingleEndScanner(string mutationFile, string read1File, string
 
 bool SingleEndScanner::scan(){
 
-    cout<<"mMutationFile: "<<mMutationFile<<endl;
     if(mMutationFile!="")
         mutationList = Mutation::parseFile(mMutationFile);
     else
         mutationList = Mutation::parseBuiltIn();
-    cout<<mutationList.size()<<endl;
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){
@@ -133,6 +131,10 @@ void SingleEndScanner::consumePack(){
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     // read buffer is empty, just wait here.
     while(mRepo.writePos == mRepo.readPos) {
+        if(mProduceFinished){
+            lock.unlock();
+            return;
+        }
         mRepo.repoNotEmpty.wait(lock);
     }
 
@@ -191,13 +193,13 @@ void SingleEndScanner::producerTask()
         }
     }
 
+    std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+    mProduceFinished = true;
+    lock.unlock();
+
     // if the last data initialized is not used, free it
     if(data != NULL)
         delete data;
-
-    cout<<"producer finished:"<<mRepo.writePos<<endl;
-    cout<<mRepo.readPos<<endl;
-    mProduceFinished = true;
 }
 
 void SingleEndScanner::consumerTask()
@@ -206,11 +208,15 @@ void SingleEndScanner::consumerTask()
         std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
         if(mProduceFinished && mRepo.writePos == mRepo.readPos){
             lock.unlock();
-            cout<<"consumer quit"<<endl;
             break;
         }
-        lock.unlock();
-        consumePack();
+        if(mProduceFinished){
+            consumePack();
+            lock.unlock();
+        } else {
+            lock.unlock();
+            consumePack();
+        }
     }
 }
 
