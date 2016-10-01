@@ -22,14 +22,14 @@ struct ReadPack {
 typedef struct ReadPack ReadPack;
 
 struct ReadRepository {
-    ReadPack** read_buffer;
-    size_t read_position;
-    size_t write_position;
-    size_t read_counter;
+    ReadPack** packBuffer;
+    size_t readPos;
+    size_t writePos;
+    size_t readCounter;
     std::mutex mtx;
-    std::mutex read_counter_mtx;
-    std::condition_variable repo_not_full;
-    std::condition_variable repo_not_empty;
+    std::mutex readCounterMtx;
+    std::condition_variable repoNotFull;
+    std::condition_variable repoNotEmpty;
 };
 
 typedef struct ReadRepository ReadRepository;
@@ -42,11 +42,11 @@ public:
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
-    bool scanSingleEnd(ReadPack* r1);
-    void initReadRepository();
-    void destroyReadRepository();
-    void produceRead(ReadPack* read);
-    void consumeRead();
+    bool scanSingleEnd(ReadPack* pack);
+    void initPackRepository();
+    void destroyPackRepository();
+    void producePack(ReadPack* pack);
+    void consumePack();
     void producerTask();
     void consumerTask();
     void pushMatch(int i, Match* m);

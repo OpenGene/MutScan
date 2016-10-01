@@ -38,7 +38,7 @@ bool SingleEndScanner::scan(){
         mutationMatches[i] = vector<Match*>();
     }
 
-    initReadRepository();
+    initPackRepository();
     std::thread producer(std::bind(&SingleEndScanner::producerTask, this));
 
     std::thread** threads = new thread*[mThreadNum];
@@ -95,56 +95,56 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     return true;
 }
 
-void SingleEndScanner::initReadRepository() {
-    mRepo.read_buffer = new ReadPack*[PACK_NUM_LIMIT];
-    memset(mRepo.read_buffer, 0, sizeof(ReadPack*)*PACK_NUM_LIMIT);
-    mRepo.write_position = 0;
-    mRepo.read_position = 0;
-    mRepo.read_counter = 0;
+void SingleEndScanner::initPackRepository() {
+    mRepo.packBuffer = new ReadPack*[PACK_NUM_LIMIT];
+    memset(mRepo.packBuffer, 0, sizeof(ReadPack*)*PACK_NUM_LIMIT);
+    mRepo.writePos = 0;
+    mRepo.readPos = 0;
+    mRepo.readCounter = 0;
     
 }
 
-void SingleEndScanner::destroyReadRepository() {
-    delete mRepo.read_buffer;
-    mRepo.read_buffer = NULL;
+void SingleEndScanner::destroyPackRepository() {
+    delete mRepo.packBuffer;
+    mRepo.packBuffer = NULL;
 }
 
-void SingleEndScanner::produceRead(ReadPack* pack){
+void SingleEndScanner::producePack(ReadPack* pack){
     std::unique_lock<std::mutex> lock(mRepo.mtx);
-    while(((mRepo.write_position + 1) % PACK_NUM_LIMIT)
-        == mRepo.read_position) {
-        mRepo.repo_not_full.wait(lock);
+    while(((mRepo.writePos + 1) % PACK_NUM_LIMIT)
+        == mRepo.readPos) {
+        mRepo.repoNotFull.wait(lock);
     }
 
-    mRepo.read_buffer[mRepo.write_position] = pack;
-    mRepo.write_position++;
+    mRepo.packBuffer[mRepo.writePos] = pack;
+    mRepo.writePos++;
 
-    if (mRepo.write_position == PACK_NUM_LIMIT)
-        mRepo.write_position = 0;
+    if (mRepo.writePos == PACK_NUM_LIMIT)
+        mRepo.writePos = 0;
 
-    mRepo.repo_not_empty.notify_all();
+    mRepo.repoNotEmpty.notify_all();
     lock.unlock();
 }
 
-void SingleEndScanner::consumeRead(){
+void SingleEndScanner::consumePack(){
     ReadPack* data;
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     // read buffer is empty, just wait here.
-    while(mRepo.write_position == mRepo.read_position) {
-        mRepo.repo_not_empty.wait(lock);
+    while(mRepo.writePos == mRepo.readPos) {
+        mRepo.repoNotEmpty.wait(lock);
     }
 
-    data = mRepo.read_buffer[mRepo.read_position];
-    (mRepo.read_position)++;
+    data = mRepo.packBuffer[mRepo.readPos];
+    (mRepo.readPos)++;
     lock.unlock();
 
     scanSingleEnd(data);
 
 
-    if (mRepo.read_position >= PACK_NUM_LIMIT)
-        mRepo.read_position = 0;
+    if (mRepo.readPos >= PACK_NUM_LIMIT)
+        mRepo.readPos = 0;
 
-    mRepo.repo_not_full.notify_all();
+    mRepo.repoNotFull.notify_all();
 }
 
 void SingleEndScanner::producerTask()
@@ -162,7 +162,7 @@ void SingleEndScanner::producerTask()
                 ReadPack* pack = new ReadPack;
                 pack->data = data;
                 pack->count = count;
-                produceRead(pack);
+                producePack(pack);
             }
             data = NULL;
             break;
@@ -174,14 +174,14 @@ void SingleEndScanner::producerTask()
             ReadPack* pack = new ReadPack;
             pack->data = data;
             pack->count = count;
-            produceRead(pack);
+            producePack(pack);
             //re-initialize data for next pack
             data = new Read*[PACK_SIZE];
             memset(data, 0, sizeof(Read*)*PACK_SIZE);
             // reset count to 0
             count = 0;
             // if the consumer is far behind this producer, sleep and wait to limit memory usage
-            while(mRepo.write_position - mRepo.read_position > PACK_IN_MEM_LIMIT){
+            while(mRepo.writePos - mRepo.readPos > PACK_IN_MEM_LIMIT){
                 //cout<<"sleep"<<endl;
                 slept++;
                 usleep(1000);
@@ -199,13 +199,13 @@ void SingleEndScanner::producerTask()
 void SingleEndScanner::consumerTask()
 {
     while(true) {
-        std::unique_lock<std::mutex> lock(mRepo.read_counter_mtx);
-        if(mProduceFinished && mRepo.write_position == mRepo.read_position){
+        std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+        if(mProduceFinished && mRepo.writePos == mRepo.readPos){
             lock.unlock();
             break;
         }
         lock.unlock();
-        consumeRead();
+        consumePack();
     }
 }
 
