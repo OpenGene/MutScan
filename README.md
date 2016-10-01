@@ -4,6 +4,7 @@ Detect important mutations by scanning FastQ files directly
 * 20x faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
 * Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no pileup...
 * Beautiful HTML report
+* Multithreading support
 
 # Download
 ```shell
@@ -29,6 +30,7 @@ options:
   -m, --mutation    optional, mutation file name (string)
   -h, --html        optional, filename of html report, no html report if not specified (string)
   -?, --help        print this message
+  -t, --thread      thread number, default 4 (int)
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
