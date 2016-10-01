@@ -5,18 +5,7 @@
 #include <unistd.h>
 #include <functional>
 #include <thread>
-
-// the limit of the queue to store the packs
-// error may happen if it generates more packs than this number
-static const int PACK_NUM_LIMIT  = 1000000;
-
-// how many reads one pack has
-static const int PACK_SIZE = 1000;
-
-// if one pack is produced, but not consumed, it will be kept in the memory
-// this number limit the number of in memory packs
-// if the number of in memory packs is full, the producer thread should sleep
-static const int PACK_IN_MEM_LIMIT = 100;
+#include <memory.h>
 
 PairEndScanner::PairEndScanner(string mutationFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
