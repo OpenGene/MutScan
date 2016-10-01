@@ -14,8 +14,6 @@
 
 using namespace std;
 
-static const int kReadRepositorySize  = 1000000;
-
 struct ReadPack {
     Read** data;
     int count;
@@ -38,7 +36,7 @@ typedef struct ReadRepository ReadRepository;
 
 class SingleEndScanner{
 public:
-    SingleEndScanner(string mutationFile, string read1File, string read2File, string html);
+    SingleEndScanner(string mutationFile, string read1File, string html="", int threadnum=1);
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
@@ -63,6 +61,7 @@ private:
     vector<Mutation> mutationList;
     vector<Match*> *mutationMatches;
     std::mutex mMutationMtx;
+    int mThreadNum;
 };
 
 

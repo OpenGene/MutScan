@@ -16,8 +16,8 @@ bool MutScan::scan(){
     if(mRead2File != "")
         return scanPairEnd();
     else{
-        return scanSingleEnd();
-        SingleEndScanner sescanner( mMutationFile, mRead1File, mRead2File, mHtmlFile);
+        //return scanSingleEnd();
+        SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, 4);
         sescanner.scan();
     }
 }
