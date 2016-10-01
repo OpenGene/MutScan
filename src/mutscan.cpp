@@ -3,6 +3,7 @@
 #include <iostream>
 #include "htmlreporter.h"
 #include "sescanner.h"
+#include "pescanner.h"
 
 
 MutScan::MutScan(string mutationFile, string read1File, string read2File, string html, int threadNum){
@@ -14,12 +15,15 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File, string
 }
 
 bool MutScan::scan(){
-    if(mRead2File != "")
+    if(mRead2File != ""){
         return scanPairEnd();
+        PairEndScanner pescanner( mMutationFile, mRead1File, mRead2File, mHtmlFile, mThreadNum);
+        return pescanner.scan();
+    }
     else{
-        //return scanSingleEnd();
+        return scanSingleEnd();
         SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, mThreadNum);
-        sescanner.scan();
+        return sescanner.scan();
     }
 }
 

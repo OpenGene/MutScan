@@ -1,4 +1,4 @@
-#include "sescanner.h"
+#include "pescanner.h"
 #include "fastqreader.h"
 #include <iostream>
 #include "htmlreporter.h"
@@ -18,22 +18,21 @@ static const int PACK_SIZE = 1000;
 // if the number of in memory packs is full, the producer thread should sleep
 static const int PACK_IN_MEM_LIMIT = 100;
 
-SingleEndScanner::SingleEndScanner(string mutationFile, string read1File, string html, int threadNum){
+PairEndScanner::PairEndScanner(string mutationFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
+    mRead2File = read2File;
     mMutationFile = mutationFile;
     mHtmlFile = html;
     mProduceFinished = false;
     mThreadNum = threadNum;
 }
 
-bool SingleEndScanner::scan(){
+bool PairEndScanner::scan(){
 
-    cout<<"mMutationFile: "<<mMutationFile<<endl;
     if(mMutationFile!="")
         mutationList = Mutation::parseFile(mMutationFile);
     else
         mutationList = Mutation::parseBuiltIn();
-    cout<<mutationList.size()<<endl;
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){
@@ -41,11 +40,11 @@ bool SingleEndScanner::scan(){
     }
 
     initPackRepository();
-    std::thread producer(std::bind(&SingleEndScanner::producerTask, this));
+    std::thread producer(std::bind(&PairEndScanner::producerTask, this));
 
     std::thread** threads = new thread*[mThreadNum];
     for(int t=0; t<mThreadNum; t++){
-        threads[t] = new std::thread(std::bind(&SingleEndScanner::consumerTask, this));
+        threads[t] = new std::thread(std::bind(&PairEndScanner::consumerTask, this));
     }
 
     producer.join();
@@ -67,28 +66,41 @@ bool SingleEndScanner::scan(){
     }
 }
 
-void SingleEndScanner::pushMatch(int i, Match* m){
+void PairEndScanner::pushMatch(int i, Match* m){
     std::unique_lock<std::mutex> lock(mMutationMtx);
     mutationMatches[i].push_back(m);
     lock.unlock();
 }
 
-bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
+bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
     for(int p=0;p<pack->count;p++){
-        Read* r1 = pack->data[p];
+        ReadPair* pair = pack->data[p];
+        Read* r1 = pair->mLeft;
+        Read* r2 = pair->mRight;
         Read* rcr1 = r1->reverseComplement();
+        Read* rcr2 = r2->reverseComplement();
         for(int i=0;i<mutationList.size();i++){
             Match* matchR1 = mutationList[i].searchInRead(r1);
             if(matchR1)
                 pushMatch(i, matchR1);
+            Match* matchR2 = mutationList[i].searchInRead(r2);
+            if(matchR2){
+                pushMatch(i, matchR2);
+            }
             Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
             if(matchRcr1){
                 matchRcr1->setReversed(true);
                 pushMatch(i, matchRcr1);
             }
+            Match* matchRcr2 = mutationList[i].searchInRead(rcr2);
+            if(matchRcr2){
+                matchRcr2->setReversed(true);
+                pushMatch(i, matchRcr2);
+            }
         }
-        delete r1;
+        delete pair;
         delete rcr1;
+        delete rcr2;
     }
 
     delete pack->data;
@@ -97,21 +109,21 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     return true;
 }
 
-void SingleEndScanner::initPackRepository() {
-    mRepo.packBuffer = new ReadPack*[PACK_NUM_LIMIT];
-    memset(mRepo.packBuffer, 0, sizeof(ReadPack*)*PACK_NUM_LIMIT);
+void PairEndScanner::initPackRepository() {
+    mRepo.packBuffer = new ReadPairPack*[PACK_NUM_LIMIT];
+    memset(mRepo.packBuffer, 0, sizeof(ReadPairPack*)*PACK_NUM_LIMIT);
     mRepo.writePos = 0;
     mRepo.readPos = 0;
     mRepo.readCounter = 0;
     
 }
 
-void SingleEndScanner::destroyPackRepository() {
+void PairEndScanner::destroyPackRepository() {
     delete mRepo.packBuffer;
     mRepo.packBuffer = NULL;
 }
 
-void SingleEndScanner::producePack(ReadPack* pack){
+void PairEndScanner::producePack(ReadPairPack* pack){
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     while(((mRepo.writePos + 1) % PACK_NUM_LIMIT)
         == mRepo.readPos) {
@@ -128,8 +140,8 @@ void SingleEndScanner::producePack(ReadPack* pack){
     lock.unlock();
 }
 
-void SingleEndScanner::consumePack(){
-    ReadPack* data;
+void PairEndScanner::consumePack(){
+    ReadPairPack* data;
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     // read buffer is empty, just wait here.
     while(mRepo.writePos == mRepo.readPos) {
@@ -140,7 +152,7 @@ void SingleEndScanner::consumePack(){
     (mRepo.readPos)++;
     lock.unlock();
 
-    scanSingleEnd(data);
+    scanPairEnd(data);
 
 
     if (mRepo.readPos >= PACK_NUM_LIMIT)
@@ -149,19 +161,19 @@ void SingleEndScanner::consumePack(){
     mRepo.repoNotFull.notify_all();
 }
 
-void SingleEndScanner::producerTask()
+void PairEndScanner::producerTask()
 {
     int slept = 0;
-    Read** data = new Read*[PACK_SIZE];
-    memset(data, 0, sizeof(Read*)*PACK_SIZE);
-    FastqReader reader1(mRead1File);
+    ReadPair** data = new ReadPair*[PACK_SIZE];
+    memset(data, 0, sizeof(ReadPair*)*PACK_SIZE);
+    FastqReaderPair reader(mRead1File, mRead2File);
     int count=0;
     while(true){
-        Read* read = reader1.read();
+        ReadPair* read = reader.read();
         if(!read){
             // the last pack
             if(count>0){
-                ReadPack* pack = new ReadPack;
+                ReadPairPack* pack = new ReadPairPack;
                 pack->data = data;
                 pack->count = count;
                 producePack(pack);
@@ -173,13 +185,13 @@ void SingleEndScanner::producerTask()
         count++;
         // a full pack
         if(count == PACK_SIZE){
-            ReadPack* pack = new ReadPack;
+            ReadPairPack* pack = new ReadPairPack;
             pack->data = data;
             pack->count = count;
             producePack(pack);
             //re-initialize data for next pack
-            data = new Read*[PACK_SIZE];
-            memset(data, 0, sizeof(Read*)*PACK_SIZE);
+            data = new ReadPair*[PACK_SIZE];
+            memset(data, 0, sizeof(ReadPair*)*PACK_SIZE);
             // reset count to 0
             count = 0;
             // if the consumer is far behind this producer, sleep and wait to limit memory usage
@@ -195,18 +207,15 @@ void SingleEndScanner::producerTask()
     if(data != NULL)
         delete data;
 
-    cout<<"producer finished:"<<mRepo.writePos<<endl;
-    cout<<mRepo.readPos<<endl;
     mProduceFinished = true;
 }
 
-void SingleEndScanner::consumerTask()
+void PairEndScanner::consumerTask()
 {
     while(true) {
         std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
         if(mProduceFinished && mRepo.writePos == mRepo.readPos){
             lock.unlock();
-            cout<<"consumer quit"<<endl;
             break;
         }
         lock.unlock();
@@ -214,7 +223,7 @@ void SingleEndScanner::consumerTask()
     }
 }
 
-void SingleEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
     //output result
     for(int i=0;i<mutationList.size();i++){
         vector<Match*> matches = mutationMatches[i];
@@ -229,7 +238,7 @@ void SingleEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*>
     }
 }
 
-void SingleEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+void PairEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
     if(mHtmlFile == "")
         return;
 
