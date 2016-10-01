@@ -5,11 +5,12 @@
 #include "sescanner.h"
 
 
-MutScan::MutScan(string mutationFile, string read1File, string read2File, string html){
+MutScan::MutScan(string mutationFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
     mRead2File = read2File;
     mMutationFile = mutationFile;
     mHtmlFile = html;
+    mThreadNum = threadNum;
 }
 
 bool MutScan::scan(){
@@ -17,7 +18,7 @@ bool MutScan::scan(){
         return scanPairEnd();
     else{
         //return scanSingleEnd();
-        SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, 4);
+        SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, mThreadNum);
         sescanner.scan();
     }
 }
