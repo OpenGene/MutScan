@@ -60,11 +60,8 @@ inline int split(const string& str, vector<string>& ret_, string sep = ",")
             pos_begin = comma_pos;
         }
 
-        if (!tmp.empty())
-        {
-            ret_.push_back(tmp);
-            tmp.clear();
-        }
+        ret_.push_back(tmp);
+        tmp.clear();
     }
     return 0;
 }
