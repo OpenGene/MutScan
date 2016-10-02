@@ -1,10 +1,10 @@
 # MutScan
 Detect important mutations by scanning FastQ files directly
 * Ultra sensitive
-* 20x faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
+* More than 20x faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
 * Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no pileup...
 * Beautiful HTML report
-* Multithreading support
+* Multi-threading support
 
 # Download
 ```shell
@@ -23,7 +23,7 @@ make
 
 #Usage
 ```shell
-usage: mutscan -1 <read1_file_name> -2 <read2_file_name> -m <mutation_file_name> -h <html_report_filename>[options] ... 
+usage: mutscan -1 <read1_file> -2 <read2_file> -m <mutation_file> -h <html_report_file> -t <thread> 
 options:
   -1, --read1       read1 file name (string)
   -2, --read2       optional, read2 file name (string)
@@ -45,6 +45,8 @@ For single-end sequencing data, `-2` argument is omitted:
 ```
 mutscan -1 <read1_file_name> -m <mutation_file_name>
 ```
+## multi-threading
+`-t` argument specify how many worker threads will be launched. The default thread number is `4`. Suggest to use a number less than the CPU cores of your system.
 
 # Mutation file
 A CSV file with columns of `name`, `left_seq_of_mutation_point`, `mutation_seq` and `right_seq_of_mutation_point`
