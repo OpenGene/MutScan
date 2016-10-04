@@ -5,6 +5,8 @@
 #include <time.h>
 #include "cmdline.h"
 
+#define MUTSCAN_VER "1.1.0"
+
 int main(int argc, char* argv[]){
     if (argc == 2 && strcmp(argv[1], "test")==0){
         UnitTest tester;
@@ -28,5 +30,5 @@ int main(int argc, char* argv[]){
     MutScan scanner(mutationFile, r1file, r2file, html, threadNum);
     scanner.scan();
     clock_t t2 = clock();
-    printf("\nTime used: %f ms\n", (t2-t1)/1000.0);
+    printf("\nMutscan v%s, time used: %f ms\n", MUTSCAN_VER, (t2-t1)/1000.0);
 }
