@@ -68,4 +68,6 @@ mutscan -1 <read1_file_name> -2 <read2_file_name>
 If `-h` or `--html` argument is given, then a HTML report will be generated, and written to the given filename. A sample report is given here:   
 
 ![image](https://github.com/OpenGene/MutScan/raw/master/testdata/sample_report.jpg)  
-The color of each base indicates its quality, and the quality will be shown when mouse over.
+* The color of each base indicates its quality, and the quality will be shown when mouse over.
+* Click on any row, the original read/pair will be displayed
+* In first column, d means the edit distance of match, and --> means forward, <-- means reverse 
