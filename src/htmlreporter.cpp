@@ -1,5 +1,6 @@
 #include "htmlreporter.h"
 #include "common.h"
+#include <chrono>
 
 HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches){
     mMutationList = mutationList;
