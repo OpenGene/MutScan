@@ -70,19 +70,24 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
         Read* rcr2 = r2->reverseComplement();
         for(int i=0;i<mutationList.size();i++){
             Match* matchR1 = mutationList[i].searchInRead(r1);
-            if(matchR1)
+            if(matchR1){
+                matchR1->addOriginalPair(pair);
                 pushMatch(i, matchR1);
+            }
             Match* matchR2 = mutationList[i].searchInRead(r2);
             if(matchR2){
+                matchR2->addOriginalPair(pair);
                 pushMatch(i, matchR2);
             }
             Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
             if(matchRcr1){
+                matchRcr1->addOriginalPair(pair);
                 matchRcr1->setReversed(true);
                 pushMatch(i, matchRcr1);
             }
             Match* matchRcr2 = mutationList[i].searchInRead(rcr2);
             if(matchRcr2){
+                matchRcr2->addOriginalPair(pair);
                 matchRcr2->setReversed(true);
                 pushMatch(i, matchRcr2);
             }

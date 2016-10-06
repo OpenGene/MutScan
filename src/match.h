@@ -7,6 +7,7 @@
 #include "read.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -18,9 +19,12 @@ public:
     void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen);
     void printReadsToFile(ofstream& file);
     void setReversed(bool flag);
+    void addOriginalRead(Read* r);
+    void addOriginalPair(ReadPair* pair);
 
 private:
     Read* mRead;
+    vector<Read*> mOriginalReads;
     int mDistance;
     bool mReversed;
     int mPos;

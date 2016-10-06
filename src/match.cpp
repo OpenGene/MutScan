@@ -10,6 +10,20 @@ Match::Match(Read* r, int pos, int distance, bool reversed){
 
 Match::~Match(){
     delete mRead;
+    mRead = NULL;
+    for(int i=0;i<mOriginalReads.size();i++){
+        delete mOriginalReads[i];
+        mOriginalReads[i] = NULL;
+    }
+}
+
+void Match::addOriginalRead(Read* r){
+    mOriginalReads.push_back(new Read(*r));
+}
+
+void Match::addOriginalPair(ReadPair* pair){
+    mOriginalReads.push_back(new Read(*pair->mLeft));
+    mOriginalReads.push_back(new Read(*pair->mRight));
 }
 
 void Match::print(int leftlen, int centerlen, int rightlen){
@@ -46,7 +60,9 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
 }
 
 void Match::printReadsToFile(ofstream& file){
-    mRead->printFile(file);
+    for(int i=0;i<mOriginalReads.size();i++){
+        mOriginalReads[i]->printFile(file);
+    }
 }
 
 void Match::setReversed(bool flag){

@@ -66,10 +66,13 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
         Read* rcr1 = r1->reverseComplement();
         for(int i=0;i<mutationList.size();i++){
             Match* matchR1 = mutationList[i].searchInRead(r1);
-            if(matchR1)
+            if(matchR1){
+                matchR1->addOriginalRead(r1);
                 pushMatch(i, matchR1);
+            }
             Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
             if(matchRcr1){
+                matchRcr1->addOriginalRead(r1);
                 matchRcr1->setReversed(true);
                 pushMatch(i, matchRcr1);
             }
