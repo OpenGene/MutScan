@@ -36,6 +36,7 @@ Read::Read(Read &r) {
 	mSeq = r.mSeq;
 	mStrand = r.mStrand;
 	mQuality = r.mQuality;
+	mHasQuality = r.mHasQuality;
 }
 
 void Read::print(){
@@ -44,6 +45,14 @@ void Read::print(){
 	std::cout << mStrand << endl;
 	if(mHasQuality)
 		std::cout << mQuality << endl;
+}
+
+void Read::printFile(ofstream& file){
+	file << mName << endl;
+	file << mSeq.mStr << endl;
+	file << mStrand << endl;
+	if(mHasQuality)
+		file << mQuality << endl;
 }
 
 

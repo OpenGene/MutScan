@@ -62,13 +62,20 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "<td>" << "" << "</td>";
     mFile << "</tr>";
     for(int m=0; m<matches.size(); m++){
-        mFile << "<tr>";
+        long rowid = id*1000 + m;
+        mFile << "<tr onclick='toggle(" << rowid << ");'>";
         mFile << "<td>";
         // for display alignment
         if(m+1<10)
             mFile<<"0";
         mFile << m+1 << ", ";
         matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length());
+        mFile << "</tr>";
+        // print a hidden row containing the full read
+        mFile << "<tr id='" << rowid << "' style='display:none;'>";
+        mFile << "<td colspan='6'><xmp>";
+        matches[m]->printReadsToFile(mFile);
+        mFile << "</xmp></td>";
         mFile << "</tr>";
     }
     mFile << "</table></div>";
@@ -77,6 +84,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
 void HtmlReporter::printHeader(){
     mFile << "<html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />";
     mFile << "<title>MutScan report</title>";
+    printJS();
     printCSS();
     mFile << "</head>";
     mFile << "<body><div id='container'>";
@@ -99,6 +107,21 @@ void HtmlReporter::printCSS(){
     mFile << ".mutation_block {}";
     mFile << ".match_brief {font-size:8px}";
     mFile << "</style>";
+}
+
+void HtmlReporter::printJS(){
+    mFile << "<script type=\"text/javascript\">" << endl;
+    mFile << "function toggle(targetid){ \n\
+                if (document.getElementById){ \n\
+                    target=document.getElementById(targetid); \n\
+                        if (target.style.display=='table-row'){ \n\
+                            target.style.display='none'; \n\
+                        } else { \n\
+                            target.style.display='table-row'; \n\
+                        } \n\
+                } \n\
+            }";
+    mFile << "</script>";
 }
 
 void HtmlReporter::printFooter(){

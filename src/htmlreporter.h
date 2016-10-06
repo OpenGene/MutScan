@@ -20,6 +20,7 @@ public:
 private:
     void printHeader();
     void printCSS();
+    void printJS();
     void printFooter();
     void printMutations();
     void printMutation(int id, Mutation& mutation, vector<Match*>& matches);

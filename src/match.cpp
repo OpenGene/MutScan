@@ -45,6 +45,10 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     mRead->printHtmlTDWithBreaks(file, breaks);
 }
 
+void Match::printReadsToFile(ofstream& file){
+    mRead->printFile(file);
+}
+
 void Match::setReversed(bool flag){
     mReversed = flag;
 }

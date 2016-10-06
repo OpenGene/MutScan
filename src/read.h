@@ -19,6 +19,7 @@ public:
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
 	void print();
+    void printFile(ofstream& file);
     Read* reverseComplement();
     string firstIndex();
     string lastIndex();

@@ -16,6 +16,7 @@ public:
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
     void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen);
+    void printReadsToFile(ofstream& file);
     void setReversed(bool flag);
 
 private:
