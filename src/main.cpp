@@ -4,8 +4,9 @@
 #include "mutscan.h"
 #include <time.h>
 #include "cmdline.h"
+#include <sstream>
 
-#define MUTSCAN_VER "1.1.0"
+string command;
 
 int main(int argc, char* argv[]){
     if (argc == 2 && strcmp(argv[1], "test")==0){
@@ -26,9 +27,16 @@ int main(int argc, char* argv[]){
     string html = cmd.get<string>("html");
     int threadNum = cmd.get<int>("thread");
 
+    stringstream ss;
+    for(int i=0;i<argc;i++){
+        ss << argv[i] << " ";
+    }
+    command = ss.str();
+
     clock_t t1 = clock();
     MutScan scanner(mutationFile, r1file, r2file, html, threadNum);
     scanner.scan();
     clock_t t2 = clock();
-    printf("\nMutscan v%s, time used: %f ms\n", MUTSCAN_VER, (t2-t1)/1000.0);
+    printf("\n%s\n", command.c_str());
+    printf("Mutscan v%s, time used: %f ms\n", MUTSCAN_VER, (t2-t1)/1000.0);
 }

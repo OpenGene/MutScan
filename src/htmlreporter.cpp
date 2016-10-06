@@ -1,4 +1,5 @@
 #include "htmlreporter.h"
+#include "common.h"
 
 HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches){
     mMutationList = mutationList;
@@ -13,8 +14,18 @@ HtmlReporter::~HtmlReporter(){
 
 void HtmlReporter::run() {
     printHeader();
+    printHelper();
     printMutations();
     printFooter();
+}
+
+void HtmlReporter::printHelper() {
+    mFile << "<div id='helper'><p>Helpful tips:</p><ul>";
+    mFile << "<li> Base color indicates quality: <font color='#78C6B9'>excellent</font>, <font color='#33BBE2'>high</font>, <font color='#666666'>moderate</font>, <font color='#E99E5B'>low</font>, <font color='#FF0000'>extremely low</font> </li>";
+    mFile << "<li> Move mouse over the base, it will show the quality value</li>";
+    mFile << "<li> Click on any row, the original read/pair will be displayed</li>";
+    mFile << "<li> In first column, <i>d</i> means the edit distance of match, and --> means forward, <-- means reverse </li>";
+    mFile << "</ul></div>";
 }
 
 void HtmlReporter::printMutations() {
@@ -27,7 +38,10 @@ void HtmlReporter::printMutations() {
         }
     }
     // print menu
-    mFile<<"<div id='menu'><p>Found "<< found << " mutations:</p><ul>";
+    mFile<<"<div id='menu'><p>Found "<< found << " mutation";
+    if(found>1)
+        mFile<<"s";
+    mFile<<":</p><ul>";
     int id = 0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
@@ -106,6 +120,8 @@ void HtmlReporter::printCSS(){
     mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
     mFile << ".mutation_block {}";
     mFile << ".match_brief {font-size:8px}";
+    mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
+    mFile << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
     mFile << "</style>";
 }
 
@@ -124,6 +140,22 @@ void HtmlReporter::printJS(){
     mFile << "</script>";
 }
 
+const std::string getCurrentSystemTime()
+{
+  auto tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  struct tm* ptm = localtime(&tt);
+  char date[60] = {0};
+  sprintf(date, "%d-%02d-%02d      %02d:%02d:%02d",
+    (int)ptm->tm_year + 1900,(int)ptm->tm_mon + 1,(int)ptm->tm_mday,
+    (int)ptm->tm_hour,(int)ptm->tm_min,(int)ptm->tm_sec);
+  return std::string(date);
+}
+
+extern string command;
+
 void HtmlReporter::printFooter(){
+    mFile << "<div id='footer'> ";
+    mFile << "<p>"<<command<<"</p>";
+    mFile << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
     mFile << "</div></body></html>";
 }

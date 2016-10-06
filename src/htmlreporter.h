@@ -22,6 +22,7 @@ private:
     void printCSS();
     void printJS();
     void printFooter();
+    void printHelper();
     void printMutations();
     void printMutation(int id, Mutation& mutation, vector<Match*>& matches);
 
