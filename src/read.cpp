@@ -92,11 +92,11 @@ string Read::makeHtmlSeqWithQual(int start, int length) {
 }
 
 string Read::qualityColor(char qual) {
-	if(qual >= 'A') // >= Q32, extremely high quality
+	if(qual >= 'I') // >= Q40, extremely high quality
 		return "#78C6B9";
-	if(qual >= ';') // Q26 ~ Q31, high quality
+	if(qual >= '?') // Q30 ~ Q39, high quality
 		return "#33BBE2";
-	if(qual >= '5') // Q20 ~ Q25, moderate quality
+	if(qual >= '5') // Q20 ~ Q29, moderate quality
 		return "#666666";
 	if(qual >= '0') // Q15 ~ Q19, low quality
 		return "#E99E5B";
@@ -208,24 +208,24 @@ Read* ReadPair::fastMerge(){
 	if(overlapped){
 		int offset = len1 - olen;
 		int mergedLen = offset + len2;
-		string mergedName = mLeft->mName + " " + mRight->mName;
+		stringstream ss;
+		ss << mLeft->mName << " merged offset:" << offset << " overlap:" << olen << " diff:" << diff;
+		string mergedName = ss.str();
 		string mergedSeq = mLeft->mSeq.mStr.substr(0, offset) + rcRight->mSeq.mStr;
 		string mergedQual = mLeft->mQuality.substr(0, offset) + rcRight->mQuality;
 		// quality adjuction and correction for low qual diff
-		if(lowQualDiff > 0) {
-			for(int i=0;i<olen;i++){
-				if(str1[offset+i] != str2[i]){
-					if(qual1[offset+i]>='?' && qual2[i]<='0'){
-						mergedSeq[offset+i] = str1[offset+i];
-						mergedQual[offset+i] = qual1[offset+i];
-					} else {
-						mergedSeq[offset+i] = str2[i];
-						mergedQual[offset+i] = qual2[i];
-					}
+		for(int i=0;i<olen;i++){
+			if(str1[offset+i] != str2[i]){
+				if(qual1[offset+i]>='?' && qual2[i]<='0'){
+					mergedSeq[offset+i] = str1[offset+i];
+					mergedQual[offset+i] = qual1[offset+i];
 				} else {
-					// add the quality of the pair to make a high qual
-					mergedQual[offset+i] =  qual1[offset+i] + qual2[i] - 33;
+					mergedSeq[offset+i] = str2[i];
+					mergedQual[offset+i] = qual2[i];
 				}
+			} else {
+				// add the quality of the pair to make a high qual
+				mergedQual[offset+i] =  qual1[offset+i] + qual2[i] - 33;
 			}
 		}
 		return new Read(mergedName, mergedSeq, "+", mergedQual);

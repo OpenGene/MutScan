@@ -66,9 +66,32 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
         ReadPair* pair = pack->data[p];
         Read* r1 = pair->mLeft;
         Read* r2 = pair->mRight;
-        Read* rcr1 = r1->reverseComplement();
-        Read* rcr2 = r2->reverseComplement();
+        Read* rcr1 = NULL;
+        Read* rcr2 = NULL;
+        Read* merged = pair->fastMerge();
+        Read* mergedRC = NULL;
+        if(merged != NULL)
+            mergedRC = merged->reverseComplement();
+        else {
+            rcr1 = r1->reverseComplement();
+            rcr2 = r2->reverseComplement();
+        }
         for(int i=0;i<mutationList.size();i++){
+            // if merged successfully, we only search the merged
+            if(merged != NULL) {
+                Match* matchMerged = mutationList[i].searchInRead(merged);
+                if(matchMerged){
+                    matchMerged->addOriginalPair(pair);
+                    pushMatch(i, matchMerged);
+                }
+                Match* matchMergedRC = mutationList[i].searchInRead(mergedRC);
+                if(matchMergedRC){
+                    matchMergedRC->addOriginalPair(pair);
+                    pushMatch(i, matchMergedRC);
+                }
+                continue;
+            }
+            // else still search R1 and R2 separatedly
             Match* matchR1 = mutationList[i].searchInRead(r1);
             if(matchR1){
                 matchR1->addOriginalPair(pair);
@@ -93,8 +116,13 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
             }
         }
         delete pair;
-        delete rcr1;
-        delete rcr2;
+        if(merged!=NULL){
+            delete merged;
+            delete mergedRC;
+        } else {
+            delete rcr1;
+            delete rcr2;
+        }
     }
 
     delete pack->data;
