@@ -160,3 +160,98 @@ ReadPair::~ReadPair(){
 		mRight = NULL;
 	}
 }
+
+Read* ReadPair::fastMerge(){
+	Read* rcRight = mRight->reverseComplement();
+	int len1 = mLeft->length();
+	int len2 = rcRight->length();
+	// use the pointer directly for speed
+	const char* str1 = mLeft->mSeq.mStr.c_str();
+	const char* str2 = rcRight->mSeq.mStr.c_str();
+	const char* qual1 = mLeft->mQuality.c_str();
+	const char* qual2 = rcRight->mQuality.c_str();
+
+	// we require at least 30 bp overlapping to merge a pair
+	const int MIN_OVERLAP = 30;
+	bool overlapped = false;
+	int olen = MIN_OVERLAP;
+	int diff = 0;
+	// the diff count for 1 high qual + 1 low qual
+	int lowQualDiff = 0;
+
+	while(olen <= min(len1, len2)){
+		diff = 0;
+		lowQualDiff = 0;
+		bool ok = true;
+		int offset = len1 - olen;
+		for(int i=0;i<olen;i++){
+			if(str1[offset+i] != str2[i]){
+				diff++;
+				// one is >= Q30 and the other is <= Q15
+				if((qual1[offset+i]>='?' && qual2[i]<='0') || (qual1[offset+i]<='0' && qual2[i]>='?')){
+					lowQualDiff++;
+				}
+				// we disallow high quality diff, and only allow up to 3 low qual diff
+				if(diff>lowQualDiff || lowQualDiff>=3){
+					ok = false;
+					break;
+				}
+			}
+		}
+		if(ok){
+			overlapped = true;
+			break;
+		}
+		olen++;
+	}
+
+	if(overlapped){
+		int offset = len1 - olen;
+		int mergedLen = offset + len2;
+		string mergedName = mLeft->mName + " " + mRight->mName;
+		string mergedSeq = mLeft->mSeq.mStr.substr(0, offset) + rcRight->mSeq.mStr;
+		string mergedQual = mLeft->mQuality.substr(0, offset) + rcRight->mQuality;
+		// quality adjuction and correction for low qual diff
+		if(lowQualDiff > 0) {
+			for(int i=0;i<olen;i++){
+				if(str1[offset+i] != str2[i]){
+					if(qual1[offset+i]>='?' && qual2[i]<='0'){
+						mergedSeq[offset+i] = str1[offset+i];
+						mergedQual[offset+i] = qual1[offset+i];
+					} else {
+						mergedSeq[offset+i] = str2[i];
+						mergedQual[offset+i] = qual2[i];
+					}
+				} else {
+					// add the quality of the pair to make a high qual
+					mergedQual[offset+i] =  qual1[offset+i] + qual2[i] - 33;
+				}
+			}
+		}
+		return new Read(mergedName, mergedSeq, "+", mergedQual);
+	}
+
+	return NULL;
+}
+
+bool ReadPair::test(){
+	Read* left = new Read("@NS500713:64:HFKJJBGXY:1:11101:20469:1097 1:N:0:TATAGCCT+GGTCCCGA",
+		"TTTTTTCTCTTGGACTCTAACACTGTTTTTTCTTATGAAAACACAGGAGTGATGACTAGTTGAGTGCATTCTTATGAGACTCATAGTCATTCTATGATGTAG",
+		"+",
+		"AAAAA6EEEEEEEEEEEEEEEEE#EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAEEEAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+	Read* right = new Read("@NS500713:64:HFKJJBGXY:1:11101:20469:1097 1:N:0:TATAGCCT+GGTCCCGA",
+		"AAAAAACTACACCATAGAATGACTATGAGTCTCATAAGAATGCACTCAACTAGTCATCACTCCTGTGTTTTCATAAGAAAAAACAGTGTTAGAGTCCAAGAG",
+		"+",
+		"AAAAA6EEEEE/EEEEEEEEEEE#EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAEEEAEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
+	ReadPair pair(left, right);
+	Read* merged = pair.fastMerge();
+	if(merged == NULL)
+		return false;
+
+	if(merged->mSeq.mStr != "TTTTTTCTCTTGGACTCTAACACTGTTTTTTCTTATGAAAACACAGGAGTGATGACTAGTTGAGTGCATTCTTATGAGACTCATAGTCATTCTATGATGTAGTTTTTT")
+		return false;
+
+	//merged->print();
+	return true;
+}

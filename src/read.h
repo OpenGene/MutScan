@@ -49,9 +49,15 @@ class ReadPair{
 public:
     ReadPair(Read* left, Read* right);
     ~ReadPair();
+
+    // merge a pair, without consideration of seq error caused false INDEL
+    Read* fastMerge();
 public:
     Read* mLeft;
     Read* mRight;
+
+public:
+    static bool test();
 };
 
 #endif
