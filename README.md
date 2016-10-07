@@ -5,6 +5,8 @@ Detect important mutations by scanning FastQ files directly
 * Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no pileup...
 * Beautiful HTML report
 * Multi-threading support
+* Support both single-end and pair-end data
+* For pair-end data, MutScan will try to merge each pair, and do quality adjustment and error correction
 
 # Download
 ```shell
