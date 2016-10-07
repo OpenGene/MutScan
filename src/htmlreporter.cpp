@@ -22,10 +22,11 @@ void HtmlReporter::run() {
 
 void HtmlReporter::printHelper() {
     mFile << "<div id='helper'><p>Helpful tips:</p><ul>";
-    mFile << "<li> Base color indicates quality: <font color='#78C6B9'>excellent</font>, <font color='#33BBE2'>high</font>, <font color='#666666'>moderate</font>, <font color='#E99E5B'>low</font>, <font color='#FF0000'>extremely low</font> </li>";
+    mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30+)</font>, <font color='#666666'>moderate (Q20+)</font>, <font color='#E99E5B'>low (Q15+)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
     mFile << "<li> Move mouse over the base, it will show the quality value</li>";
     mFile << "<li> Click on any row, the original read/pair will be displayed</li>";
     mFile << "<li> In first column, <i>d</i> means the edit distance of match, and --> means forward, <-- means reverse </li>";
+    mFile << "<li> For pair-end sequencing, MutScan tries to merge each pair, and the overlapped bases will be assigned higher qualities </li>";
     mFile << "</ul></div>";
 }
 
