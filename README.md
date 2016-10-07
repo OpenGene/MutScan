@@ -1,7 +1,7 @@
 # MutScan
 Detect important mutations by scanning FastQ files directly
 * Ultra sensitive
-* More than 20x faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
+* 20X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
 * Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no pileup...
 * Beautiful HTML report
 * Multi-threading support
