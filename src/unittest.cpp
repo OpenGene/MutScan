@@ -3,6 +3,7 @@
 #include "sequence.h"
 #include "fastqreader.h"
 #include "fastareader.h"
+#include "vcfreader.h"
 #include "overlap.h"
 #include "read.h"
 #include <time.h>
@@ -17,6 +18,7 @@ void UnitTest::run(){
     passed &= Sequence::test();
     passed &= FastqReader::test();
     passed &= FastaReader::test();
+    passed &= VcfReader::test();
     passed &= Overlap::test();
     passed &= Read::test();
     passed &= ReadPair::test();
