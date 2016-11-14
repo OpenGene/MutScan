@@ -5,6 +5,7 @@
 #include <time.h>
 #include "cmdline.h"
 #include <sstream>
+#include "util.h"
 
 string command;
 
@@ -32,6 +33,12 @@ int main(int argc, char* argv[]){
         ss << argv[i] << " ";
     }
     command = ss.str();
+
+    check_file_valid(r1file);
+    if(mutationFile != "")
+        check_file_valid(r2file);
+    if(mutationFile != "")
+        check_file_valid(mutationFile);
 
     clock_t t1 = clock();
     MutScan scanner(mutationFile, r1file, r2file, html, threadNum);

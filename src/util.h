@@ -120,6 +120,17 @@ inline bool is_directory(const  string& path)
     return isdir;
 }
 
+inline void check_file_valid(const  string& s) {
+    if(!file_exists(s)){
+        cout << "ERROR: file '" << s << "' doesn't exist, quit now" << endl;
+        exit(-1);
+    }
+    if(is_directory(s)){
+        cout << "ERROR: '" << s << "' is a folder, not a file, quit now" << endl;
+        exit(-1);
+    }
+}
+
 // Remove non alphabetic characters from a string
 inline  string str_keep_alpha(const  string& s)
 {
