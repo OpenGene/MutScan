@@ -8,6 +8,9 @@ Detect important mutations by scanning FastQ files directly
 * Support both single-end and pair-end data
 * For pair-end data, MutScan will try to merge each pair, and do quality adjustment and error correction
 
+# Sample report
+http://opengene.org/MutScan/report.html
+
 # Download
 ```shell
 # download use http
