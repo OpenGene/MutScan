@@ -143,7 +143,17 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile, bool maskedO
         if(v.pos > ref[chrom].length() + 25 + 1 || v.pos < 25 + 1)
             continue;
 
+        string gene = v.gene();
+        string aa = v.aaChange();
+        string cds = v.cdsChange();
+
         stringstream ss;
+        if(gene!="")
+            ss<<gene<<"_";
+        if(aa!="")
+            ss<<aa<<"_";
+        if(cds!="")
+            ss<<cds<<"_";
         ss<<chrom<<"_"<<v.pos<<"_"<<v.ref<<">"<<v.alt;
         string name = ss.str();
         string left = ref[chrom].substr(v.pos-25-1, 25);

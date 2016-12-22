@@ -156,4 +156,12 @@ inline  string str_keep_valid_sequence(const  string& s)
     return new_str;
 }
 
+inline int find_with_right_pos(const string& str, const string& pattern, int start=0) {
+    int pos = str.find(pattern, start);
+    if (pos < 0)
+        return -1;
+    else
+        return pos + pattern.length();
+}
+
 #endif /* UTIL_H */
