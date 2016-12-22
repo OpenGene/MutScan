@@ -6,11 +6,13 @@
 #include <functional>
 #include <thread>
 #include <memory.h>
+#include "util.h"
 
-PairEndScanner::PairEndScanner(string mutationFile, string read1File, string read2File, string html, int threadNum){
+PairEndScanner::PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
     mRead2File = read2File;
     mMutationFile = mutationFile;
+    mRefFile = refFile;
     mHtmlFile = html;
     mProduceFinished = false;
     mThreadNum = threadNum;
@@ -18,10 +20,12 @@ PairEndScanner::PairEndScanner(string mutationFile, string read1File, string rea
 
 bool PairEndScanner::scan(){
 
-    if(mMutationFile!="")
-        mutationList = Mutation::parseFile(mMutationFile);
-    else
-        mutationList = Mutation::parseBuiltIn();
+    if(mMutationFile!=""){
+        if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf"))
+            mutationList = Mutation::parseVcf(mMutationFile, mRefFile);
+        else
+            mutationList = Mutation::parseCsv(mMutationFile);
+    }
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){

@@ -34,6 +34,10 @@ public:
     void readAll();
     void printAll();
 
+    inline vector<Variant>& variants() {
+        return mVariants;
+    }
+
     static bool test();
 
 public:

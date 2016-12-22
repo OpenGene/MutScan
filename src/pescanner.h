@@ -36,7 +36,7 @@ typedef struct ReadPairRepository ReadPairRepository;
 
 class PairEndScanner{
 public:
-    PairEndScanner(string mutationFile, string read1File, string read2File, string html="", int threadnum=1);
+    PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html="", int threadnum=1);
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
@@ -53,6 +53,7 @@ private:
 
 private:
     string mMutationFile;
+    string mRefFile;
     string mRead1File;
     string mRead2File;
     string mHtmlFile;

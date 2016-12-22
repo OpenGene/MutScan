@@ -6,10 +6,12 @@
 #include <functional>
 #include <thread>
 #include <memory.h>
+#include "util.h"
 
-SingleEndScanner::SingleEndScanner(string mutationFile, string read1File, string html, int threadNum){
+SingleEndScanner::SingleEndScanner(string mutationFile, string refFile, string read1File, string html, int threadNum){
     mRead1File = read1File;
     mMutationFile = mutationFile;
+    mRefFile = refFile;
     mHtmlFile = html;
     mProduceFinished = false;
     mThreadNum = threadNum;
@@ -17,10 +19,12 @@ SingleEndScanner::SingleEndScanner(string mutationFile, string read1File, string
 
 bool SingleEndScanner::scan(){
 
-    if(mMutationFile!="")
-        mutationList = Mutation::parseFile(mMutationFile);
-    else
-        mutationList = Mutation::parseBuiltIn();
+    if(mMutationFile!=""){
+        if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf"))
+            mutationList = Mutation::parseVcf(mMutationFile, mRefFile);
+        else
+            mutationList = Mutation::parseCsv(mMutationFile);
+    }
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){

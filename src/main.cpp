@@ -18,7 +18,8 @@ int main(int argc, char* argv[]){
     cmdline::parser cmd;
     cmd.add<string>("read1", '1', "read1 file name", true, "");
     cmd.add<string>("read2", '2', "read2 file name", false, "");
-    cmd.add<string>("mutation", 'm', "mutation file name", false, "");
+    cmd.add<string>("mutation", 'm', "mutation file name, can be a CSV format or a VCF format", false, "");
+    cmd.add<string>("ref", 'r', "reference fasta file name (only needed when mutation file is a VCF)", false, "");
     cmd.add<string>("html", 'h', "filename of html report, no html report if not specified", false, "");
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
     cmd.parse_check(argc, argv);
@@ -26,6 +27,7 @@ int main(int argc, char* argv[]){
     string r2file = cmd.get<string>("read2");
     string mutationFile = cmd.get<string>("mutation");
     string html = cmd.get<string>("html");
+    string refFile = cmd.get<string>("ref");
     int threadNum = cmd.get<int>("thread");
 
     stringstream ss;
@@ -39,9 +41,18 @@ int main(int argc, char* argv[]){
         check_file_valid(r2file);
     if(mutationFile != "")
         check_file_valid(mutationFile);
+    if(refFile != "")
+        check_file_valid(refFile);
+    // if the mutation file is a vcf, then the reference should be provided
+    if(ends_with(mutationFile, ".vcf") || ends_with(mutationFile, ".VCF") || ends_with(mutationFile, ".Vcf")){
+        if(refFile == "") {
+            printf("You should specify the reference fasta file by -r <ref.fa>, because your mutation file (-m) is a VCF\n");
+            exit(-1);
+        }
+    }
 
     clock_t t1 = clock();
-    MutScan scanner(mutationFile, r1file, r2file, html, threadNum);
+    MutScan scanner(mutationFile, refFile, r1file, r2file, html, threadNum);
     scanner.scan();
     clock_t t2 = clock();
     printf("\n%s\n", command.c_str());

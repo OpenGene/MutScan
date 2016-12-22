@@ -4,12 +4,13 @@
 #include "htmlreporter.h"
 #include "sescanner.h"
 #include "pescanner.h"
+#include "util.h"
 
-
-MutScan::MutScan(string mutationFile, string read1File, string read2File, string html, int threadNum){
+MutScan::MutScan(string mutationFile, string refFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
     mRead2File = read2File;
     mMutationFile = mutationFile;
+    mRefFile = refFile;
     mHtmlFile = html;
     mThreadNum = threadNum;
 }
@@ -17,12 +18,12 @@ MutScan::MutScan(string mutationFile, string read1File, string read2File, string
 bool MutScan::scan(){
     if(mRead2File != ""){
         //return scanPairEnd();
-        PairEndScanner pescanner( mMutationFile, mRead1File, mRead2File, mHtmlFile, mThreadNum);
+        PairEndScanner pescanner( mMutationFile, mRefFile, mRead1File, mRead2File, mHtmlFile, mThreadNum);
         return pescanner.scan();
     }
     else{
         //return scanSingleEnd();
-        SingleEndScanner sescanner( mMutationFile, mRead1File, mHtmlFile, mThreadNum);
+        SingleEndScanner sescanner( mMutationFile, mRefFile, mRead1File, mHtmlFile, mThreadNum);
         return sescanner.scan();
     }
 }
@@ -30,9 +31,12 @@ bool MutScan::scan(){
 bool MutScan::scanPairEnd(){
     FastqReader reader1(mRead1File);
     FastqReader reader2(mRead2File);
-    vector<Mutation> mutationList;
-    if(mMutationFile!="")
-        mutationList = Mutation::parseFile(mMutationFile);
+    if(mMutationFile!=""){
+        if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf"))
+            mutationList = Mutation::parseVcf(mMutationFile, mRefFile);
+        else
+            mutationList = Mutation::parseCsv(mMutationFile);
+    }
     else
         mutationList = Mutation::parseBuiltIn();
     vector<Match*> *mutationMatches = new vector<Match*>[mutationList.size()];
@@ -90,9 +94,12 @@ bool MutScan::scanPairEnd(){
 
 bool MutScan::scanSingleEnd(){
     FastqReader reader1(mRead1File);
-    vector<Mutation> mutationList;
-    if(mMutationFile!="")
-        mutationList = Mutation::parseFile(mMutationFile);
+    if(mMutationFile!=""){
+        if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf"))
+            mutationList = Mutation::parseVcf(mMutationFile, mRefFile);
+        else
+            mutationList = Mutation::parseCsv(mMutationFile);
+    }
     else
         mutationList = Mutation::parseBuiltIn();
     vector<Match*> *mutationMatches = new vector<Match*>[mutationList.size()];

@@ -37,6 +37,10 @@ public:
         return mCurrentSequence;
     }
 
+    inline map<string, string>& contigs() {
+        return mAllContigs;
+    }
+
     static bool test();
 
 
