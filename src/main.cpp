@@ -6,6 +6,7 @@
 #include "cmdline.h"
 #include <sstream>
 #include "util.h"
+#include "globalsettings.h"
 
 string command;
 
@@ -22,6 +23,7 @@ int main(int argc, char* argv[]){
     cmd.add<string>("ref", 'r', "reference fasta file name (only needed when mutation file is a VCF)", false, "");
     cmd.add<string>("html", 'h', "filename of html report, no html report if not specified", false, "");
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
+    cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
     string r2file = cmd.get<string>("read2");
@@ -29,6 +31,9 @@ int main(int argc, char* argv[]){
     string html = cmd.get<string>("html");
     string refFile = cmd.get<string>("ref");
     int threadNum = cmd.get<int>("thread");
+
+    bool markedOnlyForVCF = cmd.exist("mark");
+    GlobalSettings::setMarkedOnlyForVCF(markedOnlyForVCF);
 
     stringstream ss;
     for(int i=0;i<argc;i++){

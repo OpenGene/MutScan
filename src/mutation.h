@@ -25,10 +25,10 @@ public:
     static vector<Mutation> parseCsv(string filename);
     static vector<Mutation> parseBuiltIn();
 
-    // if maskedOnly = true, then only the entries with FILTER column = m will be treated
+    // if markedOnly = true, then only the entries with FILTER column = m will be treated
     // #CHROM   POS     ID          REF ALT QUAL  FILTER  INFO
     // 1        69224   COSM3677745 A   C   .     m       GENE=OR4F5;STRAND=+;CDS=c.134A>C;AA=p.D45A;CNT=1
-    static vector<Mutation> parseVcf(string vcfFile, string refFile, bool maskedOnly = false);
+    static vector<Mutation> parseVcf(string vcfFile, string refFile);
     void print();
     void printHtml(ofstream& file);
 

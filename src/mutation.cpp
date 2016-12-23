@@ -6,6 +6,7 @@
 #include <string.h>
 #include "builtinmutation.h"
 #include <sstream>
+#include "globalsettings.h"
 
 Mutation::Mutation(string name, string left, string center, string right){
 	//we shift some bases from left and right to center to require 100% match of these bases
@@ -119,11 +120,26 @@ vector<Mutation> Mutation::parseBuiltIn() {
     return mutations;
 }
 
-vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile, bool maskedOnly) {
+vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
     vector<Mutation> mutations;
     VcfReader vr(vcfFile);
     vr.readAll();
     vector<Variant> variants = vr.variants();
+
+    bool markedOnly = GlobalSettings::markedOnlyForVCF;
+
+    const int vcfMax = 100;
+    if(variants.size() > vcfMax && markedOnly==false){
+        cerr<<"Your VCF has more than "<<vcfMax<<" records, this will make MutScan take too long to complete the scan." << endl;
+        cerr<<"Please use a smaller VCF"<<endl;
+        cerr<<"Or use --mark option, and mark the wanted VCF records with FILTER as M"<<endl;
+        cerr<<"Example (note the M in the FILTER column):"<<endl;
+        cerr<<"#CHROM   POS     ID          REF ALT QUAL  FILTER  INFO"<<endl;
+        cerr<<"1        69224   COSM3677745 A   C   .     M       This record will be scanned"<<endl;
+        cerr<<"1        880950  COSM3493111 G   A   .     .       This record will be skipped"<<endl;
+        cerr<<endl;
+        exit(-1);
+    }
 
     FastaReader fr(refFile);
     fr.readAll();
@@ -131,8 +147,8 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile, bool maskedO
 
     for(int i=0;i<variants.size();i++) {
         Variant& v = variants[i];
-        // skip the unmasked if maskedOnly flag is set true
-        if(maskedOnly && (v.filter!="m" || v.filter!="M"))
+        // skip the unmasked if markedOnly flag is set true
+        if(markedOnly && (v.filter!="m" && v.filter!="M"))
             continue;
         string chrom = "chr" + v.chrom;
         // the contig is not in reference
@@ -160,8 +176,22 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile, bool maskedO
         string center = v.alt;
         string right = ref[chrom].substr(v.pos+v.ref.length()-1, 25);
         Mutation mut(name, left, center, right);
-        cout << name << ", " << left << ", " << center << ", " << right << endl;
+        cerr << name << ", " << left << ", " << center << ", " << right << endl;
         mutations.push_back(mut);
+    }
+    if(mutations.size() <= 0){
+        cerr<<"No mutation will be scanned"<<endl;
+        if(markedOnly){
+            cerr<<"You are using --mark option, you should mark the wanted VCF records with FILTER as M"<<endl;
+            cerr<<"Example (note the M in the FILTER column):"<<endl;
+            cerr<<"#CHROM   POS     ID          REF ALT QUAL  FILTER  INFO"<<endl;
+            cerr<<"1        69224   COSM3677745 A   C   .     M       This record will be scanned"<<endl;
+            cerr<<"1        880950  COSM3493111 G   A   .     .       This record will be skipped"<<endl;
+        } else {
+            cerr<<"Your VCF contains no valid records"<<endl;
+        }
+        cerr<<endl;
+        exit(-1);
     }
     return mutations;
 }
