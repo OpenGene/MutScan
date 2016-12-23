@@ -31,11 +31,12 @@ make
 usage: mutscan -1 <read1_file> -2 <read2_file> -m <mutation_file> -h <html_report_file> -t <thread> 
 options:
   -1, --read1       read1 file name (string)
-  -2, --read2       optional, read2 file name (string)
-  -m, --mutation    optional, mutation file name (string)
-  -h, --html        optional, filename of html report, no html report if not specified (string)
+  -2, --read2       read2 file name (string [=])
+  -m, --mutation    mutation file name, can be a CSV format or a VCF format (string [=])
+  -r, --ref         reference fasta file name (only needed when mutation file is a VCF) (string [=])
+  -h, --html        filename of html report, no html report if not specified (string [=])
+  -t, --thread      worker thread number, default is 4 (int [=4])
   -?, --help        print this message
-  -t, --thread      thread number, default 4 (int)
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
 ```shell
@@ -54,6 +55,8 @@ mutscan -1 <read1_file_name> -m <mutation_file_name>
 `-t` argument specify how many worker threads will be launched. The default thread number is `4`. Suggest to use a number less than the CPU cores of your system.
 
 # Mutation file
+Mutation file, specified by `-m`, can be a `CSV file`, or a `VCF file`. If this file is not specified, MutScan will use the built-in default mutation file with about 50 cancer related locuses.
+## CSV-format mutation file
 A CSV file with columns of `name`, `left_seq_of_mutation_point`, `mutation_seq` and `right_seq_of_mutation_point`
 ```csv
 #name, left_seq_of_mutation_point, mutation_seq, right_seq_of_mutation_point
@@ -64,6 +67,16 @@ EGFR-pos-7-55241677-18-c.2125G>A-p.E709K-COSM12988, CCCAACCAAGCTCTCTTGAGGATCTTGA
 EGFR-pos-7-55241707-18-c.2155G>A-p.G719S-COSM6252, GAAACTGAATTCAAAAAGATCAAAGTGCTG, A, GCTCCGGTGCGTTCGGCACGGTGTATAAGG
 EGFR-pos-7-55241707-18-c.2155G>T-p.G719C-COSM6253, GAAACTGAATTCAAAAAGATCAAAGTGCTG, T, GCTCCGGTGCGTTCGGCACGGTGTATAAGG
 ```
+## VCF-format mutation file
+A standard VCF can be used as a mutation file, with file extension `.vcf` or `.VCF`. 
+* if the VCF file is smaller than 100 records, all records can be scanned
+* if the VCF file has more than 100 records, you should mark the wanted records, with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
+```
+#CHROM   POS     ID          REF ALT QUAL  FILTER  INFO
+1        69224   COSM3677745 A   C   .     M       This record will be scanned
+1        880950  COSM3493111 G   A   .     .       This record will be skipped
+```
+## Use default mutations
 A default CSV file contains important actionable cancer gene targets is already provided in `mutation/cancer.csv`. If you want to use this mutation file directly, the argument `mutation_file_name` can be omitted:
 ```shell
 mutscan -1 <read1_file_name> -2 <read2_file_name>
