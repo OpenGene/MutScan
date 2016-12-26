@@ -139,6 +139,18 @@ void HtmlReporter::printJS(){
                         } \n\
                 } \n\
             }";
+    mFile << "function toggle_target_list(targetid){ \n\
+                if (document.getElementById){ \n\
+                    target=document.getElementById(targetid); \n\
+                        if (target.style.display=='block'){ \n\
+                            target.style.display='none'; \n\
+                            document.getElementById('target_view_btn').value='view';\n\
+                        } else { \n\
+                            document.getElementById('target_view_btn').value='hide';\n\
+                            target.style.display='block'; \n\
+                        } \n\
+                } \n\
+            }";
     mFile << "</script>";
 }
 
@@ -158,6 +170,19 @@ extern string command;
 void HtmlReporter::printFooter(){
     mFile << "<div id='footer'> ";
     mFile << "<p>"<<command<<"</p>";
+    printScanTargets();
     mFile << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
     mFile << "</div></body></html>";
+}
+
+void HtmlReporter::printScanTargets(){
+    mFile << "<div id='targets'> ";
+    mFile << "<p> scanned " << mMutationList.size() << " mutation spots...<input type='button' id='target_view_btn', onclick=toggle_target_list('target_list'); value='show'></input></p>";
+    mFile << "<ul id='target_list' style='display:none'>";
+    int id=0;
+    for(int i=0;i<mMutationList.size();i++){
+        id++;
+        mFile<<"<li> " << id << ", " << mMutationList[i].mName << "</li>";
+    }
+    mFile << "</ul></div>";
 }

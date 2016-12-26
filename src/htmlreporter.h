@@ -25,6 +25,7 @@ private:
     void printHelper();
     void printMutations();
     void printMutation(int id, Mutation& mutation, vector<Match*>& matches);
+    void printScanTargets();
 
 private:
     string mFilename;
