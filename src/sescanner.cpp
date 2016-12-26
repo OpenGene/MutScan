@@ -25,6 +25,8 @@ bool SingleEndScanner::scan(){
         else
             mutationList = Mutation::parseCsv(mMutationFile);
     }
+    else
+        mutationList = Mutation::parseBuiltIn();
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){
