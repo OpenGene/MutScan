@@ -36,6 +36,7 @@ options:
   -r, --ref         reference fasta file name (only needed when mutation file is a VCF) (string [=])
   -h, --html        filename of html report, no html report if not specified (string [=])
   -t, --thread      worker thread number, default is 4 (int [=4])
+  -k, --mark        when mutation file is a vcf file, --mark means only process the records with FILTER column is M
   -?, --help        print this message
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
@@ -70,7 +71,7 @@ EGFR-pos-7-55241707-18-c.2155G>T-p.G719C-COSM6253, GAAACTGAATTCAAAAAGATCAAAGTGCT
 ## VCF-format mutation file
 A standard VCF can be used as a mutation file, with file extension `.vcf` or `.VCF`. 
 * if the VCF file is smaller than 100 records, all records can be scanned
-* if the VCF file has more than 100 records, you should mark the wanted records, with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
+* if the VCF file has more than 100 records, you should add `--mark` in the command line, and then mark the wanted records with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
 ```
 #CHROM   POS     ID          REF ALT QUAL  FILTER  INFO
 1        69224   COSM3677745 A   C   .     M       This record will be scanned
