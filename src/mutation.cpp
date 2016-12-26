@@ -132,7 +132,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
     if(variants.size() > vcfMax && markedOnly==false){
         cerr<<"Your VCF has more than "<<vcfMax<<" records, this will make MutScan take too long to complete the scan." << endl;
         cerr<<"Please use a smaller VCF"<<endl;
-        cerr<<"Or use --mark option, and mark the wanted VCF records with FILTER as M"<<endl;
+        cerr<<"Or use --mark option, and mark the wanted VCF records with FILTER column as M"<<endl;
         cerr<<"Example (note the M in the FILTER column):"<<endl;
         cerr<<"#CHROM   POS     ID          REF ALT QUAL  FILTER  INFO"<<endl;
         cerr<<"1        69224   COSM3677745 A   C   .     M       This record will be scanned"<<endl;
