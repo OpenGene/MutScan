@@ -150,7 +150,9 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         // skip the unmasked if markedOnly flag is set true
         if(markedOnly && (v.filter!="m" && v.filter!="M"))
             continue;
-        string chrom = "chr" + v.chrom;
+        string chrom = v.chrom;
+        if(!starts_with(chrom, "chr"))
+            chrom = "chr" + chrom;
         // the contig is not in reference
         if(ref.count(chrom) == 0)
             continue;

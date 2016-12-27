@@ -64,18 +64,18 @@ bool VcfReader::readNext()
     
     int pos =  atoi(items[1].c_str());
     Variant var;
-    var.chrom = items[0];
+    var.chrom = trim(items[0]);
     var.pos = pos;
-    var.id = items[2];
-    var.ref = items[3];
-    var.alt = items[4];
-    var.qual = items[5];
-    var.filter = items[6];
-    var.info = items[7];
+    var.id = trim(items[2]);
+    var.ref = trim(items[3]);
+    var.alt = trim(items[4]);
+    var.qual = trim(items[5]);
+    var.filter = trim(items[6]);
+    var.info = trim(items[7]);
 
     // format is not required
     if(items.size()>=9)
-        var.format = items[7];
+        var.format = trim(items[8]);
 
     mVariants.push_back(var);
 
