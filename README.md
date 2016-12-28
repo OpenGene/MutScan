@@ -69,7 +69,10 @@ EGFR-pos-7-55241707-18-c.2155G>A-p.G719S-COSM6252, GAAACTGAATTCAAAAAGATCAAAGTGCT
 EGFR-pos-7-55241707-18-c.2155G>T-p.G719C-COSM6253, GAAACTGAATTCAAAAAGATCAAAGTGCTG, T, GCTCCGGTGCGTTCGGCACGGTGTATAAGG
 ```
 ## VCF-format mutation file
-A standard VCF can be used as a mutation file, with file extension `.vcf` or `.VCF`. 
+A standard VCF can be used as a mutation file, with file extension `.vcf` or `.VCF`. If the mutation file is a VCF file, you should specify the `reference assembly file` by `-r <ref.fa>`. For example the command can be:
+```shell
+mutscan -1 R1.fq -2 R2.fq -m target.vcf -r hg19.fa -h report.html
+```
 * if the VCF file is smaller than 100 records, all records can be scanned
 * if the VCF file has more than 100 records, you should add `--mark` in the command line, and then mark the wanted records with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
 ```
