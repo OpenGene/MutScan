@@ -32,7 +32,7 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
     const char* qualData = r->mQuality.c_str();
     // we should ignore the mutations in the exact edge since there usualy exists errors
     const int margin = 0;
-    for(int start = margin; start + cLen + margin < readLen; start++){
+    for(int start = margin; start + cLen + margin <= readLen; start++){
         int lComp = min(start, lLen);
         // check string identity in a fast way
         bool identical = true;
