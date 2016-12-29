@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
     command = ss.str();
 
     check_file_valid(r1file);
-    if(mutationFile != "")
+    if(r2file != "")
         check_file_valid(r2file);
     if(mutationFile != "")
         check_file_valid(mutationFile);
