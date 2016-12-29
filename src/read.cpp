@@ -77,7 +77,10 @@ string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
 void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks) {
 	file << "<td class='alignright'>" << makeHtmlSeqWithQual(0, breaks[0]) << "</td>";
 	for(int i=0;i<breaks.size()-1;i++){
-		file << "<td>" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
+		file << "<td";
+		if(i==0)
+			file << " class='alignright'";
+		file << ">" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
 	}
 	if(breaks[breaks.size()-1]>0)
 		file << "<td class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";

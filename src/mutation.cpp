@@ -30,7 +30,10 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
     const char* centerData = mCenter.c_str();
     const char* patternData = mPattern.c_str();
     const char* qualData = r->mQuality.c_str();
-    for(int start = lLen; start + cLen + rLen < readLen; start++){
+    // we should ignore the mutations in the exact edge since there usualy exists errors
+    const int margin = 0;
+    for(int start = margin; start + cLen + margin < readLen; start++){
+        int lComp = min(start, lLen);
         // check string identity in a fast way
         bool identical = true;
         for (int i=0;i<cLen;i++){
@@ -52,9 +55,13 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
         }
         if(!qualityPassed)
             continue;
-        int ed = edit_distance(seqData + start - lLen, pLen, patternData, pLen);
+        int edLen = min(pLen - (lLen - lComp), readLen - (start - lComp));
+        // too short
+        if(edLen < 15)
+            continue;
+        int ed = edit_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
         if ( ed <= distanceReq){
-            return new Match(r, start-lLen, ed);
+            return new Match(r, start, ed);
         }
     }
     return NULL;

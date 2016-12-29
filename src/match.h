@@ -27,6 +27,7 @@ private:
     vector<Read*> mOriginalReads;
     int mDistance;
     bool mReversed;
+    // the start position of the mutation's center
     int mPos;
 };
 

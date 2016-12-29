@@ -34,10 +34,10 @@ void Match::print(int leftlen, int centerlen, int rightlen){
         cout<<", forward";
     cout<<endl;
     vector<int> breaks;
-    breaks.push_back(mPos);
-    breaks.push_back( mPos+leftlen );
-    breaks.push_back( mPos+leftlen+centerlen );
-    breaks.push_back( mPos+leftlen+centerlen+rightlen);
+    breaks.push_back(max(mPos-leftlen, 0));
+    breaks.push_back( mPos );
+    breaks.push_back( mPos+centerlen );
+    breaks.push_back( min(mPos+centerlen+rightlen, mRead->length()));
     mRead->printWithBreaks(breaks);
 }
 
@@ -52,10 +52,10 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     file<<"</a></span>";
 
     vector<int> breaks;
-    breaks.push_back(mPos);
-    breaks.push_back( mPos+leftlen );
-    breaks.push_back( mPos+leftlen+centerlen );
-    breaks.push_back( mPos+leftlen+centerlen+rightlen);
+    breaks.push_back(max(mPos-leftlen, 0));
+    breaks.push_back( mPos );
+    breaks.push_back( mPos+centerlen );
+    breaks.push_back( min(mPos+centerlen+rightlen, mRead->length()));
     mRead->printHtmlTDWithBreaks(file, breaks);
 }
 
