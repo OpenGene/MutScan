@@ -97,9 +97,26 @@ vector<Mutation> Mutation::parseCsv(string filename) {
         string center = trim(splitted[2]);
         string right = trim(splitted[3]);
         Mutation mut(name, left, center, right);
-        mutations.push_back(mut);
+        if(left.length()<10){
+            cerr << "WARNING: skip following mutation since its left part < 10bp"<<endl<<"\t";
+            mut.print();
+        }
+        else if(right.length()<10){
+            cerr << "WARNING: skip following mutation since its right part < 10bp"<<endl<<"\t";
+            mut.print();
+        }
+        else if(left.length() + center.length() + right.length() < 30){
+            cerr << "WARNING: skip following mutation since its (left+center+right) < 30bp"<<endl<<"\t";
+            mut.print();
+        }
+        else {
+            mutations.push_back(mut);
+        }
     }
     file.close();
+    if(mutations.size() <= 0){
+        cerr<<"No mutation will be scanned"<<endl;
+    }
     return mutations;
 }
 
@@ -123,6 +140,9 @@ vector<Mutation> Mutation::parseBuiltIn() {
         string right = trim(splitted[3]);
         Mutation mut(name, left, center, right);
         mutations.push_back(mut);
+    }
+    if(mutations.size() <= 0){
+        cerr<<"No mutation will be scanned"<<endl;
     }
     return mutations;
 }
