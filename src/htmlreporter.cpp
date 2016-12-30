@@ -70,7 +70,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "</a></div>";
     mFile << "<table>";
     mFile << "<tr class='header'>";
-    mFile << "<td class='match_brief'>" << "Distance_Strand" << "</td>";
+    mFile << "<td class='match_brief'>" << "ID_Distance_Strand" << "</td>";
     mFile << "<td>" << "" << "</td>";
     mFile << "<td>" << mutation.mLeft << "</td>";
     mFile << "<td>" << mutation.mCenter << "</td>";
