@@ -26,14 +26,6 @@ VcfReader::VcfReader(string faFile)
         msg.append("...\n");
         throw invalid_argument(msg);
     }
-
-    char c;
-    // seek to first contig
-    while (mVcfFileStream.get(c) && c != '>') {
-        if (mVcfFileStream.eof()) {
-            break;
-        }
-    }
 }
 
 VcfReader::~VcfReader()
