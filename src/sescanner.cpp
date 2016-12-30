@@ -51,6 +51,11 @@ bool SingleEndScanner::scan(){
         threads[t] = NULL;
     }
 
+    // sort the matches to make the pileup more clear
+    for(int i=0;i<mutationList.size();i++){
+        sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::less); 
+    }
+
     textReport(mutationList, mutationMatches);
     htmlReport(mutationList, mutationMatches);
 

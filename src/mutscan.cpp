@@ -80,6 +80,11 @@ bool MutScan::scanPairEnd(){
         }
 	}
 
+    // sort the matches to make the pileup more clear
+    for(int i=0;i<mutationList.size();i++){
+        sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::less); 
+    }
+
     textReport(mutationList, mutationMatches);
     htmlReport(mutationList, mutationMatches);
 
@@ -129,6 +134,11 @@ bool MutScan::scanSingleEnd(){
         if(processed % 1000000 == 0) {
             //cout<<"processed "<<processed<<" reads"<<endl;
         }
+    }
+
+    // sort the matches to make the pileup more clear
+    for(int i=0;i<mutationList.size();i++){
+        sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::less); 
     }
 
     textReport(mutationList, mutationMatches);
