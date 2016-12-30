@@ -178,11 +178,18 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         if(markedOnly && (v.filter!="m" && v.filter!="M"))
             continue;
         string chrom = v.chrom;
-        if(!starts_with(chrom, "chr"))
-            chrom = "chr" + chrom;
+
         // the contig is not in reference
-        if(ref.count(chrom) == 0)
-            continue;
+        if(ref.count(chrom) == 0){
+            // add or remove chr to match the reference
+            if(!starts_with(chrom, "chr"))
+                chrom = "chr" + chrom;
+            else
+                chrom = chrom.substr(3, chrom.length()-3);
+
+            if(ref.count(chrom) == 0)
+                continue;
+        }
         // the variant is out of this contig, or in the front or tail
         // note that VCF is 1-based, and string is 0-based
         if(v.pos > ref[chrom].length() + 25 + 1 || v.pos < 25 + 1)
