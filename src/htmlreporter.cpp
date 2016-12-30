@@ -78,11 +78,15 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "<td>" << "" << "</td>";
     mFile << "</tr>";
     for(int m=0; m<matches.size(); m++){
-        long rowid = id*1000 + m;
+        long rowid = id*100000 + m;
         mFile << "<tr onclick='toggle(" << rowid << ");'>";
         mFile << "<td>";
         // for display alignment
         if(m+1<10)
+            mFile<<"0";
+        if(m+1<100)
+            mFile<<"0";
+        if(m+1<1000)
             mFile<<"0";
         mFile << m+1 << ", ";
         matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length());
