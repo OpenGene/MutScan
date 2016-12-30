@@ -53,7 +53,7 @@ bool SingleEndScanner::scan(){
 
     // sort the matches to make the pileup more clear
     for(int i=0;i<mutationList.size();i++){
-        sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::less); 
+        sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::greater); 
     }
 
     textReport(mutationList, mutationMatches);

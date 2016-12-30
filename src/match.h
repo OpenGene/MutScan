@@ -36,6 +36,10 @@ public:
     {
         return *m1 < *m2;
     }
+    inline static bool greater(const Match* m1, const Match* m2)
+    {
+        return *m1 > *m2;
+    }
 
 private:
     Read* mRead;
