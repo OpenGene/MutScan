@@ -26,11 +26,11 @@ public:
 
     inline bool operator <(const Match& other) const 
     {
-        return mPos < other.mPos;
+        return mPos < other.mPos || (mPos == other.mPos && mRead->length() > other.mRead->length());
     }
     inline bool operator >(const Match& other) const
     {
-        return mPos > other.mPos;
+        return mPos > other.mPos || (mPos == other.mPos && mRead->length() < other.mRead->length());
     }
     inline static bool less(const Match* m1, const Match* m2)
     {
