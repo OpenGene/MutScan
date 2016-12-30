@@ -192,7 +192,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         }
         // the variant is out of this contig, or in the front or tail
         // note that VCF is 1-based, and string is 0-based
-        if(v.pos > ref[chrom].length() + 25 + 1 || v.pos < 25 + 1)
+        if(v.pos > ref[chrom].length() + 25 + v.ref.length() || v.pos < 25 + v.ref.length())
             continue;
 
         string gene = v.gene();
@@ -208,7 +208,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
             ss<<cds<<"_";
         ss<<chrom<<"_"<<v.pos<<"_"<<v.ref<<">"<<v.alt;
         string name = ss.str();
-        string left = ref[chrom].substr(v.pos-25-1, 25);
+        string left = ref[chrom].substr(v.pos-25-v.ref.length(), 25);
         string center = v.alt;
         string right = ref[chrom].substr(v.pos+v.ref.length()-1, 25);
         Mutation mut(name, left, center, right);
