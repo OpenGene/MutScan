@@ -239,3 +239,11 @@ void Mutation::print(){
 void Mutation::printHtml(ofstream& file){
     file<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight;
 }
+
+string Mutation::getCenterHtml(){
+    string s = "";
+    s += mCenter.substr(0, mShift);
+    s += "<a class='mutation_point' title='mutation point'>" + mCenter.substr(mShift, mCenter.length()-2*mShift) + "</a>";
+    s += mCenter.substr(mCenter.length()-mShift, mShift);
+    return s;
+}

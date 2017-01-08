@@ -31,6 +31,7 @@ public:
     static vector<Mutation> parseVcf(string vcfFile, string refFile);
     void print();
     void printHtml(ofstream& file);
+    string getCenterHtml();
 
 public:
     string mLeft;

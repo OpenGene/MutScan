@@ -73,7 +73,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "<td class='match_brief'>" << "ID_Distance_Strand" << "</td>";
     mFile << "<td>" << "" << "</td>";
     mFile << "<td>" << mutation.mLeft << "</td>";
-    mFile << "<td>" << mutation.mCenter << "</td>";
+    mFile << "<td>" << mutation.getCenterHtml() << "</td>";
     mFile << "<td>" << mutation.mRight << "</td>";
     mFile << "<td>" << "" << "</td>";
     mFile << "</tr>";
@@ -126,6 +126,7 @@ void HtmlReporter::printCSS(){
     mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
     mFile << ".mutation_block {}";
     mFile << ".match_brief {font-size:8px}";
+    mFile << ".mutation_point {color:#FFCCAA}";
     mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
     mFile << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
     mFile << "</style>";
