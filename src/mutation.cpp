@@ -31,9 +31,10 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
     const char* patternData = mPattern.c_str();
     const char* qualData = r->mQuality.c_str();
     // we should ignore the mutations in the exact edge since there usualy exists errors
-    const int margin = 0;
+    const int margin = 2;
     for(int start = margin; start + cLen + margin <= readLen; start++){
         int lComp = min(start, lLen);
+        int rComp = min(readLen - (start+cLen), rLen);
         // check string identity in a fast way
         bool identical = true;
         for (int i=0;i<cLen;i++){
@@ -59,6 +60,16 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
         // too short
         if(edLen < 15)
             continue;
+        // if on left edge, and it is too short, we require exact match
+        if(lComp < 10) {
+            if(seq.substr(0, lComp) != mLeft.substr(lLen - lComp, lComp))
+                continue ;
+        }
+        // if on right edge, and it is too short, we require exact match
+        if(rComp < 10) {
+            if(seq.substr(readLen-rComp, rComp) != mRight.substr(0, rComp))
+                continue ;
+        }
         int ed = edit_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
         if ( ed <= distanceReq){
             return new Match(r, start, ed);
@@ -97,16 +108,16 @@ vector<Mutation> Mutation::parseCsv(string filename) {
         string center = trim(splitted[2]);
         string right = trim(splitted[3]);
         Mutation mut(name, left, center, right);
-        if(left.length()<10){
-            cerr << "WARNING: skip following mutation since its left part < 10bp"<<endl<<"\t";
+        if(left.length()<15){
+            cerr << "WARNING: skip following mutation since its left part < 15bp"<<endl<<"\t";
             mut.print();
         }
-        else if(right.length()<10){
-            cerr << "WARNING: skip following mutation since its right part < 10bp"<<endl<<"\t";
+        else if(right.length()<15){
+            cerr << "WARNING: skip following mutation since its right part < 15bp"<<endl<<"\t";
             mut.print();
         }
-        else if(left.length() + center.length() + right.length() < 30){
-            cerr << "WARNING: skip following mutation since its (left+center+right) < 30bp"<<endl<<"\t";
+        else if(left.length() + center.length() + right.length() < 40){
+            cerr << "WARNING: skip following mutation since its (left+center+right) < 40bp"<<endl<<"\t";
             mut.print();
         }
         else {
