@@ -41,6 +41,8 @@ public:
         return *m1 > *m2;
     }
 
+    static int countUnique(vector<Match*>& matches);
+
 private:
     Read* mRead;
     vector<Read*> mOriginalReads;

@@ -49,7 +49,8 @@ void HtmlReporter::printMutations() {
         vector<Match*> matches = mMutationMatches[i];
         if(matches.size()>0){
             id++;
-            mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << id << ", " << mMutationList[i].mName << " (" << matches.size() << " reads support)" << "</a></li>";
+            mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << id << ", " << mMutationList[i].mName;
+            mFile<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" << "</a></li>";
         }
     }
     mFile<<"</ul></div>";
@@ -66,7 +67,7 @@ void HtmlReporter::printMutations() {
 void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& matches){
     mFile << "<div class='mutation_block'>";
     mFile << "<div class='mutation_head'><a name='" << mutation.mName << "'>";
-    mFile << id << ", " << mutation.mName<< " (" << matches.size() << " reads support)" ;
+    mFile << id << ", " << mutation.mName<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" ;
     mFile << "</a></div>";
     mFile << "<table>";
     mFile << "<tr class='header'>";

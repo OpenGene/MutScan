@@ -68,3 +68,18 @@ void Match::printReadsToFile(ofstream& file){
 void Match::setReversed(bool flag){
     mReversed = flag;
 }
+
+int Match::countUnique(vector<Match*>& matches) {
+    if(matches.size()==0)
+        return 0;
+    int count = 1;
+    Match* cur = matches[0];
+    for(int i=1;i<matches.size();i++){
+        Match* m = matches[i];
+        if( *m > *cur || *m < *cur) {
+            cur = m;
+            count++;
+        }
+    }
+    return count;
+}
