@@ -32,6 +32,11 @@ int main(int argc, char* argv[]){
     string refFile = cmd.get<string>("ref");
     int threadNum = cmd.get<int>("thread");
 
+    if(ends_with(refFile, ".gz") || ends_with(refFile, ".gz")) {
+        cout << "reference fasta file should not be compressed.\nplease unzip "<<refFile<<" and try again."<<endl;
+        exit(-1);
+    }
+
     bool markedOnlyForVCF = cmd.exist("mark");
     GlobalSettings::setMarkedOnlyForVCF(markedOnlyForVCF);
 
