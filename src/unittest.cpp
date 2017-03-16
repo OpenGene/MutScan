@@ -6,6 +6,7 @@
 #include "vcfreader.h"
 #include "overlap.h"
 #include "read.h"
+#include "rollinghash.h"
 #include <time.h>
 
 UnitTest::UnitTest(){
@@ -22,6 +23,7 @@ void UnitTest::run(){
     passed &= Overlap::test();
     passed &= Read::test();
     passed &= ReadPair::test();
+    passed &= RollingHash::test();
     printf("\n==========================\n");
     printf("%s\n\n", passed?"PASSED":"FAILED");
 }
