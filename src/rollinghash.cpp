@@ -1,4 +1,6 @@
 #include "rollinghash.h"
+#include "builtinmutation.h"
+#include "util.h"
 
 RollingHash::RollingHash(int window, bool allowTwoSub) {
     mWindow = min(50, window);
@@ -168,7 +170,25 @@ void RollingHash::dump() {
 }
 bool RollingHash::test(){
     RollingHash hasher(50);
-    hasher.add("GCACGGAGGCGAGCAGGAGTCTAAATGAAACAGACCTGGAAGCTCAAGCTCG", NULL);
+    vector<string> lines;
+    split(BUILT_IN_MUTATIONS, lines, "\n");
+    for(int i=0;i<lines.size();i++){
+        string linestr = lines[i];
+        vector<string> splitted;
+        split(linestr, splitted, ",");
+        // a valid line need 4 columns: name, left, center, right
+        if(splitted.size()<4)
+            continue;
+        // comment line
+        if(starts_with(splitted[0], "#"))
+            continue;
+        string name = trim(splitted[0]);
+        string left = trim(splitted[1]);
+        string center = trim(splitted[2]);
+        string right = trim(splitted[3]);
+        cout << i << ":" << name << endl;
+        hasher.add(left+center+right, (void*)i);
+    }
     hasher.dump();
     return true;
 
