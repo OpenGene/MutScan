@@ -39,7 +39,7 @@ bool PairEndScanner::scan(){
     else
         mutationList = Mutation::parseBuiltIn();
 
-    if(GlobalSettings::fastMode){
+    if(!GlobalSettings::legacyMode){
         mRollingHash = new RollingHash();
         mRollingHash->initMutations(mutationList);
     }
@@ -130,7 +130,7 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
 }
 
 bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
-    if(GlobalSettings::fastMode){
+    if(!GlobalSettings::legacyMode){
         vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
         for(int t=0; t<targets.size(); t++) {
             Match* match = mutationList[targets[t]].searchInRead(r);

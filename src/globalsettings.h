@@ -15,13 +15,13 @@ public:
     inline static void setMarkedOnlyForVCF(bool flag){
         markedOnlyForVCF = flag;
     }
-    inline static void setFastMode(bool flag){
-        fastMode = flag;
+    inline static void setLegacyMode(bool flag){
+        legacyMode = flag;
     }
 
 public:
     static bool markedOnlyForVCF;
-    static bool fastMode;
+    static bool legacyMode;
 };
 
 

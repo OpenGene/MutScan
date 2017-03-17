@@ -1,4 +1,4 @@
 #include "globalsettings.h"
 
 bool GlobalSettings::markedOnlyForVCF = false;
-bool GlobalSettings::fastMode = false;
+bool GlobalSettings::legacyMode = false;

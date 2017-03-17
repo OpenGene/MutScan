@@ -37,7 +37,7 @@ bool SingleEndScanner::scan(){
     else
         mutationList = Mutation::parseBuiltIn();
 
-    if(GlobalSettings::fastMode){
+    if(!GlobalSettings::legacyMode){
         mRollingHash = new RollingHash();
         mRollingHash->initMutations(mutationList);
     }
@@ -102,7 +102,7 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
 }
 
 bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
-    if(GlobalSettings::fastMode){
+    if(!GlobalSettings::legacyMode){
         vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
         for(int t=0; t<targets.size(); t++) {
             Match* match = mutationList[targets[t]].searchInRead(r);

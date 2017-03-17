@@ -37,7 +37,7 @@ options:
   -h, --html        filename of html report, no html report if not specified (string [=])
   -t, --thread      worker thread number, default is 4 (int [=4])
   -k, --mark        when mutation file is a vcf file, --mark means only process the records with FILTER column is M
-  -f, --fast        use fast mode, with stricter matching
+  -l, --legacy      use legacy mode, usually much slower but may be able to find a little more reads in certain case
   -?, --help        print this message
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
