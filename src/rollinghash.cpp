@@ -145,6 +145,9 @@ bool RollingHash::add(string s, int target) {
 
 vector<int> RollingHash::hitTargets(const string s) {
     vector<int> ret;
+    if(s.length() < mWindow)
+        return ret;
+
     const char* data = s.c_str();
 
     // initialize

@@ -89,24 +89,8 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     for(int p=0;p<pack->count;p++){
         Read* r1 = pack->data[p];
         Read* rcr1 = r1->reverseComplement();
-        if(GlobalSettings::fastMode){
-            scanRead(r1, r1, false);
-            scanRead(rcr1, r1, true);
-        } else {
-            for(int i=0;i<mutationList.size();i++){
-                Match* matchR1 = mutationList[i].searchInRead(r1);
-                if(matchR1){
-                    matchR1->addOriginalRead(r1);
-                    pushMatch(i, matchR1);
-                }
-                Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
-                if(matchRcr1){
-                    matchRcr1->addOriginalRead(r1);
-                    matchRcr1->setReversed(true);
-                    pushMatch(i, matchRcr1);
-                }
-            }
-        }
+        scanRead(r1, r1, false);
+        scanRead(rcr1, r1, true);
         delete r1;
         delete rcr1;
     }
@@ -118,13 +102,24 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
 }
 
 bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
-    vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
-    for(int t=0; t<targets.size(); t++) {
-        Match* match = mutationList[targets[t]].searchInRead(r);
-        if(match) {
-            match->addOriginalRead(originalRead);
-            match->setReversed(reversed);
-            pushMatch(targets[t], match);
+    if(GlobalSettings::fastMode){
+        vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
+        for(int t=0; t<targets.size(); t++) {
+            Match* match = mutationList[targets[t]].searchInRead(r);
+            if(match) {
+                match->addOriginalRead(originalRead);
+                match->setReversed(reversed);
+                pushMatch(targets[t], match);
+            }
+        }
+    } else {
+        for(int i=0;i<mutationList.size();i++){
+            Match* match = mutationList[i].searchInRead(r);
+            if(match) {
+                match->addOriginalRead(originalRead);
+                match->setReversed(reversed);
+                pushMatch(i, match);
+            }
         }
     }
 }
