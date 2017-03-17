@@ -26,7 +26,7 @@ cd MutScan
 make
 ```
 
-#Usage
+# Usage
 ```shell
 usage: mutscan -1 <read1_file> -2 <read2_file> -m <mutation_file> -h <html_report_file> -t <thread> 
 options:
@@ -37,6 +37,7 @@ options:
   -h, --html        filename of html report, no html report if not specified (string [=])
   -t, --thread      worker thread number, default is 4 (int [=4])
   -k, --mark        when mutation file is a vcf file, --mark means only process the records with FILTER column is M
+  -f, --fast        use fast mode, with stricter matching
   -?, --help        print this message
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
