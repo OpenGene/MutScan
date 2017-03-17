@@ -7,6 +7,7 @@
 #include <thread>
 #include <memory.h>
 #include "util.h"
+#include "globalsettings.h"
 
 SingleEndScanner::SingleEndScanner(string mutationFile, string refFile, string read1File, string html, int threadNum){
     mRead1File = read1File;
@@ -15,6 +16,14 @@ SingleEndScanner::SingleEndScanner(string mutationFile, string refFile, string r
     mHtmlFile = html;
     mProduceFinished = false;
     mThreadNum = threadNum;
+    mRollingHash = NULL;
+}
+
+SingleEndScanner::~SingleEndScanner() {
+    if(mRollingHash){
+        delete mRollingHash;
+        mRollingHash = NULL;
+    }
 }
 
 bool SingleEndScanner::scan(){
@@ -27,6 +36,11 @@ bool SingleEndScanner::scan(){
     }
     else
         mutationList = Mutation::parseBuiltIn();
+
+    if(GlobalSettings::fastMode){
+        mRollingHash = new RollingHash();
+        mRollingHash->initMutations(mutationList);
+    }
 
     mutationMatches = new vector<Match*>[mutationList.size()];
     for(int i=0;i<mutationList.size();i++){
@@ -75,17 +89,22 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     for(int p=0;p<pack->count;p++){
         Read* r1 = pack->data[p];
         Read* rcr1 = r1->reverseComplement();
-        for(int i=0;i<mutationList.size();i++){
-            Match* matchR1 = mutationList[i].searchInRead(r1);
-            if(matchR1){
-                matchR1->addOriginalRead(r1);
-                pushMatch(i, matchR1);
-            }
-            Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
-            if(matchRcr1){
-                matchRcr1->addOriginalRead(r1);
-                matchRcr1->setReversed(true);
-                pushMatch(i, matchRcr1);
+        if(GlobalSettings::fastMode){
+            scanRead(r1, r1, false);
+            scanRead(rcr1, r1, true);
+        } else {
+            for(int i=0;i<mutationList.size();i++){
+                Match* matchR1 = mutationList[i].searchInRead(r1);
+                if(matchR1){
+                    matchR1->addOriginalRead(r1);
+                    pushMatch(i, matchR1);
+                }
+                Match* matchRcr1 = mutationList[i].searchInRead(rcr1);
+                if(matchRcr1){
+                    matchRcr1->addOriginalRead(r1);
+                    matchRcr1->setReversed(true);
+                    pushMatch(i, matchRcr1);
+                }
             }
         }
         delete r1;
@@ -96,6 +115,18 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     delete pack;
 
     return true;
+}
+
+bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
+    vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
+    for(int t=0; t<targets.size(); t++) {
+        Match* match = mutationList[targets[t]].searchInRead(r);
+        if(match) {
+            match->addOriginalRead(originalRead);
+            match->setReversed(reversed);
+            pushMatch(targets[t], match);
+        }
+    }
 }
 
 void SingleEndScanner::initPackRepository() {

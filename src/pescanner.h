@@ -10,6 +10,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <thread>
+#include "rollinghash.h"
 
 
 using namespace std;
@@ -37,12 +38,14 @@ typedef struct ReadPairRepository ReadPairRepository;
 class PairEndScanner{
 public:
     PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html="", int threadnum=1);
+    ~PairEndScanner();
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
     bool scanPairEnd(ReadPairPack* pack);
+    bool scanRead(Read* r, ReadPair* originalRead, bool reversed);
     void initPackRepository();
     void destroyPackRepository();
     void producePack(ReadPairPack* pack);
@@ -63,6 +66,7 @@ private:
     vector<Match*> *mutationMatches;
     std::mutex mMutationMtx;
     int mThreadNum;
+    RollingHash* mRollingHash;
 };
 
 

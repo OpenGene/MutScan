@@ -10,7 +10,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <thread>
-
+#include "rollinghash.h"
 
 using namespace std;
 
@@ -37,12 +37,14 @@ typedef struct ReadRepository ReadRepository;
 class SingleEndScanner{
 public:
     SingleEndScanner(string mutationFile, string refFile, string read1File, string html="", int threadnum=1);
+    ~SingleEndScanner();
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
     bool scanSingleEnd(ReadPack* pack);
+    bool scanRead(Read* r, Read* originalRead, bool reversed);
     void initPackRepository();
     void destroyPackRepository();
     void producePack(ReadPack* pack);
@@ -63,6 +65,7 @@ private:
     vector<Match*> *mutationMatches;
     std::mutex mMutationMtx;
     int mThreadNum;
+    RollingHash* mRollingHash;
 };
 
 

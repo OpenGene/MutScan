@@ -2,12 +2,34 @@
 #include "builtinmutation.h"
 #include "util.h"
 
+// we use 1G memory
+const int BLOOM_FILTER_LENGTH = (1<<29);
+
 RollingHash::RollingHash(int window, bool allowTwoSub) {
     mWindow = min(50, window);
     mAllowTwoSub = allowTwoSub;
+    mBloomFilterArray = new char[BLOOM_FILTER_LENGTH];
+    memset(mBloomFilterArray, 0, BLOOM_FILTER_LENGTH * sizeof(char));
 }
 
-bool RollingHash::add(string s, void* target) {
+RollingHash::~RollingHash() {
+    delete mBloomFilterArray;
+    mBloomFilterArray = NULL;
+}
+
+void RollingHash::initMutations(vector<Mutation>& mutationList) {
+    for(int i=0; i<mutationList.size(); i++) {
+        Mutation m = mutationList[i];
+        string s = m.mLeft + m.mCenter + m.mRight;
+        add(s, i);
+    }
+}
+
+map<long, vector<int> > RollingHash::getKeyTargets() {
+    return mKeyTargets;
+}
+
+bool RollingHash::add(string s, int target) {
     if(s.length() < mWindow + 2)
         return false;
 
@@ -121,9 +143,54 @@ bool RollingHash::add(string s, void* target) {
     delete accum;
 }
 
-void RollingHash::addHash(long hash, void* target) {
+vector<int> RollingHash::hitTargets(const string s) {
+    vector<int> ret;
+    const char* data = s.c_str();
+
+    // initialize
+    long curHash = 0;
+    for(int i=0; i<mWindow; i++) {
+        long h = hash(data[i], i);
+        curHash += h;
+    }
+    addHit(ret, curHash);
+
+    for(int i=mWindow; i<s.length(); i++) {
+        curHash = ((curHash - hash(data[i - mWindow], 0))>>1) + hash(data[i], mWindow-1);
+        addHit(ret, curHash);
+    }
+
+    return ret;
+}
+
+inline void RollingHash::addHit(vector<int>& ret, long hash) {
+    //update bloom filter array
+    const long bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+    for(int b=0; b<3; b++) {
+        if(mBloomFilterArray[(bloomFilterFactors[b] * hash) & (BLOOM_FILTER_LENGTH-1)] == 0 )
+            return;
+    }
+
+    if(mKeyTargets.count(hash)) {
+        for(int i=0; i<mKeyTargets[hash].size(); i++) {
+            int val = mKeyTargets[hash][i];
+            bool alreadyIn = false;
+            for(int j=0; j<ret.size(); j++) {
+                if(val == ret[j]){
+                    alreadyIn = true;
+                    break;
+                }
+            }
+            if(!alreadyIn) {
+                ret.push_back(val);
+            }
+        }
+    }
+}
+
+void RollingHash::addHash(long hash, int target) {
     if(mKeyTargets.count(hash) == 0)
-        mKeyTargets[hash] = vector<void*>();
+        mKeyTargets[hash] = vector<int>();
     else {
         for(int i=0; i<mKeyTargets[hash].size(); i++) {
             if(mKeyTargets[hash][i] == target)
@@ -132,6 +199,12 @@ void RollingHash::addHash(long hash, void* target) {
     }
 
     mKeyTargets[hash].push_back(target);
+
+    //update bloom filter array
+    const long bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
+    for(int b=0; b<3; b++) {
+        mBloomFilterArray[(bloomFilterFactors[b] * hash) & (BLOOM_FILTER_LENGTH-1) ] = 1;
+    }
 }
 
 inline long RollingHash::char2val(char c) {
@@ -158,38 +231,35 @@ inline long RollingHash::hash(char c, int pos) {
 }
 
 void RollingHash::dump() {
-    map<long, vector<void*> >::iterator iter;
+    map<long, vector<int> >::iterator iter;
     for(iter= mKeyTargets.begin(); iter!=mKeyTargets.end(); iter++) {
         if(iter->second.size() < 2)
             continue;
         cout << iter->first << endl;
         for(int i=0; i<iter->second.size(); i++)
-            cout << (long)iter->second[i] << "\t";
+            cout << iter->second[i] << "\t";
         cout << endl;
     }
 }
 bool RollingHash::test(){
-    RollingHash hasher(50);
-    vector<string> lines;
-    split(BUILT_IN_MUTATIONS, lines, "\n");
-    for(int i=0;i<lines.size();i++){
-        string linestr = lines[i];
-        vector<string> splitted;
-        split(linestr, splitted, ",");
-        // a valid line need 4 columns: name, left, center, right
-        if(splitted.size()<4)
-            continue;
-        // comment line
-        if(starts_with(splitted[0], "#"))
-            continue;
-        string name = trim(splitted[0]);
-        string left = trim(splitted[1]);
-        string center = trim(splitted[2]);
-        string right = trim(splitted[3]);
-        cout << i << ":" << name << endl;
-        hasher.add(left+center+right, (void*)i);
+    vector<Mutation> mutationList = Mutation::parseBuiltIn();
+    RollingHash rh(48);
+    rh.initMutations(mutationList);
+    bool result = true;
+    for(int i=0; i<mutationList.size(); i++) {
+        Mutation m = mutationList[i];
+        string s = m.mLeft + m.mCenter + m.mRight;
+        vector<int> targets = rh.hitTargets(s);
+        cout << i << ", " << s << endl;
+        bool found = false;
+        for(int t=0; t<targets.size(); t++){
+            cout << targets[t] << "\t";
+            if(targets[t] == i)
+                found = true;
+        }
+        cout << endl;
+        result &= found;
     }
-    hasher.dump();
-    return true;
+    return result;
 
 }
