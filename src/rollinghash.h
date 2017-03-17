@@ -13,7 +13,7 @@ using namespace std;
 
 class RollingHash{
 public:
-    RollingHash(int window = 50, bool allowTwoSub = true);
+    RollingHash(int window = 40, bool allowTwoSub = true);
     ~RollingHash();
     void initMutations(vector<Mutation>& mutationList);
 
