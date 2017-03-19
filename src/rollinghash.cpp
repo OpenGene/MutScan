@@ -22,16 +22,16 @@ void RollingHash::initMutations(vector<Mutation>& mutationList) {
     for(int i=0; i<mutationList.size(); i++) {
         Mutation m = mutationList[i];
         string s1 = m.mLeft + m.mCenter + m.mRight;
-        add(s1, i);
+        add(s1, i, !m.isSmallIndel());
         const int margin = 4;
         // handle the case mRight is incomplete, but at least margin
         int left = max((size_t)mWindow+2, m.mLeft.length() + m.mCenter.length() + margin+1);
         string s2 = s1.substr(left - (mWindow+2), mWindow+2);
-        add(s2,i);
+        add(s2,i, !m.isSmallIndel());
         //handle the case mleft is incomplete, but at least margin
         int right = min(s1.length() - (mWindow+2), m.mLeft.length()-margin-1);
         string s3 = s1.substr(right, mWindow+2);
-        add(s3,i);
+        add(s3,i, !m.isSmallIndel());
     }
 }
 
