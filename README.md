@@ -74,8 +74,7 @@ A standard VCF can be used as a mutation file, with file extension `.vcf` or `.V
 ```shell
 mutscan -1 R1.fq -2 R2.fq -m target.vcf -r hg19.fa -h report.html
 ```
-* if the VCF file is smaller than 100 records, all records can be scanned
-* if the VCF file has more than 100 records, you should add `--mark` in the command line, and then mark the wanted records with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
+* if the VCF file has too many records, you will get a very big HTML file if you scan all the variants. You can add `--mark` in the command line, and then mark the wanted records with the `FILTER` column marked `M`. For example (note the M in the FILTER column):
 ```
 #CHROM   POS     ID          REF ALT QUAL  FILTER  INFO
 1        69224   COSM3677745 A   C   .     M       This record will be scanned

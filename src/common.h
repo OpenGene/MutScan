@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define MUTSCAN_VER "1.8.0"
+#define MUTSCAN_VER "1.9.0"
 
 typedef long int64;
 typedef unsigned long uint64;

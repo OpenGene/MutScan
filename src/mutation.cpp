@@ -246,7 +246,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         mutations.push_back(mut);
     }
     if(mutations.size() <= 0){
-        cerr<<"No mutation will be scanned"<<endl;
+        cerr<<"No mutation to be scanned"<<endl;
         if(markedOnly){
             cerr<<"You are using --mark option, you should mark the wanted VCF records with FILTER as M"<<endl;
             cerr<<"Example (note the M in the FILTER column):"<<endl;
