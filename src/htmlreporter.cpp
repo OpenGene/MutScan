@@ -72,9 +72,9 @@ void HtmlReporter::printMutationsJS() {
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
         if(matches.size()>0){
-            mFile << "\n  [";
+            mFile << "\n[";
             for(int m=0; m<matches.size(); m++){
-                mFile << "\n    [";
+                mFile << "\n[";
                 matches[m]->printJS(mFile, mMutationList[i].mLeft.length(), mMutationList[i].mCenter.length(), mMutationList[i].mRight.length());
                 mFile << "],"; 
             }
@@ -83,6 +83,34 @@ void HtmlReporter::printMutationsJS() {
         }
     }
     mFile << "];";
+    mFile << "\nfor(var mutid=0;mutid<data_break.length;mutid++){";
+    mFile << "\nfor(var matchid=0;matchid<data_break[mutid].length;matchid++){";
+    mFile << "\nfor(var breakid=0;breakid<data_break[mutid][matchid].length;breakid++){";
+    mFile << "\nvar target = 'b-' + mutid + '-' + matchid + '-' + breakid;";
+    mFile << "\ndocument.getElementById(target).innerHTML = colorize(data_break[mutid][matchid][breakid][0], data_break[mutid][matchid][breakid][1]);";
+    mFile << "\n}}}";
+
+    mFile << "\nfunction makeColor(qual) { \
+            if(qual >= 'I') \
+                return '#78C6B9'; \
+            if(qual >= '?') \
+                return '#33BBE2'; \
+            if(qual >= '5') \
+                return '#666666'; \
+            if(qual >= '0') \
+                return '#E99E5B'; \
+            else \
+                return '#FF0000'; \
+        }";
+
+    mFile << "\nfunction colorize(seq, qual) { \
+        \nvar str = ''; \
+        \nfor(var i=0;i<seq.length;i++) { \
+        \n    str += \"<a title='\" + qual[i] + \"'><font color='\" + makeColor(qual[i]) + \"'>\" + seq[i] + \"</font></a>\" \
+        \n} \
+        \nreturn str; \
+    \n}";
+    mFile << "\n</script>";
 }
 
 void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& matches){

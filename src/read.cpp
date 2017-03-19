@@ -88,6 +88,9 @@ void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid,
 }
 
 string Read::makeHtmlSeqWithQual(int start, int length) {
+	//new HTML report is dynamically created by JavaScript
+	//so, just return
+	return "";
     stringstream ss;
 	for(int i=start;i<start+length && i<mSeq.length(); i++) {
 		ss << "<a title='" << mQuality[i] << "'><font color='" << qualityColor(mQuality[i]) << "'>"<< mSeq.mStr[i] << "</font></a>";
@@ -97,30 +100,24 @@ string Read::makeHtmlSeqWithQual(int start, int length) {
 
 void Read::printJSWithBreaks(ofstream& file, vector<int>& breaks) {
 	if(breaks.size()>0){
-		file << "\n      [";
-		file << "\n        [";
-		file << "\"" << mSeq.mStr.substr(0, breaks[0]) << "\"";
+		file << "\n[";
+		file << "'" << mSeq.mStr.substr(0, breaks[0]) << "'";
 		file << ", " ;
-		file << "\"" << mQuality.substr(0, breaks[0]) << "\"";
-		file << "],";
+		file << "'" << mQuality.substr(0, breaks[0]) << "'";
 		file << "],";
 	}
 	for(int i=0;i<breaks.size()-1;i++){
-		file << "\n      [";
-		file << "\n        [";
-		file << "\"" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "\"";
+		file << "\n[";
+		file << "'" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "'";
 		file << ", " ;
-		file << "\"" << mQuality.substr(breaks[i], breaks[i+1]-breaks[i]) << "\"";
-		file << "],";
+		file << "'" << mQuality.substr(breaks[i], breaks[i+1]-breaks[i]) << "'";
 		file << "],";
 	}
 	if(breaks[breaks.size()-1]>0){
-		file << "\n      [";
-		file << "\n        [";
-		file << "\"" << mSeq.mStr.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "\"";
+		file << "\n[";
+		file << "'" << mSeq.mStr.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "'";
 		file << ", " ;
-		file << "\"" << mQuality.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "\"";
-		file << "],";
+		file << "'" << mQuality.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "'";
 		file << "],";
 	}
 
