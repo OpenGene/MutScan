@@ -219,9 +219,9 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
             ss<<cds<<"_";
         ss<<chrom<<"_"<<v.pos<<"_"<<v.ref<<">"<<v.alt;
         string name = ss.str();
-        string left = ref[chrom].substr(v.pos-25-v.ref.length(), 25);
+        string left = str2upper(ref[chrom].substr(v.pos-25-v.ref.length(), 25));
         string center = v.alt;
-        string right = ref[chrom].substr(v.pos+v.ref.length()-1, 25);
+        string right = str2upper(ref[chrom].substr(v.pos+v.ref.length()-1, 25));
         Mutation mut(name, left, center, right);
         cerr << name << ", " << left << ", " << center << ", " << right << endl;
         mutations.push_back(mut);

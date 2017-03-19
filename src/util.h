@@ -164,4 +164,12 @@ inline int find_with_right_pos(const string& str, const string& pattern, int sta
         return pos + pattern.length();
 }
 
+inline void str2upper(string& s){
+    transform(s.begin(), s.end(), s.begin(), (int (*)(int))toupper);
+}
+
+inline void str2lower(string& s){
+    transform(s.begin(), s.end(), s.begin(), (int (*)(int))tolower);
+}
+
 #endif /* UTIL_H */
