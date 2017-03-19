@@ -1,6 +1,7 @@
 #include "rollinghash.h"
 #include "builtinmutation.h"
 #include "util.h"
+#include <memory.h>
 
 // we use 1G memory
 const int BLOOM_FILTER_LENGTH = (1<<29);
