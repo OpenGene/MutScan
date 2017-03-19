@@ -18,7 +18,7 @@ public:
     void initMutations(vector<Mutation>& mutationList);
 
 public:
-    bool add(string s, int target);
+    bool add(string s, int target, bool allowIndel = true);
     void addHash(long hash, int target);
     vector<int> hitTargets(const string s);
     inline void addHit(vector<int>& ret, long hash);

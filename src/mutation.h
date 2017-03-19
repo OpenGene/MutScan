@@ -32,6 +32,8 @@ public:
     void print();
     void printHtml(ofstream& file);
     string getCenterHtml();
+    void setSmallIndel(bool flag);
+    bool isSmallIndel();
 
 public:
     string mLeft;
@@ -39,6 +41,7 @@ public:
     string mRight;
     string mPattern;
     string mName;
+    bool mSmallIndel;
 
     int mShift;
 };

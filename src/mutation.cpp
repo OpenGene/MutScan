@@ -16,6 +16,7 @@ Mutation::Mutation(string name, string left, string center, string right){
     mRight = right.substr(mShift, right.length()-mShift);
     mPattern = left + center + right;
     mName = name;
+    mSmallIndel = false;
 }
 
 Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
@@ -225,6 +226,11 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         string right = ref[chrom].substr(v.pos+v.ref.length()-1, 25);
         str2upper(right);
         Mutation mut(name, left, center, right);
+        // this is a small indel
+        // we don't allow indel match when searching
+        int lengthDiff = abs((int)v.ref.length() - (int)v.alt.length());
+        if(lengthDiff>=1 && lengthDiff<=2 )
+            mut.setSmallIndel(true);
         cerr << name << ", " << left << ", " << center << ", " << right << endl;
         mutations.push_back(mut);
     }
@@ -259,4 +265,12 @@ string Mutation::getCenterHtml(){
     s += "<a class='mutation_point' title='mutation point'>" + mCenter.substr(mShift, mCenter.length()-2*mShift) + "</a>";
     s += mCenter.substr(mCenter.length()-mShift, mShift);
     return s;
+}
+
+void Mutation::setSmallIndel(bool flag) {
+    mSmallIndel = flag;
+}
+
+bool Mutation::isSmallIndel() {
+    return mSmallIndel;
 }

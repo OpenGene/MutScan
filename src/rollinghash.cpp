@@ -39,7 +39,7 @@ map<long, vector<int> > RollingHash::getKeyTargets() {
     return mKeyTargets;
 }
 
-bool RollingHash::add(string s, int target) {
+bool RollingHash::add(string s, int target, bool allowIndel) {
     if(s.length() < mWindow + 2)
         return false;
 
@@ -118,33 +118,35 @@ bool RollingHash::add(string s, int target) {
     int altForDel = start - 1;
     long altVal = hash(data[altForDel], 0);
 
-    // make indel hashes, we only allow 1 indel
-    for(int i=0; i<mWindow; i++) {
-        if(i+start >= skipStart && i+start <= skipEnd )
-            continue;
-        // make del of i first
-        long mutOfDel;
-        if (i==0)
-            mutOfDel = origin - accum[i] + altVal;
-        else
-            mutOfDel = origin - accum[i] + (accum[i-1]<<1) + altVal;
-        if(mutOfDel != origin)
-            addHash(mutOfDel, target);
+    if(allowIndel) {
+        // make indel hashes, we only allow 1 indel
+        for(int i=0; i<mWindow; i++) {
+            if(i+start >= skipStart && i+start <= skipEnd )
+                continue;
+            // make del of i first
+            long mutOfDel;
+            if (i==0)
+                mutOfDel = origin - accum[i] + altVal;
+            else
+                mutOfDel = origin - accum[i] + (accum[i-1]<<1) + altVal;
+            if(mutOfDel != origin)
+                addHash(mutOfDel, target);
 
-        // make insertion
-        for(int b=0; b<4; b++){
-            char base = bases[b];
-            // shift the first base
-            long mutOfIns = origin - accum[i] + hash(base, i) + ((accum[i] - hashes[0]) >> 1);
-            if(mutOfIns != origin && mutOfIns != mutOfDel){
-                addHash(mutOfIns, target);
-                /*cout << mutOfIns<<", insert at " << i << " with " << base << ": ";
-                for(int p=1;p<=i;p++)
-                    cout << data[start + p];
-                cout << base;
-                for(int p=i+1;p<mWindow;p++)
-                    cout << data[start + p];
-                cout << endl;*/
+            // make insertion
+            for(int b=0; b<4; b++){
+                char base = bases[b];
+                // shift the first base
+                long mutOfIns = origin - accum[i] + hash(base, i) + ((accum[i] - hashes[0]) >> 1);
+                if(mutOfIns != origin && mutOfIns != mutOfDel){
+                    addHash(mutOfIns, target);
+                    /*cout << mutOfIns<<", insert at " << i << " with " << base << ": ";
+                    for(int p=1;p<=i;p++)
+                        cout << data[start + p];
+                    cout << base;
+                    for(int p=i+1;p<mWindow;p++)
+                        cout << data[start + p];
+                    cout << endl;*/
+                }
             }
         }
     }
