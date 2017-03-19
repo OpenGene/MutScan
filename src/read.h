@@ -27,7 +27,8 @@ public:
     int lowQualCount(int qual=20);
     int length();
     void printWithBreaks(vector<int>& breaks);
-    void printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks);
+    void printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid, int matchid);
+    void printJSWithBreaks(ofstream& file, vector<int>& breaks);
 
 public:
     static bool test();

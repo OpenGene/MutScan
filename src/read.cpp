@@ -74,16 +74,17 @@ string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
 	return ret;
 }
 
-void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks) {
-	file << "<td class='alignright'>" << makeHtmlSeqWithQual(0, breaks[0]) << "</td>";
+void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid, int matchid) {
+	file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<"0' class='alignright'>" << makeHtmlSeqWithQual(0, breaks[0]) << "</td>";
 	for(int i=0;i<breaks.size()-1;i++){
-		file << "<td";
+		file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<i+1<<"' ";
 		if(i==0)
 			file << " class='alignright'";
 		file << ">" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
 	}
 	if(breaks[breaks.size()-1]>0)
-		file << "<td class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
+		file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<breaks.size()<<"' ";
+		file << "class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
 }
 
 string Read::makeHtmlSeqWithQual(int start, int length) {
@@ -92,6 +93,37 @@ string Read::makeHtmlSeqWithQual(int start, int length) {
 		ss << "<a title='" << mQuality[i] << "'><font color='" << qualityColor(mQuality[i]) << "'>"<< mSeq.mStr[i] << "</font></a>";
 	}
 	return ss.str();
+}
+
+void Read::printJSWithBreaks(ofstream& file, vector<int>& breaks) {
+	if(breaks.size()>0){
+		file << "\n      [";
+		file << "\n        [";
+		file << "\"" << mSeq.mStr.substr(0, breaks[0]) << "\"";
+		file << ", " ;
+		file << "\"" << mQuality.substr(0, breaks[0]) << "\"";
+		file << "],";
+		file << "],";
+	}
+	for(int i=0;i<breaks.size()-1;i++){
+		file << "\n      [";
+		file << "\n        [";
+		file << "\"" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "\"";
+		file << ", " ;
+		file << "\"" << mQuality.substr(breaks[i], breaks[i+1]-breaks[i]) << "\"";
+		file << "],";
+		file << "],";
+	}
+	if(breaks[breaks.size()-1]>0){
+		file << "\n      [";
+		file << "\n        [";
+		file << "\"" << mSeq.mStr.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "\"";
+		file << ", " ;
+		file << "\"" << mQuality.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "\"";
+		file << "],";
+		file << "],";
+	}
+
 }
 
 string Read::qualityColor(char qual) {

@@ -24,6 +24,7 @@ private:
     void printFooter();
     void printHelper();
     void printMutations();
+    void printMutationsJS();
     void printMutation(int id, Mutation& mutation, vector<Match*>& matches);
     void printScanTargets();
 

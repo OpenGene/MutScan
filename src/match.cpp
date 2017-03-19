@@ -41,7 +41,7 @@ void Match::print(int leftlen, int centerlen, int rightlen){
     mRead->printWithBreaks(breaks);
 }
 
-void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen){
+void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen, int mutid, int matchid){
     file<<"<a title='"<<mRead->mName<<"'>";
     file<<"d:" << mDistance;
     if(mReversed)
@@ -56,7 +56,16 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     breaks.push_back( mPos );
     breaks.push_back( mPos+centerlen );
     breaks.push_back( min(mPos+centerlen+rightlen, mRead->length()));
-    mRead->printHtmlTDWithBreaks(file, breaks);
+    mRead->printHtmlTDWithBreaks(file, breaks, mutid, matchid);
+}
+
+void Match::printJS(ofstream& file, int leftlen, int centerlen, int rightlen) {
+    vector<int> breaks;
+    breaks.push_back(max(mPos-leftlen, 0));
+    breaks.push_back( mPos );
+    breaks.push_back( mPos+centerlen );
+    breaks.push_back( min(mPos+centerlen+rightlen, mRead->length()));
+    mRead->printJSWithBreaks(file, breaks);
 }
 
 void Match::printReadsToFile(ofstream& file){

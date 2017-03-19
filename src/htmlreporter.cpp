@@ -17,6 +17,7 @@ void HtmlReporter::run() {
     printHeader();
     printHelper();
     printMutations();
+    printMutationsJS();
     printFooter();
 }
 
@@ -64,8 +65,28 @@ void HtmlReporter::printMutations() {
     }
 }
 
+void HtmlReporter::printMutationsJS() {
+    mFile << "\n<script type=\"text/javascript\">" << endl;
+    mFile << "var data_break = [";
+    int id=0;
+    for(int i=0;i<mMutationList.size();i++){
+        vector<Match*> matches = mMutationMatches[i];
+        if(matches.size()>0){
+            mFile << "\n  [";
+            for(int m=0; m<matches.size(); m++){
+                mFile << "\n    [";
+                matches[m]->printJS(mFile, mMutationList[i].mLeft.length(), mMutationList[i].mCenter.length(), mMutationList[i].mRight.length());
+                mFile << "],"; 
+            }
+            id++;
+            mFile << "],";
+        }
+    }
+    mFile << "];";
+}
+
 void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& matches){
-    mFile << "<div class='mutation_block'>";
+    mFile << "\n<div class='mutation_block'>";
     mFile << "<div class='mutation_head'><a name='" << mutation.mName << "'>";
     mFile << id << ", " << mutation.mName<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" ;
     mFile << "</a></div>";
@@ -90,7 +111,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
         if(m+1<1000)
             mFile<<"0";
         mFile << m+1 << ", ";
-        matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length());
+        matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length(), id-1, m);
         mFile << "</tr>";
         // print a hidden row containing the full read
         mFile << "<tr id='" << rowid << "' style='display:none;'>";
@@ -134,7 +155,7 @@ void HtmlReporter::printCSS(){
 }
 
 void HtmlReporter::printJS(){
-    mFile << "<script type=\"text/javascript\">" << endl;
+    mFile << "\n<script type=\"text/javascript\">" << endl;
     mFile << "function toggle(targetid){ \n\
                 if (document.getElementById){ \n\
                     target=document.getElementById(targetid); \n\
@@ -174,7 +195,7 @@ const std::string getCurrentSystemTime()
 extern string command;
 
 void HtmlReporter::printFooter(){
-    mFile << "<div id='footer'> ";
+    mFile << "\n<div id='footer'> ";
     mFile << "<p>"<<command<<"</p>";
     printScanTargets();
     mFile << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
@@ -182,7 +203,7 @@ void HtmlReporter::printFooter(){
 }
 
 void HtmlReporter::printScanTargets(){
-    mFile << "<div id='targets'> ";
+    mFile << "\n<div id='targets'> ";
     mFile << "<p> scanned " << mMutationList.size() << " mutation spots...<input type='button' id='target_view_btn', onclick=toggle_target_list('target_list'); value='show'></input></p>";
     mFile << "<ul id='target_list' style='display:none'>";
     int id=0;

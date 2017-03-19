@@ -18,7 +18,8 @@ public:
     Match(Read* r, int pos, int distance, bool reversed = false);
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
-    void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen);
+    void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen, int mutid, int matchid);
+    void printJS(ofstream& file, int leftlen, int centerlen, int rightlen);
     void printReadsToFile(ofstream& file);
     void setReversed(bool flag);
     void addOriginalRead(Read* r);
