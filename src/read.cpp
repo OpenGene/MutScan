@@ -258,6 +258,9 @@ Read* ReadPair::fastMerge(){
 			} else {
 				// add the quality of the pair to make a high qual
 				mergedQual[offset+i] =  qual1[offset+i] + qual2[i] - 33;
+				// avoid slash since it will affect HTML output
+				if(mergedQual[offset+i] == '\\')
+					mergedQual[offset+i] = '\\' - 1;
 			}
 		}
 		return new Read(mergedName, mergedSeq, "+", mergedQual);
