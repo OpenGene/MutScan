@@ -166,7 +166,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
 
     bool markedOnly = GlobalSettings::markedOnlyForVCF;
 
-    const int vcfMax = 100;
+    /*const int vcfMax = 100;
     if(variants.size() > vcfMax && markedOnly==false){
         cerr<<"Your VCF has more than "<<vcfMax<<" records, this will make MutScan take too long to complete the scan." << endl;
         cerr<<"Please use a smaller VCF"<<endl;
@@ -177,7 +177,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         cerr<<"1        880950  COSM3493111 G   A   .     .       This record will be skipped"<<endl;
         cerr<<endl;
         exit(-1);
-    }
+    }*/
 
     FastaReader fr(refFile);
     fr.readAll();
