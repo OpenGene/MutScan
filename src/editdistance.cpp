@@ -129,6 +129,15 @@ unsigned int edit_distance(string a, string b) {
     return edit_distance(a.c_str(), a.length(), b.c_str(), b.length());
 }
 
+unsigned int hamming_distance(const char *a, const unsigned int asize, const char *b, const unsigned int bsize) {
+    int dis = 0;
+    for(int i=0; i<min(asize, bsize); i++) {
+        if(a[i]!=b[i])
+            dis++;
+    }
+    return dis;
+}
+
 bool editdistance_test(){
     char* str1[3] = {
         "CCTATCAGGGAGCTGTGGGCCAGCCAGGAGGCAGCACATGCCCAATCCCAGGCCCCTCCCGTTGTAAGTTCCCGTTCTACCCGACAGGGACCTGCTGACAAAAGACAGGGCTGGAGAGCCAGCCTGAAGGCCCTGGGACCCTTCTATCCAC",

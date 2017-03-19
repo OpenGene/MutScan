@@ -18,6 +18,8 @@ unsigned int edit_distance(const char *a, const unsigned int asize, const char *
 
 unsigned int edit_distance(string a, string b);
 
+unsigned int hamming_distance(const char *a, const unsigned int asize, const char *b, const unsigned int bsize);
+
 bool editdistance_test();
 
 #endif

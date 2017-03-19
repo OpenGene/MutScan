@@ -71,9 +71,13 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
             if(seq.substr(readLen-rComp, rComp) != mRight.substr(0, rComp))
                 continue ;
         }
-        int ed = edit_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
-        if ( ed <= distanceReq){
-            return new Match(r, start, ed);
+        int dis = 0;
+        if(mSmallIndel)
+            dis = hamming_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
+        else
+            dis = edit_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
+        if ( dis <= distanceReq){
+            return new Match(r, start, dis);
         }
     }
     return NULL;
