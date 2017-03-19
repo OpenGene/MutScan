@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <sys/stat.h>
+#include <algorithm>
 
 using namespace std;
 
