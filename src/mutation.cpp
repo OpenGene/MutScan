@@ -76,6 +76,13 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
             dis = hamming_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
         else
             dis = edit_distance(seqData + start - lComp, edLen, patternData + lLen - lComp, edLen);
+
+        // for small indel, we should apply more strict strategy
+        // we allow up to 1 mismatch
+        if(mSmallIndel){
+            distanceReq = min(1, distanceReq);
+        }
+
         if ( dis <= distanceReq){
             return new Match(r, start, dis);
         }
