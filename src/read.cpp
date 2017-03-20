@@ -263,9 +263,11 @@ Read* ReadPair::fastMerge(){
 					mergedQual[offset+i] = '\\' - 1;
 			}
 		}
+		delete rcRight;
 		return new Read(mergedName, mergedSeq, "+", mergedQual);
 	}
 
+	delete rcRight;
 	return NULL;
 }
 
