@@ -37,7 +37,7 @@ bool SingleEndScanner::scan(){
     else
         mutationList = Mutation::parseBuiltIn();
 
-    if(!GlobalSettings::legacyMode){
+    if(!GlobalSettings::legacyMode && mRollingHash==NULL){
         mRollingHash = new RollingHash();
         mRollingHash->initMutations(mutationList);
     }

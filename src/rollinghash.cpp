@@ -8,7 +8,7 @@ const int BLOOM_FILTER_LENGTH = (1<<29);
 
 RollingHash::RollingHash(int window, bool allowTwoSub) {
     mWindow = min(48, window);
-    mAllowTwoSub = allowTwoSub;
+    mAllowEditDistanceIs2 = allowTwoSub;
     mBloomFilterArray = new char[BLOOM_FILTER_LENGTH];
     memset(mBloomFilterArray, 0, BLOOM_FILTER_LENGTH * sizeof(char));
 }
@@ -19,6 +19,11 @@ RollingHash::~RollingHash() {
 }
 
 void RollingHash::initMutations(vector<Mutation>& mutationList) {
+    // for memory and speed consideration
+    // when dealing with big mutation list (usually from VCF), we apply more strict matching
+    if(mutationList.size() > 5000)
+        mAllowEditDistanceIs2 = false;
+
     for(int i=0; i<mutationList.size(); i++) {
         Mutation m = mutationList[i];
         string s1 = m.mLeft + m.mCenter + m.mRight;
@@ -89,7 +94,7 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
             }
             cout<<endl;*/
 
-            if(mAllowTwoSub) {
+            if(mAllowEditDistanceIs2) {
                 for(int j=i+1; j<mWindow; j++) {
                     if(j+start >= skipStart && j+start <= skipEnd )
                         continue;
@@ -118,7 +123,7 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
     int altForDel = start - 1;
     long altVal = hash(data[altForDel], 0);
 
-    if(allowIndel) {
+    if(allowIndel && mAllowEditDistanceIs2) {
         // make indel hashes, we only allow 1 indel
         for(int i=0; i<mWindow; i++) {
             if(i+start >= skipStart && i+start <= skipEnd )

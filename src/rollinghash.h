@@ -32,7 +32,7 @@ public:
 private:
     map<long, vector<int> > mKeyTargets;
     int mWindow;
-    bool mAllowTwoSub;
+    bool mAllowEditDistanceIs2;
     char* mBloomFilterArray;
 
 };
