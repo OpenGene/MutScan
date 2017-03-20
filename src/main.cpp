@@ -25,6 +25,7 @@ int main(int argc, char* argv[]){
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
     cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
     cmd.add("legacy", 'l', "use legacy mode, usually much slower but may be able to find a little more reads in certain case");
+    cmd.add("original", 'o', "output original reads in HTML and text output. If specified, MutScan will consume more memory and output bigger report files.");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
     string r2file = cmd.get<string>("read2");
@@ -43,6 +44,9 @@ int main(int argc, char* argv[]){
 
     bool legacyMode = cmd.exist("legacy");
     GlobalSettings::setLegacyMode(legacyMode);
+
+    bool outputOriginalReads = cmd.exist("original");
+    GlobalSettings::setOutputOriginalReads(outputOriginalReads);
 
     stringstream ss;
     for(int i=0;i<argc;i++){

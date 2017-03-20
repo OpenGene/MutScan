@@ -135,7 +135,8 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
         for(int t=0; t<targets.size(); t++) {
             Match* match = mutationList[targets[t]].searchInRead(r);
             if(match) {
-                match->addOriginalPair(originalPair);
+                if(GlobalSettings::outputOriginalReads)
+                    match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
                 pushMatch(targets[t], match);
             }
@@ -144,7 +145,8 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
         for(int i=0;i<mutationList.size();i++){
             Match* match = mutationList[i].searchInRead(r);
             if(match) {
-                match->addOriginalPair(originalPair);
+                if(GlobalSettings::outputOriginalReads)
+                    match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
                 pushMatch(i, match);
             }

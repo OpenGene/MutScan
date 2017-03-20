@@ -1,6 +1,7 @@
 #include "htmlreporter.h"
 #include "common.h"
 #include <chrono>
+#include "globalsettings.h"
 
 HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches){
     mMutationList = mutationList;
@@ -25,7 +26,8 @@ void HtmlReporter::printHelper() {
     mFile << "<div id='helper'><p>Helpful tips:</p><ul>";
     mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30+)</font>, <font color='#666666'>moderate (Q20+)</font>, <font color='#E99E5B'>low (Q15+)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
     mFile << "<li> Move mouse over the base, it will show the quality value</li>";
-    mFile << "<li> Click on any row, the original read/pair will be displayed</li>";
+    if(GlobalSettings::outputOriginalReads)
+        mFile << "<li> Click on any row, the original read/pair will be displayed</li>";
     mFile << "<li> In first column, <i>d</i> means the edit distance of match, and --> means forward, <-- means reverse </li>";
     mFile << "<li> For pair-end sequencing, MutScan tries to merge each pair, and the overlapped bases will be assigned higher qualities </li>";
     mFile << "</ul></div>";
@@ -129,7 +131,10 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "</tr>";
     for(int m=0; m<matches.size(); m++){
         long rowid = id*100000 + m;
-        mFile << "<tr onclick='toggle(" << rowid << ");'>";
+        if(GlobalSettings::outputOriginalReads)
+            mFile << "<tr onclick='toggle(" << rowid << ");'>";
+        else
+            mFile << "<tr>";
         mFile << "<td>";
         // for display alignment
         if(m+1<10)
@@ -142,11 +147,13 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
         matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length(), id-1, m);
         mFile << "</tr>";
         // print a hidden row containing the full read
-        mFile << "<tr id='" << rowid << "' style='display:none;'>";
-        mFile << "<td colspan='6'><xmp>";
-        matches[m]->printReadsToFile(mFile);
-        mFile << "</xmp></td>";
-        mFile << "</tr>";
+        if(GlobalSettings::outputOriginalReads){
+            mFile << "<tr id='" << rowid << "' style='display:none;'>";
+            mFile << "<td colspan='6'><xmp>";
+            matches[m]->printReadsToFile(mFile);
+            mFile << "</xmp></td>";
+            mFile << "</tr>";
+        }
     }
     mFile << "</table></div>";
 }

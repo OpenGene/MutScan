@@ -18,10 +18,14 @@ public:
     inline static void setLegacyMode(bool flag){
         legacyMode = flag;
     }
+    inline static void setOutputOriginalReads(bool flag){
+        outputOriginalReads = flag;
+    }
 
 public:
     static bool markedOnlyForVCF;
     static bool legacyMode;
+    static bool outputOriginalReads;
 };
 
 

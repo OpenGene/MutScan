@@ -107,7 +107,8 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
         for(int t=0; t<targets.size(); t++) {
             Match* match = mutationList[targets[t]].searchInRead(r);
             if(match) {
-                match->addOriginalRead(originalRead);
+                if(GlobalSettings::outputOriginalReads)
+                    match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
                 pushMatch(targets[t], match);
             }
@@ -116,7 +117,8 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
         for(int i=0;i<mutationList.size();i++){
             Match* match = mutationList[i].searchInRead(r);
             if(match) {
-                match->addOriginalRead(originalRead);
+                if(GlobalSettings::outputOriginalReads)
+                    match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
                 pushMatch(i, match);
             }
