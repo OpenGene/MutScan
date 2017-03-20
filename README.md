@@ -1,17 +1,20 @@
 # MutScan
-Detect important mutations by scanning FastQ files directly
-* Ultra sensitive
-* 20X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect)
-* Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no pileup...
-* Beautiful HTML report
-* Multi-threading support
-* Support both single-end and pair-end data
-* For pair-end data, MutScan will try to merge each pair, and do quality adjustment and error correction
+Detect, visualize and filter target mutations by scanning FastQ files directly
+* Ultra sensitive.
+* 50X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect).
+* Very easy to use. Need nothing else. No alignment, no reference assembly, no variant call, no...
+* Beautiful HTML report with informative pileup visualization.
+* Multi-threading support.
+* Support both single-end and pair-end data.
+* For pair-end data, MutScan will try to merge each pair, and do quality adjustment and error correction.
+* Able to scan the mutations in a VCF file, which can be used to visualize called variants.
+* Can be used to filter false-positive mutations, especially for INDEL.
 
 # Sample report
 http://opengene.org/MutScan/report.html
 
 # Download
+Get latest (may be not stable)
 ```shell
 # download use http
 https://github.com/OpenGene/MutScan/archive/master.zip
@@ -19,8 +22,11 @@ https://github.com/OpenGene/MutScan/archive/master.zip
 # or download use git
 git clone https://github.com/OpenGene/MutScan.git
 ```
+Get the stable releases  
+https://github.com/OpenGene/MutScan/releases/latest
 
 # Build
+MutScan only depends on `libz`, which is always available on Linux or Mac systems. If your system has no `libz`, install it first.
 ```shell
 cd MutScan
 make
@@ -28,7 +34,7 @@ make
 
 # Usage
 ```shell
-usage: mutscan -1 <read1_file> -2 <read2_file> -m <mutation_file> -h <html_report_file> -t <thread> 
+usage: mutscan -1 <read1_file> -2 <read2_file> [options]...
 options:
   -1, --read1       read1 file name (string)
   -2, --read2       read2 file name (string [=])
@@ -38,6 +44,7 @@ options:
   -t, --thread      worker thread number, default is 4 (int [=4])
   -k, --mark        when mutation file is a vcf file, --mark means only process the records with FILTER column is M
   -l, --legacy      use legacy mode, usually much slower but may be able to find a little more reads in certain case
+  -o, --original    output original reads in HTML and text output. If specified, MutScan will consume more memory and output bigger report files.
   -?, --help        print this message
 ```
 The plain text result, contains the detected mutations and their support reads, will be printed directly. You can use `>` to redirect output to a file, like:
@@ -87,7 +94,7 @@ mutscan -1 <read1_file_name> -2 <read2_file_name>
 ```
 
 # HTML output
-If `-h` or `--html` argument is given, then a HTML report will be generated, and written to the given filename. A sample report is given here:   
+If `-h` or `--html` argument is given, then a HTML report will be generated, and written to the given filename. See http://opengene.org/MutScan/report.html for an example, and find its screenshot here:   
 
 ![image](http://www.opengene.org/MutScan/indel.jpg)  
 * An pileup of an indel is displayed above, from which we can find MutScan can make excellent pileup even in such highly repetitive area. 
