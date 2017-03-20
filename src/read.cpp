@@ -1,5 +1,6 @@
 #include "read.h"
 #include <sstream>
+#include "util.h"
 
 Read::Read(string name, string seq, string strand, string quality){
 	mName = name;
@@ -98,26 +99,40 @@ string Read::makeHtmlSeqWithQual(int start, int length) {
 	return ss.str();
 }
 
+void Read::escapeSpecialQualityChar(string& str) {
+	const char* data = str.c_str();
+	for(int i=0;i<str.length();i++){
+		if(data[i] == '\'' || data[i] == '\\')
+			str[i] = data[i] + 1;
+	}
+}
+
 void Read::printJSWithBreaks(ofstream& file, vector<int>& breaks) {
 	if(breaks.size()>0){
 		file << "\n[";
 		file << "'" << mSeq.mStr.substr(0, breaks[0]) << "'";
 		file << ", " ;
-		file << "'" << mQuality.substr(0, breaks[0]) << "'";
+		string qualstr = mQuality.substr(0, breaks[0]);
+		escapeSpecialQualityChar(qualstr);
+		file << "'" << qualstr << "'";
 		file << "],";
 	}
 	for(int i=0;i<breaks.size()-1;i++){
 		file << "\n[";
 		file << "'" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "'";
 		file << ", " ;
-		file << "'" << mQuality.substr(breaks[i], breaks[i+1]-breaks[i]) << "'";
+		string qualstr = mQuality.substr(breaks[i], breaks[i+1]-breaks[i]);
+		escapeSpecialQualityChar(qualstr);
+		file << "'" << qualstr << "'";
 		file << "],";
 	}
 	if(breaks[breaks.size()-1]>0){
 		file << "\n[";
 		file << "'" << mSeq.mStr.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "'";
 		file << ", " ;
-		file << "'" << mQuality.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "'";
+		string qualstr = mQuality.substr(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]);
+		escapeSpecialQualityChar(qualstr);
+		file << "'" << qualstr << "'";
 		file << "],";
 	}
 
@@ -258,9 +273,6 @@ Read* ReadPair::fastMerge(){
 			} else {
 				// add the quality of the pair to make a high qual
 				mergedQual[offset+i] =  qual1[offset+i] + qual2[i] - 33;
-				// avoid slash since it will affect HTML output
-				if(mergedQual[offset+i] == '\\')
-					mergedQual[offset+i] = '\\' - 1;
 			}
 		}
 		delete rcRight;
