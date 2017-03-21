@@ -89,14 +89,15 @@ void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid,
 }
 
 string Read::makeHtmlSeqWithQual(int start, int length) {
-	//new HTML report is dynamically created by JavaScript
-	//so, just return
-	return "";
-    stringstream ss;
+	//colorful HTML report is dynamically created by JavaScript
+	//here we return gray report first
+	return mSeq.mStr.substr(start, length);
+
+    /*stringstream ss;
 	for(int i=start;i<start+length && i<mSeq.length(); i++) {
 		ss << "<a title='" << mQuality[i] << "'><font color='" << qualityColor(mQuality[i]) << "'>"<< mSeq.mStr[i] << "</font></a>";
 	}
-	return ss.str();
+	return ss.str();*/
 }
 
 void Read::escapeSpecialQualityChar(string& str) {
