@@ -2,6 +2,7 @@
 #include "fastqreader.h"
 #include <iostream>
 #include "htmlreporter.h"
+#include "multihtmlreporter.h"
 #include <unistd.h>
 #include <functional>
 #include <thread>
@@ -270,6 +271,11 @@ void SingleEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*>
     if(mHtmlFile == "")
         return;
 
-    HtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
-    reporter.run();
+    if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf")) {
+        MultiHtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
+        reporter.run();
+    } else {
+        HtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
+        reporter.run();
+    }
 }
