@@ -8,7 +8,7 @@
 #include <sstream>
 #include "globalsettings.h"
 
-Mutation::Mutation(string name, string left, string center, string right){
+Mutation::Mutation(string name, string left, string center, string right, string chr){
 	//we shift some bases from left and right to center to require 100% match of these bases
     mShift = 2;
     mLeft = left.substr(0, left.length()-mShift);
@@ -17,6 +17,7 @@ Mutation::Mutation(string name, string left, string center, string right){
     mPattern = left + center + right;
     mName = name;
     mSmallIndel = false;
+    mChr = chr;
 }
 
 Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
@@ -119,7 +120,10 @@ vector<Mutation> Mutation::parseCsv(string filename) {
         string left = trim(splitted[1]);
         string center = trim(splitted[2]);
         string right = trim(splitted[3]);
-        Mutation mut(name, left, center, right);
+        string chr = "unspecified";
+        if(splitted.size()>4)
+            chr = trim(splitted[4]);
+        Mutation mut(name, left, center, right, chr);
         if(left.length()<15){
             cerr << "WARNING: skip following mutation since its left part < 15bp"<<endl<<"\t";
             mut.print();
@@ -161,7 +165,10 @@ vector<Mutation> Mutation::parseBuiltIn() {
         string left = trim(splitted[1]);
         string center = trim(splitted[2]);
         string right = trim(splitted[3]);
-        Mutation mut(name, left, center, right);
+        string chr = "unspecified";
+        if(splitted.size()>4)
+            chr = trim(splitted[4]);
+        Mutation mut(name, left, center, right, chr);
         mutations.push_back(mut);
     }
     if(mutations.size() <= 0){
@@ -236,13 +243,13 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         string center = v.alt;
         string right = ref[chrom].substr(v.pos+v.ref.length()-1, 25);
         str2upper(right);
-        Mutation mut(name, left, center, right);
+        Mutation mut(name, left, center, right, chrom);
         // this is a small indel
         // we don't allow indel match when searching
         int lengthDiff = abs((int)v.ref.length() - (int)v.alt.length());
         if(lengthDiff>=1 && lengthDiff<=2 )
             mut.setSmallIndel(true);
-        cerr << name << ", " << left << ", " << center << ", " << right << endl;
+        cerr << name << ", " << left << ", " << center << ", " << right << ", " << chrom << endl;
         mutations.push_back(mut);
     }
     if(mutations.size() <= 0){
@@ -263,11 +270,11 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
 }
 
 void Mutation::print(){
-    cout<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight<<endl;
+    cout<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight<< " "<<mChr <<endl;
 }
 
 void Mutation::printHtml(ofstream& file){
-    file<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight;
+    file<<mName<<" "<<mLeft<<" "<<mCenter<<" "<<mRight<< " "<<mChr;
 }
 
 string Mutation::getCenterHtml(){

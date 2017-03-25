@@ -16,7 +16,7 @@ using namespace std;
 
 class Mutation{
 public:
-    Mutation(string name, string left, string center, string right);
+    Mutation(string name, string left, string center, string right, string chr="unspecified");
 
     //search this mutation in a read, and return the matchment info
     //by default, Q20 is required, and distance should be <=2
@@ -41,6 +41,7 @@ public:
     string mRight;
     string mPattern;
     string mName;
+    string mChr;
     bool mSmallIndel;
 
     int mShift;
