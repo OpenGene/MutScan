@@ -13,7 +13,7 @@ using namespace std;
 
 class HtmlReporter{
 public:
-    HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches, bool printTargetList = true, bool printFoundList = true);
+    HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches, bool inFrame = false);
     ~HtmlReporter();
     void run();
 
@@ -33,9 +33,7 @@ private:
     vector<Mutation> mMutationList;
     vector<Match*>* mMutationMatches;
     ofstream mFile;
-    bool mPrintTargetList;
-    bool mPrintFoundList;
+    bool mInFrame;
 };
-
 
 #endif

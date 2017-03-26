@@ -3,13 +3,12 @@
 #include <chrono>
 #include "globalsettings.h"
 
-HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches, bool printTargetList, bool printFoundList){
+HtmlReporter::HtmlReporter(string filename, vector<Mutation>& mutationList, vector<Match*> *mutationMatches, bool inFrame){
     mMutationList = mutationList;
     mMutationMatches = mutationMatches;
     mFilename = filename;
     mFile.open(mFilename.c_str(), ifstream::out);
-    mPrintTargetList = printTargetList;
-    mPrintFoundList = mPrintFoundList;
+    mInFrame = inFrame;
 }
 
 HtmlReporter::~HtmlReporter(){
@@ -18,7 +17,8 @@ HtmlReporter::~HtmlReporter(){
 
 void HtmlReporter::run() {
     printHeader();
-    printHelper();
+    if(!mInFrame)
+        printHelper();
     printMutations();
     printMutationsJS();
     printFooter();
@@ -46,7 +46,7 @@ void HtmlReporter::printMutations() {
     }
     // print menu
     int id = 0;
-    if(mPrintFoundList){
+    if(!mInFrame){
         mFile<<"<div id='menu'><p>Found "<< found << " mutation";
         if(found>1)
             mFile<<"s";
@@ -122,7 +122,7 @@ void HtmlReporter::printMutationsJS() {
 void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& matches){
     mFile << "\n<div class='mutation_block'>";
     mFile << "<div class='mutation_head'><a name='" << mutation.mName << "'>";
-    if(mPrintFoundList)
+    if(!mInFrame)
         mFile << id << ", ";
     mFile << mutation.mName<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" ;
     mFile << "</a></div>";
@@ -236,11 +236,12 @@ const std::string getCurrentSystemTime()
 extern string command;
 
 void HtmlReporter::printFooter(){
-    mFile << "\n<div id='footer'> ";
-    mFile << "<p>"<<command<<"</p>";
-    if(mPrintTargetList)
+    if(!mInFrame){
+        mFile << "\n<div id='footer'> ";
+        mFile << "<p>"<<command<<"</p>";
         printScanTargets();
-    mFile << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
+        mFile << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
+    }
     mFile << "</div></body></html>";
 }
 

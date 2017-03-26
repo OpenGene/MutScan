@@ -43,7 +43,7 @@ void MultiHtmlReporter::run() {
 void MultiHtmlReporter::printMainFrame() {
     ofstream file;
     file.open(mFilename.c_str(), ifstream::out);
-    file << "<html><frameset cols='20%,80%' frameborder='yes' framespacing='1'><frame name='_index' src='";
+    file << "<html><head><title>MutScan " << MUTSCAN_VER << " report " << "at " << getCurrentSystemTime() << " </title></head><frameset cols='20%,80%' frameborder='yes' framespacing='1'><frame name='_index' src='";
     file << mFolderName + "/index.html";
     file << "'/><frame name='_main' src='";
     file << mFolderName + "/main.html";
@@ -93,7 +93,7 @@ void MultiHtmlReporter::printMutationHtml() {
             string filename = folder + "/" + to_string(m) + ".html";
             vector<Mutation> mutList;
             mutList.push_back(mMutationList[m]);
-            HtmlReporter hr(filename, mutList, mMutationMatches+m, false, false);
+            HtmlReporter hr(filename, mutList, mMutationMatches+m, true);
             hr.run();
         }
     }
@@ -104,6 +104,7 @@ void MultiHtmlReporter::printIndexPage() {
     string indexFile = mFolderName + "/index.html";
     file.open(indexFile.c_str(), ifstream::out);
     printHeader(file);
+    file << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
     file << "<ul id='menu'>";
     file << "<li class='menu_item'><a href='main.html' target='_main'>All (" << mTotalCount << " mutations)</a></li>";
     map<string, int>::iterator iter;
