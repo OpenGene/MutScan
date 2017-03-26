@@ -27,8 +27,8 @@ private:
     void printMutationHtml();
     void stat();
     void printHeader(ofstream& file);
-    void printCSS(ofstream& file);
-    void printJS(ofstream& file);
+    void printCSS();
+    void printJS();
     void printFooter(ofstream& file, bool printTargetList=true);
     void printHelper(ofstream& file);
     void printScanTargets(ofstream& file);

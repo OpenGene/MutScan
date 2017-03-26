@@ -33,6 +33,8 @@ void MultiHtmlReporter::stat(){
 }
 
 void MultiHtmlReporter::run() {
+    printCSS();
+    printJS();
     printChrHtml();
     printMutationHtml();
     printMainFrame();
@@ -148,14 +150,16 @@ void MultiHtmlReporter::printHelper(ofstream& file) {
 void MultiHtmlReporter::printHeader(ofstream& file){
     file << "<html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\" />";
     file << "<title>MutScan report</title>";
-    printJS(file);
-    printCSS(file);
+    file << "<script type='text/javascript' src='mutscan.js'></script>";
+    file << "<link type='text/css' rel='stylesheet' charset='utf-8' href='mutscan.css'/>";
     file << "</head>";
     file << "<body><div id='container'>";
 }
 
-void MultiHtmlReporter::printCSS(ofstream& file){
-    file << "<style type=\"text/css\">";
+void MultiHtmlReporter::printCSS(){
+    ofstream file;
+    string filename = mFolderName + "/mutscan.css";
+    file.open(filename.c_str(), ifstream::out);
     file << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
     file << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
     file << "img {padding:30px;}";
@@ -173,10 +177,13 @@ void MultiHtmlReporter::printCSS(ofstream& file){
     file << ".mutation_point {color:#FFCCAA}";
     file << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
     file << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
-    file << "</style>";
+    file.close();
 }
 
-void MultiHtmlReporter::printJS(ofstream& file){
+void MultiHtmlReporter::printJS(){
+    ofstream file;
+    string filename = mFolderName + "/mutscan.js";
+    file.open(filename.c_str(), ifstream::out);
     file << "\n<script type=\"text/javascript\">" << endl;
     file << "function toggle(targetid){ \n\
                 if (document.getElementById){ \n\
@@ -201,6 +208,7 @@ void MultiHtmlReporter::printJS(ofstream& file){
                 } \n\
             }";
     file << "</script>";
+    file.close();
 }
 
 string MultiHtmlReporter::getCurrentSystemTime()

@@ -174,52 +174,60 @@ void HtmlReporter::printHeader(){
 }
 
 void HtmlReporter::printCSS(){
-    mFile << "<style type=\"text/css\">";
-    mFile << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
-    mFile << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
-    mFile << "img {padding:30px;}";
-    mFile << ".alignleft {text-align:left;}";
-    mFile << ".alignright {text-align:right;}";
-    mFile << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}";
-    mFile << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
-    mFile << "#container {text-align:center;padding:1px;font-family:Arial;}";
-    mFile << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
-    mFile << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}";
-    mFile << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
-    mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
-    mFile << ".mutation_block {}";
-    mFile << ".match_brief {font-size:8px}";
-    mFile << ".mutation_point {color:#FFCCAA}";
-    mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
-    mFile << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
-    mFile << "</style>";
+    if(mInFrame){
+        mFile << "<link type='text/css' rel='stylesheet' charset='utf-8' href='../mutscan.css'/>";
+    } else {
+        mFile << "<style type=\"text/css\">";
+        mFile << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
+        mFile << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
+        mFile << "img {padding:30px;}";
+        mFile << ".alignleft {text-align:left;}";
+        mFile << ".alignright {text-align:right;}";
+        mFile << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}";
+        mFile << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
+        mFile << "#container {text-align:center;padding:1px;font-family:Arial;}";
+        mFile << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
+        mFile << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}";
+        mFile << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
+        mFile << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
+        mFile << ".mutation_block {}";
+        mFile << ".match_brief {font-size:8px}";
+        mFile << ".mutation_point {color:#FFCCAA}";
+        mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
+        mFile << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
+        mFile << "</style>";
+    }
 }
 
 void HtmlReporter::printJS(){
-    mFile << "\n<script type=\"text/javascript\">" << endl;
-    mFile << "function toggle(targetid){ \n\
-                if (document.getElementById){ \n\
-                    target=document.getElementById(targetid); \n\
-                        if (target.style.display=='table-row'){ \n\
-                            target.style.display='none'; \n\
-                        } else { \n\
-                            target.style.display='table-row'; \n\
-                        } \n\
-                } \n\
-            }";
-    mFile << "function toggle_target_list(targetid){ \n\
-                if (document.getElementById){ \n\
-                    target=document.getElementById(targetid); \n\
-                        if (target.style.display=='block'){ \n\
-                            target.style.display='none'; \n\
-                            document.getElementById('target_view_btn').value='view';\n\
-                        } else { \n\
-                            document.getElementById('target_view_btn').value='hide';\n\
-                            target.style.display='block'; \n\
-                        } \n\
-                } \n\
-            }";
-    mFile << "</script>";
+    if(mInFrame){
+        mFile << "<script type='text/javascript' src='../mutscan.js'></script>";
+    } else {
+        mFile << "\n<script type=\"text/javascript\">" << endl;
+        mFile << "function toggle(targetid){ \n\
+                    if (document.getElementById){ \n\
+                        target=document.getElementById(targetid); \n\
+                            if (target.style.display=='table-row'){ \n\
+                                target.style.display='none'; \n\
+                            } else { \n\
+                                target.style.display='table-row'; \n\
+                            } \n\
+                    } \n\
+                }";
+        mFile << "function toggle_target_list(targetid){ \n\
+                    if (document.getElementById){ \n\
+                        target=document.getElementById(targetid); \n\
+                            if (target.style.display=='block'){ \n\
+                                target.style.display='none'; \n\
+                                document.getElementById('target_view_btn').value='view';\n\
+                            } else { \n\
+                                document.getElementById('target_view_btn').value='hide';\n\
+                                target.style.display='block'; \n\
+                            } \n\
+                    } \n\
+                }";
+        mFile << "</script>";
+    }
 }
 
 const std::string getCurrentSystemTime()
