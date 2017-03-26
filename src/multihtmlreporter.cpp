@@ -33,8 +33,8 @@ void MultiHtmlReporter::stat(){
 }
 
 void MultiHtmlReporter::run() {
-    printMutationHtml();
     printChrHtml();
+    printMutationHtml();
     printMainFrame();
     printIndexPage();
     printMainPage();
