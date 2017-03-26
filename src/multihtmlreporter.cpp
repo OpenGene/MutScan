@@ -93,7 +93,7 @@ void MultiHtmlReporter::printMutationHtml() {
             string filename = folder + "/" + to_string(m) + ".html";
             vector<Mutation> mutList;
             mutList.push_back(mMutationList[m]);
-            HtmlReporter hr(filename, mutList, mMutationMatches+m);
+            HtmlReporter hr(filename, mutList, mMutationMatches+m, false, false);
             hr.run();
         }
     }
@@ -111,7 +111,7 @@ void MultiHtmlReporter::printIndexPage() {
         file << "<li class='menu_item'><a href='" << iter->first << ".html' target='_main'>" << iter->first << " (" << iter->second << " mutations)</a></li>";
     }
     file << "</ul>";
-    printFooter(file);
+    printFooter(file, false);
     file.close();
 }
 
@@ -128,7 +128,7 @@ void MultiHtmlReporter::printChrHtml() {
         file << "<ul id='menu'>";
         printChrLink(file, chr);
         file << "</ul>";
-        printFooter(file);
+        printFooter(file, false);
         file.close();
     }
 }
@@ -215,10 +215,11 @@ string MultiHtmlReporter::getCurrentSystemTime()
 
 extern string command;
 
-void MultiHtmlReporter::printFooter(ofstream& file){
+void MultiHtmlReporter::printFooter(ofstream& file, bool printTargetList){
     file << "\n<div id='footer'> ";
     file << "<p>"<<command<<"</p>";
-    printScanTargets(file);
+    if(printTargetList)
+        printScanTargets(file);
     file << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
     file << "</div></body></html>";
 }

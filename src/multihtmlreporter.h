@@ -29,7 +29,7 @@ private:
     void printHeader(ofstream& file);
     void printCSS(ofstream& file);
     void printJS(ofstream& file);
-    void printFooter(ofstream& file);
+    void printFooter(ofstream& file, bool printTargetList=true);
     void printHelper(ofstream& file);
     void printScanTargets(ofstream& file);
     string getCurrentSystemTime();
