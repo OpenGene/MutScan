@@ -3,7 +3,7 @@ Detect and visualize target mutations by scanning FastQ files directly
 * Ultra sensitive.
 * 50X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect).
 * Very easy to use and need nothing else. No alignment, no reference genome, no variant call, no...
-* Contains most actionable mutation points for cancer, like EGFR L858R, BRAF V600E...
+* Contains most actionable mutation points for cancer, like EGFR p.L858R, BRAF p.V600E...
 * Beautiful and informative HTML report with informative pileup visualization.
 * Multi-threading support.
 * Supports both single-end and pair-end data.
@@ -67,7 +67,7 @@ mutscan -1 <read1_file_name>
 
 # Mutation file
 * Mutation file, specified by `-m`, can be a `CSV file`, or a `VCF file`. 
-* If no `-m` specified, MutScan will use the built-in default mutation file with about 55 cancer related mutation points.
+* If no `-m` specified, MutScan will use the built-in default mutation file with about 60 cancer related mutation points.
 * If a CSV is provided, no reference genome assembly needed.
 * If a VCF is provided, corresponding reference genome assembly should be provided (i.e. ucsc.hg19.fasta), and should not be zipped.
 
