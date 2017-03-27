@@ -28,6 +28,7 @@ void HtmlReporter::printHelper() {
         mFile << "<div id='logo' style='text-align:center;'> <span style='font-size:15px;'> MutScan " << MUTSCAN_VER << " Report </span> </div>";
     else
         mFile << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " Report </span> </div>";
+    mFile << "<div style='text-align:center;font-size:13;color:#0366d6;padding-top:5px;'><a href='javascript:window.print();'>Print</a></div>";
     mFile << "<div id='helper'><p>Helpful tips:</p><ul>";
     mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30~Q39) </font>, <font color='#666666'>moderate (Q20~Q29)</font>, <font color='#E99E5B'>low (Q15~Q19)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
     mFile << "<li> Move mouse over the base, it will show the quality value</li>";
