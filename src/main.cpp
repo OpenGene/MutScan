@@ -21,11 +21,12 @@ int main(int argc, char* argv[]){
     cmd.add<string>("read2", '2', "read2 file name", false, "");
     cmd.add<string>("mutation", 'm', "mutation file name, can be a CSV format or a VCF format", false, "");
     cmd.add<string>("ref", 'r', "reference fasta file name (only needed when mutation file is a VCF)", false, "");
-    cmd.add<string>("html", 'h', "filename of html report, no html report if not specified", false, "");
+    cmd.add<string>("html", 'h', "filename of html report, default is mutscan.html in work directory", false, "mutscan.html");
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
     cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
     cmd.add("legacy", 'l', "use legacy mode, usually much slower but may be able to find a little more reads in certain case");
-    cmd.add("original", 'o', "output original reads in HTML and text output. If specified, MutScan will consume more memory and output bigger report files.");
+    cmd.add("standalone", 's', "output standalone HTML report with single file. Don't use this option when scanning too many target mutations (i.e. >1000 mutations)");
+    cmd.add("no-original-reads", 'n', "dont output original reads in HTML and text output. Will make HTML report files a bit smaller");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
     string r2file = cmd.get<string>("read2");
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]){
     int threadNum = cmd.get<int>("thread");
 
     if(ends_with(refFile, ".gz") || ends_with(refFile, ".gz")) {
-        cout << "reference fasta file should not be compressed.\nplease unzip "<<refFile<<" and try again."<<endl;
+        cerr << "ERROR: reference fasta file should not be compressed.\nplease unzip "<<refFile<<" and try again."<<endl;
         exit(-1);
     }
 
@@ -45,8 +46,11 @@ int main(int argc, char* argv[]){
     bool legacyMode = cmd.exist("legacy");
     GlobalSettings::setLegacyMode(legacyMode);
 
-    bool outputOriginalReads = cmd.exist("original");
-    GlobalSettings::setOutputOriginalReads(outputOriginalReads);
+    bool standalone = cmd.exist("standalone");
+    GlobalSettings::setStandaloneHtml(standalone);
+
+    bool noOriginal = cmd.exist("no-original-reads");
+    GlobalSettings::setOutputOriginalReads(!noOriginal);
 
     stringstream ss;
     for(int i=0;i<argc;i++){

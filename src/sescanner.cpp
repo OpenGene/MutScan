@@ -271,7 +271,18 @@ void SingleEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*>
     if(mHtmlFile == "")
         return;
 
-    if(ends_with(mMutationFile, ".vcf") || ends_with(mMutationFile, ".VCF") || ends_with(mMutationFile, ".Vcf")) {
+    // display a warning for too many reads with standalone mode
+    if(GlobalSettings::standaloneHtml){
+        int totalReadSize = 0;
+        for(int i=0;i<mutationList.size();i++){
+            vector<Match*> matches = mutationMatches[i];
+            totalReadSize += matches.size();
+        }
+        if(totalReadSize > WARN_STANDALONE_READ_LIMIT)
+            cerr << "WARNING: found too many (" << totalReadSize << ") reads. The standalone HTML report file will be very big and not readable. Remove -s or --standalone to generate multiple HTML files for each mutation."<<endl;
+    }
+
+    if(!GlobalSettings::standaloneHtml) {
         MultiHtmlReporter reporter(mHtmlFile, mutationList, mutationMatches);
         reporter.run();
     } else {

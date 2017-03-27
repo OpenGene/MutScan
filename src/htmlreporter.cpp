@@ -17,8 +17,7 @@ HtmlReporter::~HtmlReporter(){
 
 void HtmlReporter::run() {
     printHeader();
-    if(!mInFrame)
-        printHelper();
+    printHelper();
     printMutations();
     printMutationsJS();
     printFooter();
@@ -193,7 +192,7 @@ void HtmlReporter::printCSS(){
         mFile << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
         mFile << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}";
         mFile << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
-        mFile << ".mutation_head {text-align:left;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
+        mFile << ".mutation_head {text-align:left;font-family:Arial;padding-top:20px;padding-bottom:5px;color:#999999}";
         mFile << ".mutation_block {}";
         mFile << ".match_brief {font-size:8px}";
         mFile << ".mutation_point {color:#FFCCAA}";

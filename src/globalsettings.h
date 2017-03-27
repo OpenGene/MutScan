@@ -21,11 +21,15 @@ public:
     inline static void setOutputOriginalReads(bool flag){
         outputOriginalReads = flag;
     }
+    inline static void setStandaloneHtml(bool flag){
+        standaloneHtml = flag;
+    }
 
 public:
     static bool markedOnlyForVCF;
     static bool legacyMode;
     static bool outputOriginalReads;
+    static bool standaloneHtml;
 };
 
 

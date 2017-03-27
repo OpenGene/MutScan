@@ -32,5 +32,8 @@ static const int PACK_SIZE = 1000;
 // if the number of in memory packs is full, the producer thread should sleep
 static const int PACK_IN_MEM_LIMIT = 100;
 
+// if read number is more than this, warn it
+static const int WARN_STANDALONE_READ_LIMIT = 10000;
+
 
 #endif /* COMMON_H */
