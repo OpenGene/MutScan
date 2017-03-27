@@ -65,8 +65,8 @@ void MultiHtmlReporter::printMainPage() {
 
 void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
     map<string, int>::iterator iter;
-    file << "<div style='font-size:10px;padding-top:20px;text-align:left;'>Mutations found of all chromosomes:</div>";
     file << "<ul id='menu'>";
+    file << "<div style='font-size:12px;padding-top:20px;text-align:left;color:#aaaaaa'>Mutations found of all chromosomes:</div>";
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
         if(matches.size()>0) {
@@ -115,8 +115,8 @@ void MultiHtmlReporter::printIndexPage() {
     file.open(indexFile.c_str(), ifstream::out);
     printHeader(file);
     file << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
-    file << "<div style='font-size:10px;padding-top:20px;'>Mutations by chromosome:</div>";
     file << "<ul id='menu'>";
+    file << "<div style='font-size:12px;padding-top:20px;color:#aaaaaa'>Mutations by chromosome:</div>";
     file << "<li class='menu_item'><a class='index' href='main.html' target='_main'>All <font color='#aaaaaa' size='-2'>(" << mTotalCount << " mutations)</font></a></li>";
     map<string, int>::iterator iter;
     for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
@@ -137,8 +137,8 @@ void MultiHtmlReporter::printChrHtml() {
         string chrFilename = mFolderName + "/" + chr + ".html";
         file.open(chrFilename.c_str(), ifstream::out);
         printHeader(file);
-        file << "<div style='font-size:10px;padding-top:20px;text-align:left;'>Mutations found of " << chr <<":</div>";
         file << "<ul id='menu'>";
+        file << "<div style='font-size:12px;padding-top:20px;text-align:left;color:#aaaaaa'>Mutations found of " << chr <<":</div>";
         printChrLink(file, chr);
         file << "</ul>";
         printFooter(file, false);
@@ -189,8 +189,8 @@ void MultiHtmlReporter::printCSS(){
     file << ".mutation_block {}";
     file << ".match_brief {font-size:8px}";
     file << ".mutation_point {color:#FFCCAA}";
-    file << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
-    file << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
+    file << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;font-size:12px;}";
+    file << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#999999;font-size:10px;}";
     file.close();
 }
 

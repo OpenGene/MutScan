@@ -24,9 +24,12 @@ void HtmlReporter::run() {
 }
 
 void HtmlReporter::printHelper() {
-    mFile << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
+    if(mInFrame)
+        mFile << "<div id='logo' style='text-align:center;'> <span style='font-size:15px;'> MutScan " << MUTSCAN_VER << " Report </span> </div>";
+    else
+        mFile << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " Report </span> </div>";
     mFile << "<div id='helper'><p>Helpful tips:</p><ul>";
-    mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30+)</font>, <font color='#666666'>moderate (Q20+)</font>, <font color='#E99E5B'>low (Q15+)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
+    mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30~Q39) </font>, <font color='#666666'>moderate (Q20~Q29)</font>, <font color='#E99E5B'>low (Q15~Q19)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
     mFile << "<li> Move mouse over the base, it will show the quality value</li>";
     if(GlobalSettings::outputOriginalReads)
         mFile << "<li> Click on any row, the original read/pair will be displayed</li>";
@@ -196,7 +199,7 @@ void HtmlReporter::printCSS(){
         mFile << ".mutation_block {}";
         mFile << ".match_brief {font-size:8px}";
         mFile << ".mutation_point {color:#FFCCAA}";
-        mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;}";
+        mFile << "#helper {text-align:left;border:1px dotted #fafafa;color:#777777;font-size:12px;}";
         mFile << "#footer {text-align:left;padding-left:10px;padding-top:20px;color:#777777;font-size:10px;}";
         mFile << "</style>";
     }
