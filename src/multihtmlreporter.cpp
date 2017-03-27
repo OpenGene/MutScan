@@ -45,7 +45,7 @@ void MultiHtmlReporter::run() {
 void MultiHtmlReporter::printMainFrame() {
     ofstream file;
     file.open(mFilename.c_str(), ifstream::out);
-    file << "<html><head><title>MutScan " << MUTSCAN_VER << " report " << "at " << getCurrentSystemTime() << " </title></head><frameset cols='20%,80%' frameborder='yes' framespacing='1'><frame name='_index' src='";
+    file << "<html><head><title>MutScan " << MUTSCAN_VER << " report " << "at " << getCurrentSystemTime() << " </title></head><frameset border=0 cols='250, *' frameborder='yes' framespacing='1'><frame name='_index' src='";
     file << mFolderName + "/index.html";
     file << "'/><frame name='_main' src='";
     file << mFolderName + "/main.html";
@@ -65,6 +65,7 @@ void MultiHtmlReporter::printMainPage() {
 
 void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
     map<string, int>::iterator iter;
+    file << "<div style='font-size:10px;padding-top:20px;text-align:left;'>Mutations found of all chromosomes:</div>";
     file << "<ul id='menu'>";
     for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
         printChrLink(file, iter->first);
@@ -107,11 +108,12 @@ void MultiHtmlReporter::printIndexPage() {
     file.open(indexFile.c_str(), ifstream::out);
     printHeader(file);
     file << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
+    file << "<div style='font-size:10px;padding-top:20px;'>Mutations by chromosome:</div>";
     file << "<ul id='menu'>";
-    file << "<li class='menu_item'><a href='main.html' target='_main'>All (" << mTotalCount << " mutations)</a></li>";
+    file << "<li class='menu_item'><a class='index' href='main.html' target='_main'>All (" << mTotalCount << " mutations)</a></li>";
     map<string, int>::iterator iter;
     for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
-        file << "<li class='menu_item'><a href='" << iter->first << ".html' target='_main'>" << iter->first << " (" << iter->second << " mutations)</a></li>";
+        file << "<li class='menu_item'><a class='index' href='" << iter->first << ".html' target='_main'>" << iter->first << " (" << iter->second << " mutations)</a></li>";
     }
     file << "</ul>";
     printFooter(file, false);
@@ -128,6 +130,7 @@ void MultiHtmlReporter::printChrHtml() {
         string chrFilename = mFolderName + "/" + chr + ".html";
         file.open(chrFilename.c_str(), ifstream::out);
         printHeader(file);
+        file << "<div style='font-size:10px;padding-top:20px;text-align:left;'>Mutations found of " << chr <<":</div>";
         file << "<ul id='menu'>";
         printChrLink(file, chr);
         file << "</ul>";
@@ -163,13 +166,17 @@ void MultiHtmlReporter::printCSS(){
     file << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
     file << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
     file << "img {padding:30px;}";
+    file << "#menu {font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace;}";
+    file << "#menu a {color:#0366d6; font-size:15px;line-height:22px;text-decoration:none;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'}";
+    file << ".index {font-weight:600;font-siz3:18px;line-height:25px;}";
+    file << "a:visited {color: #999999}";
     file << ".alignleft {text-align:left;}";
     file << ".alignright {text-align:right;}";
     file << ".header {color:#ffffff;padding:1px;height:20px;background:#000000;}";
     file << ".figuretitle {color:#996657;font-size:20px;padding:50px;}";
-    file << "#container {text-align:center;padding:1px;font-family:Arial;}";
+    file << "#container {text-align:center;padding:1px;font-family:Arail,'Liberation Mono', Menlo, Courier, monospace;}";
     file << "#menu {padding-top:10px;padding-bottom:10px;text-align:left;}";
-    file << ".menu_item {text-align:left;padding-top:5px;font-size:18px;}";
+    file << ".menu_item {text-align:left;padding-top:2px;font-size:18px;}";
     file << ".highlight {text-align:left;padding-top:30px;padding-bottom:30px;font-size:20px;line-height:35px;}";
     file << ".mutation_head {text-align:left;color:#0092FF;font-family:Arial;padding-top:20px;padding-bottom:5px;}";
     file << ".mutation_block {}";
@@ -184,7 +191,6 @@ void MultiHtmlReporter::printJS(){
     ofstream file;
     string filename = mFolderName + "/mutscan.js";
     file.open(filename.c_str(), ifstream::out);
-    file << "\n<script type=\"text/javascript\">" << endl;
     file << "function toggle(targetid){ \n\
                 if (document.getElementById){ \n\
                     target=document.getElementById(targetid); \n\
@@ -207,7 +213,6 @@ void MultiHtmlReporter::printJS(){
                         } \n\
                 } \n\
             }";
-    file << "</script>";
     file.close();
 }
 
