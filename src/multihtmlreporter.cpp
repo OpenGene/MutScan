@@ -110,10 +110,10 @@ void MultiHtmlReporter::printIndexPage() {
     file << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
     file << "<div style='font-size:10px;padding-top:20px;'>Mutations by chromosome:</div>";
     file << "<ul id='menu'>";
-    file << "<li class='menu_item'><a class='index' href='main.html' target='_main'>All (" << mTotalCount << " mutations)</a></li>";
+    file << "<li class='menu_item'><a class='index' href='main.html' target='_main'>All <font color='#aaaaaa' size='-2'>(" << mTotalCount << " mutations)</font></a></li>";
     map<string, int>::iterator iter;
     for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
-        file << "<li class='menu_item'><a class='index' href='" << iter->first << ".html' target='_main'>" << iter->first << " (" << iter->second << " mutations)</a></li>";
+        file << "<li class='menu_item'><a class='index' href='" << iter->first << ".html' target='_main'>" << iter->first << " <font color='#aaaaaa' size='-2'>(" << iter->second << " mutations)</font></a></li>";
     }
     file << "</ul>";
     printFooter(file, false);
