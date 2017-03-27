@@ -67,8 +67,15 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
     map<string, int>::iterator iter;
     file << "<div style='font-size:10px;padding-top:20px;text-align:left;'>Mutations found of all chromosomes:</div>";
     file << "<ul id='menu'>";
-    for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
-        printChrLink(file, iter->first);
+    for(int m=0; m<mMutationList.size(); m++) {
+        vector<Match*> matches = mMutationMatches[m];
+        if(matches.size()>0) {
+            string chr = mMutationList[m].mChr;
+            string filename = chr + "/" + to_string(m) + ".html";
+            file << "<li class='menu_item'><a href='" << filename << "'>" << mMutationList[m].mName;
+            file<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" 
+            << " </a></li>";
+        }
     }
     file << "</ul>";
 }
@@ -116,7 +123,7 @@ void MultiHtmlReporter::printIndexPage() {
         file << "<li class='menu_item'><a class='index' href='" << iter->first << ".html' target='_main'>" << iter->first << " <font color='#aaaaaa' size='-2'>(" << iter->second << " mutations)</font></a></li>";
     }
     file << "</ul>";
-    printFooter(file, false);
+    printFooter(file, false, false);
     file.close();
 }
 
@@ -229,12 +236,13 @@ string MultiHtmlReporter::getCurrentSystemTime()
 
 extern string command;
 
-void MultiHtmlReporter::printFooter(ofstream& file, bool printTargetList){
+void MultiHtmlReporter::printFooter(ofstream& file, bool printTargetList, bool printCommand){
     file << "\n<div id='footer'> ";
-    file << "<p>"<<command<<"</p>";
+    if(printCommand)
+        file << "<p>"<<command<<"</p>";
     if(printTargetList)
         printScanTargets(file);
-    file << "MutScan " << MUTSCAN_VER << ", at " << getCurrentSystemTime() << " </div>";
+    file << getCurrentSystemTime() << " </div>";
     file << "</div></body></html>";
 }
 
