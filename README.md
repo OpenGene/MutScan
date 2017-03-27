@@ -2,14 +2,14 @@
 Detect and visualize target mutations by scanning FastQ files directly
 * Ultra sensitive.
 * 50X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect).
-* Very easy to use. Need nothing else. No alignment, no reference genome, no variant call, no...
-* Include most actionable mutation points for cancer, like EGFR L858R, BRAF V600E...
+* Very easy to use and need nothing else. No alignment, no reference genome, no variant call, no...
+* Contains most actionable mutation points for cancer, like EGFR L858R, BRAF V600E...
 * Beautiful and informative HTML report with informative pileup visualization.
 * Multi-threading support.
-* Support both single-end and pair-end data.
+* Supports both single-end and pair-end data.
 * For pair-end data, MutScan will try to merge each pair, and do quality adjustment and error correction.
 * Able to scan the mutations in a VCF file, which can be used to visualize called variants.
-* Can be used to filter false-positive mutations, especially for INDEL.
+* Can be used to filter false-positive mutations. i.e. MutScan can handle highly repetive sequence to avoid false INDEL calling.
 
 # Sample report
 http://opengene.org/MutScan/report.html
