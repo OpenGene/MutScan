@@ -165,7 +165,7 @@ string Read::lastIndex(){
 	if(len<5)
 		return "";
 	for(int i=len-5;i>=0;i--){
-		if(mName[i]==':' or mName[i]=='+'){
+		if(mName[i]==':' || mName[i]=='+'){
 			return mName.substr(i+1, len-i);
 		}
 	}
