@@ -10,7 +10,9 @@
 
 Mutation::Mutation(string name, string left, string center, string right, string chr){
 	//we shift some bases from left and right to center to require 100% match of these bases
-    mShift = 2;
+    mShift = 0;
+    if(center.length() == 0)
+        mShift = 2;
     mLeft = left.substr(0, left.length()-mShift);
 	mCenter = left.substr(left.length()-mShift, mShift) + center + right.substr(0, mShift);
     mRight = right.substr(mShift, right.length()-mShift);
@@ -85,6 +87,18 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
         }
 
         if ( dis <= distanceReq){
+            // check if this is due to bad alignment
+            if(dis >= 2 && mShift==0) {
+                // if this is caused by an indel, then indel should not happen around center
+                // we check half of the pattern
+                int noIndelLeft = min(lLen / 2, lComp);
+                if(rComp < rLen/2)
+                    noIndelLeft = lLen/2 - rComp;
+                int noIndelDis = hamming_distance(seqData + start - noIndelLeft, edLen/2, patternData + lLen - noIndelLeft, edLen/2);
+                
+                if(noIndelDis > 2)
+                    continue;
+            }
             return new Match(r, start, dis);
         }
     }
