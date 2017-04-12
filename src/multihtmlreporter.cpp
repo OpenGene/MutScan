@@ -21,7 +21,7 @@ void MultiHtmlReporter::stat(){
     mTotalCount = 0;
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>0) {
+        if(matches.size()>=GlobalSettings::minReadSupport) {
             mTotalCount++;
             string chr = mMutationList[m].mChr;
             if(mChrCount.count(chr)==0)
@@ -69,7 +69,7 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
     file << "<div style='font-size:12px;padding-top:20px;text-align:left;color:#aaaaaa'>Mutations found of all chromosomes:</div>";
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>0) {
+        if(matches.size()>=GlobalSettings::minReadSupport) {
             string chr = mMutationList[m].mChr;
             string filename = chr + "/" + to_string(m) + ".html";
             file << "<li class='menu_item'><a href='" << filename << "'>" << mMutationList[m].mName;
@@ -83,7 +83,7 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
 void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>0) {
+        if(matches.size()>=GlobalSettings::minReadSupport) {
             if(chr == mMutationList[m].mChr) {
                 string filename = chr + "/" + to_string(m) + ".html";
                 file << "<li class='menu_item'><a href='" << filename << "'>" << mMutationList[m].mName;
@@ -97,7 +97,7 @@ void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
 void MultiHtmlReporter::printMutationHtml() {
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>0) {
+        if(matches.size()>=GlobalSettings::minReadSupport) {
             string chr = mMutationList[m].mChr;
             string folder = mFolderName + "/" + chr;
             string filename = folder + "/" + to_string(m) + ".html";

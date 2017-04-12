@@ -256,7 +256,7 @@ void SingleEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*>
     //output result
     for(int i=0;i<mutationList.size();i++){
         vector<Match*> matches = mutationMatches[i];
-        if(matches.size()>0){
+        if(matches.size()>=GlobalSettings::minReadSupport){
             cout<<endl<<"---------------"<<endl;
             mutationList[i].print();
             for(int m=0; m<matches.size(); m++){

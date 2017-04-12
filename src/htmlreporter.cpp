@@ -44,7 +44,7 @@ void HtmlReporter::printMutations() {
     int found = 0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>0){
+        if(matches.size()>=GlobalSettings::minReadSupport){
             found++;
         }
     }
@@ -57,7 +57,7 @@ void HtmlReporter::printMutations() {
         mFile<<":</p><ul>";
         for(int i=0;i<mMutationList.size();i++){
             vector<Match*> matches = mMutationMatches[i];
-            if(matches.size()>0){
+            if(matches.size()>=GlobalSettings::minReadSupport){
                 id++;
                 mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << id << ", " << mMutationList[i].mName;
                 mFile<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" << "</a></li>";
@@ -68,7 +68,7 @@ void HtmlReporter::printMutations() {
     id=0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>0){
+        if(matches.size()>=GlobalSettings::minReadSupport){
             id++;
             printMutation(id, mMutationList[i], matches);
         }
@@ -81,7 +81,7 @@ void HtmlReporter::printMutationsJS() {
     int id=0;
     for(int i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>0){
+        if(matches.size()>=GlobalSettings::minReadSupport){
             mFile << "\n[";
             for(int m=0; m<matches.size(); m++){
                 mFile << "\n[";

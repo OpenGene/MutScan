@@ -23,6 +23,7 @@ int main(int argc, char* argv[]){
     cmd.add<string>("ref", 'r', "reference fasta file name (only needed when mutation file is a VCF)", false, "");
     cmd.add<string>("html", 'h', "filename of html report, default is mutscan.html in work directory", false, "mutscan.html");
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
+    cmd.add<int>("support", 'S', "min read support for reporting a mutation, default is 2", false, 2);
     cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
     cmd.add("legacy", 'l', "use legacy mode, usually much slower but may be able to find a little more reads in certain case");
     cmd.add("standalone", 's', "output standalone HTML report with single file. Don't use this option when scanning too many target mutations (i.e. >1000 mutations)");
@@ -51,6 +52,9 @@ int main(int argc, char* argv[]){
 
     bool noOriginal = cmd.exist("no-original-reads");
     GlobalSettings::setOutputOriginalReads(!noOriginal);
+
+    int support = cmd.get<int>("support");
+    GlobalSettings::setMinReadSupport(support);
 
     stringstream ss;
     for(int i=0;i<argc;i++){

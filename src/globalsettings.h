@@ -24,12 +24,16 @@ public:
     inline static void setStandaloneHtml(bool flag){
         standaloneHtml = flag;
     }
+    inline static void setMinReadSupport(int val){
+        minReadSupport = val;
+    }
 
 public:
     static bool markedOnlyForVCF;
     static bool legacyMode;
     static bool outputOriginalReads;
     static bool standaloneHtml;
+    static int minReadSupport;
 };
 
 
