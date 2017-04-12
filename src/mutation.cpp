@@ -263,7 +263,6 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         int lengthDiff = abs((int)v.ref.length() - (int)v.alt.length());
         if(lengthDiff>=1 && lengthDiff<=2 )
             mut.setSmallIndel(true);
-        cerr << name << ", " << left << ", " << center << ", " << right << ", " << chrom << endl;
         mutations.push_back(mut);
     }
     if(mutations.size() <= 0){

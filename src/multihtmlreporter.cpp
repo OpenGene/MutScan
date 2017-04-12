@@ -64,12 +64,14 @@ void MultiHtmlReporter::printMainPage() {
 }
 
 void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
+    bool found = false;
     map<string, int>::iterator iter;
     file << "<ul id='menu'>";
     file << "<div style='font-size:12px;padding-top:20px;text-align:left;color:#aaaaaa'>Mutations found of all chromosomes:</div>";
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
         if(matches.size()>=GlobalSettings::minReadSupport) {
+            found = true;
             string chr = mMutationList[m].mChr;
             string filename = chr + "/" + to_string(m) + ".html";
             file << "<li class='menu_item'><a href='" << filename << "'>" << mMutationList[m].mName;
@@ -77,13 +79,18 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
             << " </a></li>";
         }
     }
+    if(!found) {
+        file << "<span style='size:28px;font-weight:bold;color:blue;line-height:30px;'>MutScan didn't find any mutation</span>";
+    }
     file << "</ul>";
 }
 
 void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
+    bool found = false;
     for(int m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
         if(matches.size()>=GlobalSettings::minReadSupport) {
+            found = true;
             if(chr == mMutationList[m].mChr) {
                 string filename = chr + "/" + to_string(m) + ".html";
                 file << "<li class='menu_item'><a href='" << filename << "'>" << mMutationList[m].mName;
@@ -91,6 +98,9 @@ void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
                 << " </a></li>";
             }
         }
+    }
+    if(!found) {
+        file << "<span style='size:28px;font-weight:bold;color:blue;line-height:30px;'>MutScan didn't find any mutation</span>";
     }
 }
 

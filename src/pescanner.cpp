@@ -282,9 +282,11 @@ void PairEndScanner::consumerTask()
 
 void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
     //output result
+    bool found = false;
     for(int i=0;i<mutationList.size();i++){
         vector<Match*> matches = mutationMatches[i];
         if(matches.size()>=GlobalSettings::minReadSupport){
+            found = true;
             cout<<endl<<"---------------"<<endl;
             mutationList[i].print();
             for(int m=0; m<matches.size(); m++){
@@ -292,6 +294,9 @@ void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *
                 matches[m]->print(mutationList[i].mLeft.length(), mutationList[i].mCenter.length(), mutationList[i].mRight.length());
             }
         }
+    }
+    if(found == false) {
+        cout << "MutScan didn't find any mutation" << endl;
     }
 }
 
