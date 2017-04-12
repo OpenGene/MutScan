@@ -58,12 +58,13 @@ make
 ```shell
 usage: mutscan -1 <read1_file> -2 <read2_file> [options]...
 options:
-  -1, --read1                read1 file name (string)
-  -2, --read2                read2 file name (string [=])
-  -m, --mutation             mutation file name, can be a CSV format or a VCF format (string [=])
-  -r, --ref                  reference fasta file name (only needed when mutation file is a VCF) (string [=])
-  -h, --html                 filename of html report, default is mutscan.html in work directory (string [=mutscan.html])
-  -t, --thread               worker thread number, default is 4 (int [=4])
+  -1, --read1                read1 file name, required
+  -2, --read2                read2 file name
+  -m, --mutation             mutation file name, can be a CSV format or a VCF format
+  -r, --ref                  reference fasta file name (only needed when mutation file is a VCF)
+  -h, --html                 filename of html report, default is mutscan.html in work directory
+  -t, --thread               worker thread number, default is 4
+  -S, --support              min read support required to report a mutation, default is 2.
   -k, --mark                 when mutation file is a vcf file, --mark means only process the records with FILTER column is M
   -l, --legacy               use legacy mode, usually much slower but may be able to find a little more reads in certain case
   -s, --standalone           output standalone HTML report with single file. Don't use this option when scanning too many target mutations (i.e. >1000 mutations)
