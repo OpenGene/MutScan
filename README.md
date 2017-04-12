@@ -111,3 +111,7 @@ A standard VCF can be used as a mutation file, with file extension `.vcf` or `.V
 ```shell
 mutscan -1 R1.fq -2 R2.fq -m target.vcf -r hg19.fa
 ```
+# Remarks
+* `MutScan` requires at least 50 bp long reads, if your reads are too short, do not use it
+* If you want to extract mutations even with only one read support, add `-S 1` or `--support=1` in the command
+* Feel free to raise an issue if you meet any problem
