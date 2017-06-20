@@ -20,8 +20,13 @@ Detect and visualize target mutations by scanning FastQ files directly
 * you want to validate and visualize every record in the VCF called by your pipeline.
 * ...
 
-# Sample report
-http://opengene.org/MutScan/report.html
+# Take a quick glance
+* Sample report: http://opengene.org/MutScan/report.html
+* Dataset for testing: http://opengene/dataset.html
+* Command to test
+```shell
+mutscan -1 R1.fq.gz -2 R2.fq.gz
+```
 
 # Download
 Get latest (may be not stable)
