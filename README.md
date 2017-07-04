@@ -22,7 +22,7 @@ Detect and visualize target mutations by scanning FastQ files directly
 
 # Take a quick glance
 * Sample report: http://opengene.org/MutScan/report.html
-* Dataset for testing: http://opengene/dataset.html
+* Dataset for testing: http://opengene.org/dataset.html
 * Command to test
 ```shell
 mutscan -1 R1.fq.gz -2 R2.fq.gz
