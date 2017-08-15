@@ -3,7 +3,7 @@
 #include "util.h"
 #include <memory.h>
 
-// we use 1G memory
+// we use 512M memory
 const int BLOOM_FILTER_LENGTH = (1<<29);
 
 RollingHash::RollingHash(int window, bool allowTwoSub) {
