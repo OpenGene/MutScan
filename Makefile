@@ -10,7 +10,7 @@ TARGET = mutscan
 BIN_TARGET = ${TARGET}
 
 CC = g++
-CFLAGS = -std=c++11 -g -Wall -I${DIR_INC}
+CFLAGS = -std=c++11 -g -I${DIR_INC}
 
 ${BIN_TARGET}:${OBJ}
 	$(CC) $(OBJ) -lz -lpthread -o $@
