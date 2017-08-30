@@ -78,6 +78,7 @@ bool SingleEndScanner::scan(){
     for(int i=0;i<mutationList.size();i++){
         mutationMatches[i].clear();
     }
+    return true;
 }
 
 void SingleEndScanner::pushMatch(int i, Match* m){
@@ -125,6 +126,7 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
             }
         }
     }
+    return true;
 }
 
 void SingleEndScanner::initPackRepository() {

@@ -158,6 +158,8 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
 
     delete hashes;
     delete accum;
+
+    return true;
 }
 
 vector<int> RollingHash::hitTargets(const string s) {

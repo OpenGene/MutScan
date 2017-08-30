@@ -80,6 +80,7 @@ bool PairEndScanner::scan(){
     for(int i=0;i<mutationList.size();i++){
         mutationMatches[i].clear();
     }
+    return true;
 }
 
 void PairEndScanner::pushMatch(int i, Match* m){
@@ -153,6 +154,7 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
             }
         }
     }
+    return true;
 }
 
 void PairEndScanner::initPackRepository() {

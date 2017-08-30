@@ -77,10 +77,10 @@ int main(int argc, char* argv[]){
         }
     }
 
-    clock_t t1 = clock();
+    time_t t1 = time(NULL);
     MutScan scanner(mutationFile, refFile, r1file, r2file, html, threadNum);
     scanner.scan();
-    clock_t t2 = clock();
+    time_t t2 = time(NULL);
     printf("\n%s\n", command.c_str());
-    printf("Mutscan v%s, time used: %f ms\n", MUTSCAN_VER, (t2-t1)/1000.0);
+    printf("Mutscan v%s, time used: %ld seconds\n", MUTSCAN_VER, (t2-t1));
 }
