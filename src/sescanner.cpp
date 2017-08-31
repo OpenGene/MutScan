@@ -196,12 +196,10 @@ void SingleEndScanner::producerTask()
         Read* read = reader1.read();
         if(!read){
             // the last pack
-            if(count>0){
-                ReadPack* pack = new ReadPack;
-                pack->data = data;
-                pack->count = count;
-                producePack(pack);
-            }
+            ReadPack* pack = new ReadPack;
+            pack->data = data;
+            pack->count = count;
+            producePack(pack);
             data = NULL;
             break;
         }

@@ -224,12 +224,10 @@ void PairEndScanner::producerTask()
         ReadPair* read = reader.read();
         if(!read){
             // the last pack
-            if(count>0){
-                ReadPairPack* pack = new ReadPairPack;
-                pack->data = data;
-                pack->count = count;
-                producePack(pack);
-            }
+            ReadPairPack* pack = new ReadPairPack;
+            pack->data = data;
+            pack->count = count;
+            producePack(pack);
             data = NULL;
             break;
         }
