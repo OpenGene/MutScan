@@ -1,6 +1,7 @@
 DIR_INC = ./inc
 DIR_SRC = ./src
 DIR_OBJ = ./obj
+BINDIR=/usr/local/bin
 
 SRC = $(wildcard ${DIR_SRC}/*.cpp)  
 OBJ = $(patsubst %.cpp,${DIR_OBJ}/%.o,$(notdir ${SRC})) 
@@ -27,3 +28,7 @@ make_obj_dir:
 	then \
 		mkdir $(DIR_OBJ) ; \
 	fi
+
+install:
+	install $(TARGET) $(BINDIR)/$(TARGET)
+	@echo "Installed."
