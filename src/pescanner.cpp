@@ -298,6 +298,17 @@ void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *
     if(found == false) {
         cout << "MutScan didn't find any mutation" << endl;
     }
+    // if processing VCF, output those with no supporting reads found
+    if(GlobalSettings::processingVCF) {
+        cerr << "Following mutations are not detected" << endl;
+        for(int i=0;i<mutationList.size();i++){
+            vector<Match*> matches = mutationMatches[i];
+            if(matches.size()<GlobalSettings::minReadSupport){
+                Mutation m = mutationList[i];
+                cerr <<m.mChr << " " <<m.mName<<" "<<m.mLeft<<" "<<m.mCenter<<" "<<m.mRight <<endl;
+            }
+        }
+    }
 }
 
 void PairEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {

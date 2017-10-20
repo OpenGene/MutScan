@@ -27,6 +27,9 @@ public:
     inline static void setMinReadSupport(int val){
         minReadSupport = val;
     }
+    inline static void setProcessingVCF(bool flag){
+        processingVCF = flag;
+    }
 
 public:
     static bool markedOnlyForVCF;
@@ -34,6 +37,7 @@ public:
     static bool outputOriginalReads;
     static bool standaloneHtml;
     static int minReadSupport;
+    static bool processingVCF;
 };
 
 

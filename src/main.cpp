@@ -71,6 +71,7 @@ int main(int argc, char* argv[]){
         check_file_valid(refFile);
     // if the mutation file is a vcf, then the reference should be provided
     if(ends_with(mutationFile, ".vcf") || ends_with(mutationFile, ".VCF") || ends_with(mutationFile, ".Vcf")){
+        GlobalSettings::setProcessingVCF(true);
         if(refFile == "") {
             cerr << "You should specify the reference fasta file by -r <ref.fa>, because your mutation file (-m) is a VCF"<<endl;
             exit(-1);
