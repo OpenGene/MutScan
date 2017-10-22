@@ -54,22 +54,27 @@ bool VcfReader::readNext()
     if(items[0][0]=='#')
         return false;
     
-    int pos =  atoi(items[1].c_str());
-    Variant var;
-    var.chrom = trim(items[0]);
-    var.pos = pos;
-    var.id = trim(items[2]);
-    var.ref = trim(items[3]);
-    var.alt = trim(items[4]);
-    var.qual = trim(items[5]);
-    var.filter = trim(items[6]);
-    var.info = trim(items[7]);
+    //split the alt by comma to make multiple variants, GATK usually output such kind of variant like C>T,AT
+    vector<string> alts;
+    split(trim(items[4]), alts, ",");
+    for(int a=0; a<alts.size(); a++){
+        int pos =  atoi(items[1].c_str());
+        Variant var;
+        var.chrom = trim(items[0]);
+        var.pos = pos;
+        var.id = trim(items[2]);
+        var.ref = trim(items[3]);
+        var.alt = alts[a];
+        var.qual = trim(items[5]);
+        var.filter = trim(items[6]);
+        var.info = trim(items[7]);
 
-    // format is not required
-    if(items.size()>=9)
-        var.format = trim(items[8]);
+        // format is not required
+        if(items.size()>=9)
+            var.format = trim(items[8]);
 
-    mVariants.push_back(var);
+        mVariants.push_back(var);
+    }
 
     return true;
 }
