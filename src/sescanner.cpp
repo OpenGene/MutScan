@@ -105,14 +105,19 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
 
 bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
     if(!GlobalSettings::legacyMode){
-        vector<int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
-        for(int t=0; t<targets.size(); t++) {
-            Match* match = mutationList[targets[t]].searchInRead(r);
+        map<int, int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
+        map<int, int>::iterator iter;
+        for(iter=targets.begin(); iter!=targets.end(); iter++) {
+            int t = iter->first;
+            int count = iter->second;
+            if(count==0)
+                continue;
+            Match* match = mutationList[t].searchInRead(r);
             if(match) {
                 if(GlobalSettings::outputOriginalReads)
                     match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
-                pushMatch(targets[t], match);
+                pushMatch(t, match);
             }
         }
     } else {

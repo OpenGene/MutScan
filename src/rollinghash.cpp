@@ -162,8 +162,8 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
     return true;
 }
 
-vector<int> RollingHash::hitTargets(const string s) {
-    vector<int> ret;
+map<int, int> RollingHash::hitTargets(const string s) {
+    map<int, int> ret;
     if(s.length() < mWindow)
         return ret;
 
@@ -185,7 +185,7 @@ vector<int> RollingHash::hitTargets(const string s) {
     return ret;
 }
 
-inline void RollingHash::addHit(vector<int>& ret, long hash) {
+inline void RollingHash::addHit(map<int, int>& ret, long hash) {
     //update bloom filter array
     const long bloomFilterFactors[3] = {1713137323, 371371377, 7341234131};
     for(int b=0; b<3; b++) {
@@ -196,15 +196,13 @@ inline void RollingHash::addHit(vector<int>& ret, long hash) {
     if(mKeyTargets.count(hash)) {
         for(int i=0; i<mKeyTargets[hash].size(); i++) {
             int val = mKeyTargets[hash][i];
-            bool alreadyIn = false;
-            for(int j=0; j<ret.size(); j++) {
-                if(val == ret[j]){
-                    alreadyIn = true;
-                    break;
-                }
+            if(ret.count(val)) {
+                //cout << "-";
+                ret[val]++;
             }
-            if(!alreadyIn) {
-                ret.push_back(val);
+            else {
+                //cout << ".";
+                ret[val]=1;
             }
         }
     }
@@ -271,12 +269,15 @@ bool RollingHash::test(){
     for(int i=0; i<mutationList.size(); i++) {
         Mutation m = mutationList[i];
         string s = m.mLeft + m.mCenter + m.mRight;
-        vector<int> targets = rh.hitTargets(s);
+        map<int, int> targets = rh.hitTargets(s);
         cout << i << ", " << s << endl;
         bool found = false;
-        for(int t=0; t<targets.size(); t++){
-            cout << targets[t] << "\t";
-            if(targets[t] == i)
+        map<int, int>::iterator iter;
+        for(iter=targets.begin(); iter!=targets.end(); iter++) {
+            int t = iter->first;
+            int count = iter->second;
+            cout << t << "\t";
+            if(t == i)
                 found = true;
         }
         cout << endl;

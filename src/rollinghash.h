@@ -20,8 +20,8 @@ public:
 public:
     bool add(string s, int target, bool allowIndel = true);
     void addHash(long hash, int target);
-    vector<int> hitTargets(const string s);
-    inline void addHit(vector<int>& ret, long hash);
+    map<int, int> hitTargets(const string s);
+    inline void addHit(map<int, int>& ret, long hash);
     map<long, vector<int> > getKeyTargets();
 
     inline static long char2val(char c);
