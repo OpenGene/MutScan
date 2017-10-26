@@ -122,7 +122,7 @@ mutscan -1 R1.fq -2 R2.fq -m target.vcf -r hg19.fa
 ```
 
 # Work with BAM/CRAM
-If you want to run MutScan with BAM/CRAM files, you can use `samtools` to cnvert them to FASTQ files using `samtools fastq` command, both single-end and paired-end data are supported by latest version of `samtools fastq`.
+If you want to run MutScan with BAM/CRAM files, you can use `samtools` to convert them to FASTQ files using `samtools fastq` command, both single-end and paired-end data are supported by latest version of `samtools fastq`.
 
 # Remarks
 * `MutScan` requires at least 50 bp long reads, if your reads are too short, do not use it
