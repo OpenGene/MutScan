@@ -17,7 +17,7 @@ FastqReader::~FastqReader(){
 void FastqReader::init(){
 	if (isZipFastq(mFilename)){
 		mZipFile = gzopen(mFilename.c_str(), "r");
-		// increase the gzip buffer size to improve reading speed
+		// increase the gzip buffer size to increse
 		gzbuffer(mZipFile, 1024*1024);
 		mZipped = true;
 		Read* r = read();
@@ -31,6 +31,9 @@ void FastqReader::init(){
 	else if (isFastq(mFilename)){
 		mFile.open(mFilename.c_str(), ifstream::in);
 		mZipped = false;
+	} else {
+		cerr << "ERROR: the input file should be fastq (.fq, .fastq) or gzipped fastq (.fq.gz, .fastq.gz)" << endl;
+		exit(-1);
 	}
 }
 
