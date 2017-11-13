@@ -17,8 +17,6 @@ FastqReader::~FastqReader(){
 void FastqReader::init(){
 	if (isZipFastq(mFilename)){
 		mZipFile = gzopen(mFilename.c_str(), "r");
-		// increase the gzip buffer size to increse
-		gzbuffer(mZipFile, 1024*1024);
 		mZipped = true;
 		Read* r = read();
 
