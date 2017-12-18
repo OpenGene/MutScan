@@ -26,6 +26,10 @@ PairEndScanner::~PairEndScanner() {
         delete mRollingHash;
         mRollingHash = NULL;
     }
+    for(int i=0; i<mReadToDelete.size(); i++) {
+        delete mReadToDelete[i];
+        mReadToDelete[i] = NULL;
+    }
 }
 
 
@@ -83,9 +87,11 @@ bool PairEndScanner::scan(){
     return true;
 }
 
-void PairEndScanner::pushMatch(int i, Match* m){
+void PairEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
     std::unique_lock<std::mutex> lock(mMutationMtx);
     mutationMatches[i].push_back(m);
+    if(needStoreReadToDelete)
+        mReadToDelete.push_back(m->getRead());
     lock.unlock();
 }
 
@@ -106,23 +112,22 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
         }
 
         if(merged != NULL) {
-            scanRead(merged, pair, false);
-            scanRead(mergedRC, pair, true);
+            if(!scanRead(merged, pair, false)) delete merged;
+            if(!scanRead(mergedRC, pair, true)) delete mergedRC;
         } else {
-            scanRead(r1, pair, false);
-            scanRead(r2, pair, false);
-            scanRead(rcr1, pair, true);
-            scanRead(rcr2, pair, true);
+            if(!scanRead(rcr1, pair, true)) delete rcr1;
+            if(!scanRead(rcr2, pair, true)) delete rcr2;
+            bool leftMatched = scanRead(r1, pair, false);
+            bool rightMatched = scanRead(r2, pair, false);
+            if(leftMatched) {
+                pair->mLeft = NULL;
+            }
+            if(rightMatched) {
+                pair->mRight = NULL;
+            }
         }
 
         delete pair;
-        if(merged!=NULL){
-            delete merged;
-            delete mergedRC;
-        } else {
-            delete rcr1;
-            delete rcr2;
-        }
     }
 
     delete pack->data;
@@ -132,6 +137,7 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
 }
 
 bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
+    bool matched = false;
     if(!GlobalSettings::legacyMode){
         map<int, int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
         map<int, int>::iterator iter;
@@ -145,7 +151,8 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
                 if(GlobalSettings::outputOriginalReads)
                     match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
-                pushMatch(t, match);
+                pushMatch(t, match, !matched);
+                matched = true;
             }
         }
     } else {
@@ -155,11 +162,12 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
                 if(GlobalSettings::outputOriginalReads)
                     match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
-                pushMatch(i, match);
+                pushMatch(i, match, !matched);
+                matched = true;
             }
         }
     }
-    return true;
+    return matched;
 }
 
 void PairEndScanner::initPackRepository() {

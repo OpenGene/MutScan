@@ -43,6 +43,7 @@ public:
     }
 
     static int countUnique(vector<Match*>& matches);
+    Read* getRead() {return mRead;}
 
 private:
     Read* mRead;

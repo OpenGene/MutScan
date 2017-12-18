@@ -2,15 +2,13 @@
 #include <vector>
 
 Match::Match(Read* r, int pos, int distance, bool reversed){
-    mRead = new Read(*r);
+    mRead = r;
     mDistance = distance;
     mPos = pos;
     mReversed = reversed;
 }
 
 Match::~Match(){
-    delete mRead;
-    mRead = NULL;
     for(int i=0;i<mOriginalReads.size();i++){
         delete mOriginalReads[i];
         mOriginalReads[i] = NULL;

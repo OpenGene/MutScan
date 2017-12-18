@@ -52,7 +52,7 @@ private:
     void consumePack();
     void producerTask();
     void consumerTask();
-    void pushMatch(int i, Match* m);
+    void pushMatch(int i, Match* m, bool needStoreReadToDelete);
 
 private:
     string mMutationFile;
@@ -67,6 +67,7 @@ private:
     std::mutex mMutationMtx;
     int mThreadNum;
     RollingHash* mRollingHash;
+    vector<Read*> mReadToDelete;
 };
 
 

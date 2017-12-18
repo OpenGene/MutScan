@@ -25,6 +25,10 @@ SingleEndScanner::~SingleEndScanner() {
         delete mRollingHash;
         mRollingHash = NULL;
     }
+    for(int i=0; i<mReadToDelete.size(); i++) {
+        delete mReadToDelete[i];
+        mReadToDelete[i] = NULL;
+    }
 }
 
 bool SingleEndScanner::scan(){
@@ -81,9 +85,11 @@ bool SingleEndScanner::scan(){
     return true;
 }
 
-void SingleEndScanner::pushMatch(int i, Match* m){
+void SingleEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
     std::unique_lock<std::mutex> lock(mMutationMtx);
     mutationMatches[i].push_back(m);
+    if(needStoreReadToDelete)
+        mReadToDelete.push_back(m->getRead());
     lock.unlock();
 }
 
@@ -91,10 +97,8 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
     for(int p=0;p<pack->count;p++){
         Read* r1 = pack->data[p];
         Read* rcr1 = r1->reverseComplement();
-        scanRead(r1, r1, false);
-        scanRead(rcr1, r1, true);
-        delete r1;
-        delete rcr1;
+        if(!scanRead(rcr1, r1, true)) delete rcr1;
+        if(!scanRead(r1, r1, false)) delete r1;
     }
 
     delete pack->data;
@@ -104,6 +108,7 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
 }
 
 bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
+    bool matched = false;
     if(!GlobalSettings::legacyMode){
         map<int, int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
         map<int, int>::iterator iter;
@@ -117,7 +122,8 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
                 if(GlobalSettings::outputOriginalReads)
                     match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
-                pushMatch(t, match);
+                pushMatch(t, match, !matched);
+                matched = true;
             }
         }
     } else {
@@ -127,11 +133,12 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
                 if(GlobalSettings::outputOriginalReads)
                     match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
-                pushMatch(i, match);
+                pushMatch(i, match, !matched);
+                matched = true;
             }
         }
     }
-    return true;
+    return matched;
 }
 
 void SingleEndScanner::initPackRepository() {
