@@ -106,6 +106,9 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
 }
 
 vector<Mutation> Mutation::parseCsv(string filename) {
+    if(GlobalSettings::verbose) {
+        cerr << "Parsing target mutations from CSV file: " << filename << endl;
+    }
     ifstream file;
     file.open(filename.c_str(), ifstream::in);
     const int maxLine = 1000;
@@ -152,6 +155,9 @@ vector<Mutation> Mutation::parseCsv(string filename) {
         }
         else {
             mutations.push_back(mut);
+            if(GlobalSettings::verbose) {
+                cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
+            }
         }
     }
     file.close();
@@ -162,6 +168,9 @@ vector<Mutation> Mutation::parseCsv(string filename) {
 }
 
 vector<Mutation> Mutation::parseBuiltIn() {
+    if(GlobalSettings::verbose) {
+        cerr << "Using built-in target mutations" << endl;
+    }
     vector<Mutation> mutations;
     vector<string> lines;
     split(BUILT_IN_MUTATIONS, lines, "\n");
@@ -184,6 +193,9 @@ vector<Mutation> Mutation::parseBuiltIn() {
             chr = trim(splitted[4]);
         Mutation mut(name, left, center, right, chr);
         mutations.push_back(mut);
+        if(GlobalSettings::verbose) {
+            cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
+        }
     }
     if(mutations.size() <= 0){
         cerr<<"No mutation will be scanned"<<endl;
@@ -192,25 +204,16 @@ vector<Mutation> Mutation::parseBuiltIn() {
 }
 
 vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
+    if(GlobalSettings::verbose) {
+        cerr << "Parsing target mutations from VCF file: " << vcfFile << endl;
+        cerr << "With reference genome: " << refFile << endl; 
+    }
     vector<Mutation> mutations;
     VcfReader vr(vcfFile);
     vr.readAll();
     vector<Variant> variants = vr.variants();
 
     bool markedOnly = GlobalSettings::markedOnlyForVCF;
-
-    /*const int vcfMax = 100;
-    if(variants.size() > vcfMax && markedOnly==false){
-        cerr<<"Your VCF has more than "<<vcfMax<<" records, this will make MutScan take too long to complete the scan." << endl;
-        cerr<<"Please use a smaller VCF"<<endl;
-        cerr<<"Or use --mark option, and mark the wanted VCF records with FILTER column as M"<<endl;
-        cerr<<"Example (note the M in the FILTER column):"<<endl;
-        cerr<<"#CHROM   POS     ID          REF ALT QUAL  FILTER  INFO"<<endl;
-        cerr<<"1        69224   COSM3677745 A   C   .     M       This record will be scanned"<<endl;
-        cerr<<"1        880950  COSM3493111 G   A   .     .       This record will be skipped"<<endl;
-        cerr<<endl;
-        exit(-1);
-    }*/
 
     FastaReader fr(refFile);
     fr.readAll();
@@ -264,6 +267,9 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         if(lengthDiff>=1 && lengthDiff<=2 )
             mut.setSmallIndel(true);
         mutations.push_back(mut);
+        if(GlobalSettings::verbose) {
+            cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chrom <<endl;
+        }
     }
     if(mutations.size() <= 0){
         cerr<<"No mutation to be scanned"<<endl;

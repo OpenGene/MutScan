@@ -200,6 +200,7 @@ void SingleEndScanner::consumePack(){
 void SingleEndScanner::producerTask()
 {
     int slept = 0;
+    long total = 0;
     Read** data = new Read*[PACK_SIZE];
     memset(data, 0, sizeof(Read*)*PACK_SIZE);
     FastqReader reader1(mRead1File);
@@ -213,10 +214,14 @@ void SingleEndScanner::producerTask()
             pack->count = count;
             producePack(pack);
             data = NULL;
+            if(GlobalSettings::verbose) {
+                cerr << "Loaded all of " << total << " reads" << endl;
+            }
             break;
         }
         data[count] = read;
         count++;
+        total++;
         // a full pack
         if(count == PACK_SIZE){
             ReadPack* pack = new ReadPack;
@@ -233,6 +238,9 @@ void SingleEndScanner::producerTask()
                 //cout<<"sleep"<<endl;
                 slept++;
                 usleep(1000);
+            }
+            if(GlobalSettings::verbose && total % 1000000 == 0) {
+                cerr << "Loaded " << total << " reads" << endl;
             }
         }
     }

@@ -229,6 +229,7 @@ void PairEndScanner::consumePack(){
 void PairEndScanner::producerTask()
 {
     int slept = 0;
+    long total = 0;
     ReadPair** data = new ReadPair*[PACK_SIZE];
     memset(data, 0, sizeof(ReadPair*)*PACK_SIZE);
     FastqReaderPair reader(mRead1File, mRead2File);
@@ -242,10 +243,14 @@ void PairEndScanner::producerTask()
             pack->count = count;
             producePack(pack);
             data = NULL;
+            if(GlobalSettings::verbose) {
+                cerr << "Loaded all of " << total << " pairs" << endl;
+            }
             break;
         }
         data[count] = read;
         count++;
+        total++;
         // a full pack
         if(count == PACK_SIZE){
             ReadPairPack* pack = new ReadPairPack;
@@ -262,6 +267,9 @@ void PairEndScanner::producerTask()
                 //cout<<"sleep"<<endl;
                 slept++;
                 usleep(1000);
+            }
+            if(GlobalSettings::verbose && total % 1000000 == 0) {
+                cerr << "Loaded " << total << " pairs" << endl;
             }
         }
     }

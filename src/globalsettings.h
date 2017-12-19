@@ -30,6 +30,9 @@ public:
     inline static void setProcessingVCF(bool flag){
         processingVCF = flag;
     }
+    inline static void setVerbose(bool flag){
+        verbose = flag;
+    }
 
 public:
     static bool markedOnlyForVCF;
@@ -38,6 +41,7 @@ public:
     static bool standaloneHtml;
     static int minReadSupport;
     static bool processingVCF;
+    static bool verbose;
 };
 
 

@@ -28,6 +28,7 @@ int main(int argc, char* argv[]){
     cmd.add("legacy", 'l', "use legacy mode, usually much slower but may be able to find a little more reads in certain case");
     cmd.add("standalone", 's', "output standalone HTML report with single file. Don't use this option when scanning too many target mutations (i.e. >1000 mutations)");
     cmd.add("no-original-reads", 'n', "dont output original reads in HTML and text output. Will make HTML report files a bit smaller");
+    cmd.add("verbose", 'v', "enable verbose mode, more information will be output in STDERR");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
     string r2file = cmd.get<string>("read2");
@@ -52,6 +53,9 @@ int main(int argc, char* argv[]){
 
     bool noOriginal = cmd.exist("no-original-reads");
     GlobalSettings::setOutputOriginalReads(!noOriginal);
+
+    bool verbose = cmd.exist("verbose");
+    GlobalSettings::setVerbose(verbose);
 
     int support = cmd.get<int>("support");
     GlobalSettings::setMinReadSupport(support);
