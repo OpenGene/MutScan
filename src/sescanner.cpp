@@ -102,11 +102,12 @@ void SingleEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
 }
 
 bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
+    bool simplified = GlobalSettings::simplifiedMode;
     for(int p=0;p<pack->count;p++){
         Read* r1 = pack->data[p];
         Read* rcr1 = r1->reverseComplement();
-        if(!scanRead(rcr1, r1, true)) delete rcr1;
-        if(!scanRead(r1, r1, false)) delete r1;
+        if(!scanRead(rcr1, r1, true) || simplified) delete rcr1;
+        if(!scanRead(r1, r1, false) || simplified) delete r1;
     }
 
     delete pack->data;

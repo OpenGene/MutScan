@@ -104,6 +104,7 @@ void PairEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
 }
 
 bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
+    bool simplified = GlobalSettings::simplifiedMode;
     for(int p=0;p<pack->count;p++){
         ReadPair* pair = pack->data[p];
         Read* r1 = pair->mLeft;
@@ -120,17 +121,17 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
         }
 
         if(merged != NULL) {
-            if(!scanRead(merged, pair, false)) delete merged;
-            if(!scanRead(mergedRC, pair, true)) delete mergedRC;
+            if(!scanRead(merged, pair, false) || simplified) delete merged;
+            if(!scanRead(mergedRC, pair, true) || simplified) delete mergedRC;
         } else {
-            if(!scanRead(rcr1, pair, true)) delete rcr1;
-            if(!scanRead(rcr2, pair, true)) delete rcr2;
+            if(!scanRead(rcr1, pair, true) || simplified) delete rcr1;
+            if(!scanRead(rcr2, pair, true) || simplified) delete rcr2;
             bool leftMatched = scanRead(r1, pair, false);
             bool rightMatched = scanRead(r2, pair, false);
-            if(leftMatched) {
+            if(leftMatched && !simplified) {
                 pair->mLeft = NULL;
             }
-            if(rightMatched) {
+            if(rightMatched && !simplified) {
                 pair->mRight = NULL;
             }
         }
