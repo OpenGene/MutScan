@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
     cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
     cmd.add("legacy", 'l', "use legacy mode, usually much slower but may be able to find a little more reads in certain case");
     cmd.add("standalone", 's', "output standalone HTML report with single file. Don't use this option when scanning too many target mutations (i.e. >1000 mutations)");
-    cmd.add("no-original-reads", 'n', "dont output original reads in HTML and text output. Will make HTML report files a bit smaller");
+    cmd.add<string>("simplified", 0, "simplified mode uses less RAM but reports less information. This option can be auto/on/off, by default it's auto, which means automatically enabled when processing large FASTQ with large VCF. ");
     cmd.add("verbose", 'v', "enable verbose mode, more information will be output in STDERR");
     cmd.parse_check(argc, argv);
     string r1file = cmd.get<string>("read1");
@@ -50,9 +50,6 @@ int main(int argc, char* argv[]){
 
     bool standalone = cmd.exist("standalone");
     GlobalSettings::setStandaloneHtml(standalone);
-
-    bool noOriginal = cmd.exist("no-original-reads");
-    GlobalSettings::setOutputOriginalReads(!noOriginal);
 
     bool verbose = cmd.exist("verbose");
     GlobalSettings::setVerbose(verbose);
@@ -80,6 +77,19 @@ int main(int argc, char* argv[]){
             cerr << "You should specify the reference fasta file by -r <ref.fa>, because your mutation file (-m) is a VCF"<<endl;
             exit(-1);
         }
+    }
+
+    string simplified = cmd.get<string>("simplified");
+    str2lower(simplified);
+    if(simplified == "on" || simplified == "yes")
+        GlobalSettings::setSimplifiedMode(true);
+    else if(simplified == "off" || simplified == "no")
+        GlobalSettings::setSimplifiedMode(false);
+    else if(simplified == "auto")
+        GlobalSettings::setSimplifiedModeToEvaluate(true);
+    else {
+        cerr << "the option --simplified can only be auto/on/off"<<endl;
+        exit(-1);
     }
 
     time_t t1 = time(NULL);

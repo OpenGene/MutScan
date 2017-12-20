@@ -30,6 +30,10 @@ PairEndScanner::~PairEndScanner() {
         delete mReadToDelete[i];
         mReadToDelete[i] = NULL;
     }
+    for(int i=0; i<mBufToDelete.size(); i++) {
+        delete mBufToDelete[i];
+        mBufToDelete[i] = NULL;
+    }
 }
 
 
@@ -90,8 +94,12 @@ bool PairEndScanner::scan(){
 void PairEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
     std::unique_lock<std::mutex> lock(mMutationMtx);
     mutationMatches[i].push_back(m);
-    if(needStoreReadToDelete)
-        mReadToDelete.push_back(m->getRead());
+    if(needStoreReadToDelete) {
+        if(GlobalSettings::simplifiedMode)
+            mBufToDelete.push_back(m->getSequence());
+        else
+            mReadToDelete.push_back(m->getRead());
+    }
     lock.unlock();
 }
 
@@ -137,8 +145,8 @@ bool PairEndScanner::scanPairEnd(ReadPairPack* pack){
 }
 
 bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
-    bool matched = false;
-    if(!GlobalSettings::legacyMode){
+        bool matched = false;
+        if(!GlobalSettings::legacyMode){
         map<int, int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
         map<int, int>::iterator iter;
         for(iter=targets.begin(); iter!=targets.end(); iter++) {
@@ -148,7 +156,7 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
                 continue;
             Match* match = mutationList[t].searchInRead(r);
             if(match) {
-                if(GlobalSettings::outputOriginalReads)
+                if(!GlobalSettings::simplifiedMode)
                     match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
                 pushMatch(t, match, !matched);
@@ -159,7 +167,7 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
         for(int i=0;i<mutationList.size();i++){
             Match* match = mutationList[i].searchInRead(r);
             if(match) {
-                if(GlobalSettings::outputOriginalReads)
+                if(!GlobalSettings::simplifiedMode)
                     match->addOriginalPair(originalPair);
                 match->setReversed(reversed);
                 pushMatch(i, match, !matched);

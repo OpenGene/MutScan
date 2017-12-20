@@ -67,6 +67,7 @@ private:
     int mThreadNum;
     RollingHash* mRollingHash;
     vector<Read*> mReadToDelete;
+    vector<char*> mBufToDelete;
 };
 
 

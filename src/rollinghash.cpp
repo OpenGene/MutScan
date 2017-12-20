@@ -2,6 +2,7 @@
 #include "builtinmutation.h"
 #include "util.h"
 #include <memory.h>
+#include "globalsettings.h"
 
 // we use 512M memory
 const int BLOOM_FILTER_LENGTH = (1<<29);
@@ -71,6 +72,10 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
         accum[i] = origin;
     }
     addHash(origin, target);
+
+    // to save RAM for simplified mode
+    if(GlobalSettings::simplifiedMode)
+        return true;
 
     const char bases[4] = {'A', 'T', 'C', 'G'};
 

@@ -99,7 +99,15 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
                 if(noIndelDis > 2)
                     continue;
             }
-            return new Match(r, start, dis);
+            if(GlobalSettings::simplifiedMode) {
+                // just copy the sequence buffer
+                char* buf = new char[r->length() + 1];
+                memcpy(buf, r->mSeq.mStr.c_str(), r->length());
+                buf[r->length()] = '\0';
+                return new Match(buf, r->meanQuality(), start, dis);
+            }
+            else
+                return new Match(r, start, dis);
         }
     }
     return NULL;

@@ -160,7 +160,7 @@ void MultiHtmlReporter::printHelper(ofstream& file) {
     file << "<div id='helper'><p>Helpful tips:</p><ul>";
     file << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30+)</font>, <font color='#666666'>moderate (Q20+)</font>, <font color='#E99E5B'>low (Q15+)</font>, <font color='#FF0000'>extremely low (0~Q14)</font> </li>";
     file << "<li> Move mouse over the base, it will show the quality value</li>";
-    if(GlobalSettings::outputOriginalReads)
+    if(!GlobalSettings::simplifiedMode)
         file << "<li> Click on any row, the original read/pair will be displayed</li>";
     file << "<li> In first column, <i>d</i> means the edit distance of match, and --> means forward, <-- means reverse </li>";
     file << "<li> For pair-end sequencing, MutScan tries to merge each pair, and the overlapped bases will be assigned higher qualities </li>";

@@ -33,7 +33,7 @@ void HtmlReporter::printHelper() {
     mFile << "<li> Mutation point is in the center of the table.</li>";
     mFile << "<li> Base color indicates quality: <font color='#78C6B9'>extremely high (Q40+)</font>, <font color='#33BBE2'>high (Q30~Q39) </font>, <font color='#666666'>moderate (Q20~Q29)</font>, <font color='#E99E5B'>low (Q15~Q19)</font>, <font color='#FF0000'>extremely low (0~Q14).</font> </li>";
     mFile << "<li> Move mouse over the base, it will show the quality value.</li>";
-    if(GlobalSettings::outputOriginalReads)
+    if(!GlobalSettings::simplifiedMode)
         mFile << "<li> Click on any row, the original read/pair will be displayed.</li>";
     mFile << "<li> In first column, <i>d</i> means the edit distance of match, and --> means forward, <-- means reverse. </li>";
     mFile << "<li> For pair-end sequencing, MutScan tries to merge each pair, and the overlapped bases will be assigned higher qualities. </li>";
@@ -142,7 +142,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "</tr>";
     for(int m=0; m<matches.size(); m++){
         long rowid = id*100000 + m;
-        if(GlobalSettings::outputOriginalReads)
+        if(!GlobalSettings::simplifiedMode)
             mFile << "<tr onclick='toggle(" << rowid << ");'>";
         else
             mFile << "<tr>";
@@ -158,7 +158,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
         matches[m]->printHtmlTD(mFile, mutation.mLeft.length(), mutation.mCenter.length(), mutation.mRight.length(), id-1, m);
         mFile << "</tr>";
         // print a hidden row containing the full read
-        if(GlobalSettings::outputOriginalReads){
+        if(!GlobalSettings::simplifiedMode){
             mFile << "<tr id='" << rowid << "' style='display:none;'>";
             mFile << "<td colspan='6'><xmp>";
             matches[m]->printReadsToFile(mFile);

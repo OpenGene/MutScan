@@ -40,6 +40,27 @@ Read::Read(Read &r) {
 	mHasQuality = r.mHasQuality;
 }
 
+Read::Read(char* seqBuf, char meanQual) {
+	mName = "Unknown";
+	string seq(seqBuf);
+	mSeq = Sequence(seq);
+	mStrand = "+";
+	mQuality = string(seq.length(), meanQual);
+	mHasQuality = true;
+}
+
+char Read::meanQuality() {
+	if(length() == 0)
+		return '\0';
+	int total = 0;
+	for(int i=0; i<length(); i++) {
+		total += mQuality[i];
+	}
+
+	total /= length();
+	return (char)total;
+}
+
 void Read::print(){
 	std::cout << mName << endl;
 	std::cout << mSeq.mStr << endl;

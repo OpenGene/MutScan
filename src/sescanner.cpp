@@ -29,6 +29,10 @@ SingleEndScanner::~SingleEndScanner() {
         delete mReadToDelete[i];
         mReadToDelete[i] = NULL;
     }
+    for(int i=0; i<mBufToDelete.size(); i++) {
+        delete mBufToDelete[i];
+        mBufToDelete[i] = NULL;
+    }
 }
 
 bool SingleEndScanner::scan(){
@@ -88,8 +92,12 @@ bool SingleEndScanner::scan(){
 void SingleEndScanner::pushMatch(int i, Match* m, bool needStoreReadToDelete){
     std::unique_lock<std::mutex> lock(mMutationMtx);
     mutationMatches[i].push_back(m);
-    if(needStoreReadToDelete)
-        mReadToDelete.push_back(m->getRead());
+    if(needStoreReadToDelete) {
+        if(GlobalSettings::simplifiedMode)
+            mBufToDelete.push_back(m->getSequence());
+        else
+            mReadToDelete.push_back(m->getRead());
+    }
     lock.unlock();
 }
 
@@ -119,7 +127,7 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
                 continue;
             Match* match = mutationList[t].searchInRead(r);
             if(match) {
-                if(GlobalSettings::outputOriginalReads)
+                if(!GlobalSettings::simplifiedMode)
                     match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
                 pushMatch(t, match, !matched);
@@ -130,7 +138,7 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
         for(int i=0;i<mutationList.size();i++){
             Match* match = mutationList[i].searchInRead(r);
             if(match) {
-                if(GlobalSettings::outputOriginalReads)
+                if(!GlobalSettings::simplifiedMode)
                     match->addOriginalRead(originalRead);
                 match->setReversed(reversed);
                 pushMatch(i, match, !matched);

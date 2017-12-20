@@ -16,6 +16,7 @@ using namespace std;
 class Match{
 public:
     Match(Read* r, int pos, int distance, bool reversed = false);
+    Match(char* seq, char meanQual, int pos, int distance, bool reversed = false);
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
     void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen, int mutid, int matchid);
@@ -24,14 +25,15 @@ public:
     void setReversed(bool flag);
     void addOriginalRead(Read* r);
     void addOriginalPair(ReadPair* pair);
+    int readlength() const;
 
     inline bool operator <(const Match& other) const 
     {
-        return mPos < other.mPos || (mPos == other.mPos && mRead->length() > other.mRead->length());
+        return mPos < other.mPos || (mPos == other.mPos && readlength() > other.readlength());
     }
     inline bool operator >(const Match& other) const
     {
-        return mPos > other.mPos || (mPos == other.mPos && mRead->length() < other.mRead->length());
+        return mPos > other.mPos || (mPos == other.mPos && readlength() < other.readlength());
     }
     inline static bool less(const Match* m1, const Match* m2)
     {
@@ -44,14 +46,17 @@ public:
 
     static int countUnique(vector<Match*>& matches);
     Read* getRead() {return mRead;}
+    char* getSequence() {return mSequence;}
 
 private:
     Read* mRead;
+    char* mSequence;
     vector<Read*> mOriginalReads;
     int mDistance;
     bool mReversed;
     // the start position of the mutation's center
     int mPos;
+    char mMeanQual;
 };
 
 

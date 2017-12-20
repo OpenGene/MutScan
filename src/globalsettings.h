@@ -18,9 +18,6 @@ public:
     inline static void setLegacyMode(bool flag){
         legacyMode = flag;
     }
-    inline static void setOutputOriginalReads(bool flag){
-        outputOriginalReads = flag;
-    }
     inline static void setStandaloneHtml(bool flag){
         standaloneHtml = flag;
     }
@@ -33,15 +30,22 @@ public:
     inline static void setVerbose(bool flag){
         verbose = flag;
     }
+    inline static void setSimplifiedMode(bool flag){
+        simplifiedMode = flag;
+    }
+    inline static void setSimplifiedModeToEvaluate(bool flag){
+        simplifiedModeToEvaluate = flag;
+    }
 
 public:
     static bool markedOnlyForVCF;
     static bool legacyMode;
-    static bool outputOriginalReads;
     static bool standaloneHtml;
     static int minReadSupport;
     static bool processingVCF;
     static bool verbose;
+    static bool simplifiedMode;
+    static bool simplifiedModeToEvaluate;
 };
 
 
