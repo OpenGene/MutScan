@@ -1,6 +1,7 @@
 #include "match.h"
 #include <vector>
 #include "globalsettings.h"
+#include <memory.h>
 
 Match::Match(Read* r, int pos, int distance, bool reversed){
     mRead = r;
