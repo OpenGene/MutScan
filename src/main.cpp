@@ -81,8 +81,12 @@ int main(int argc, char* argv[]){
 
     string simplified = cmd.get<string>("simplified");
     str2lower(simplified);
-    if(simplified == "on" || simplified == "yes")
+    if(simplified == "on" || simplified == "yes") {
         GlobalSettings::setSimplifiedMode(true);
+        if(GlobalSettings::verbose) {
+            cerr << "You have enabled simplified mode to reduce memory usage!" << endl;
+        }
+    }
     else if(simplified == "off" || simplified == "no")
         GlobalSettings::setSimplifiedMode(false);
     else if(simplified == "auto")

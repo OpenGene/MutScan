@@ -16,7 +16,7 @@ using namespace std;
 class Match{
 public:
     Match(Read* r, int pos, int distance, bool reversed = false);
-    Match(char* seq, char meanQual, int pos, int distance, bool reversed = false);
+    Match(char* seq, int readLen, char meanQual, int pos, int distance, bool reversed = false);
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
     void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen, int mutid, int matchid);
@@ -51,11 +51,12 @@ public:
 private:
     Read* mRead;
     char* mSequence;
-    vector<Read*> mOriginalReads;
-    int mDistance;
+    vector<Read*>* mOriginalReads;
     bool mReversed;
     // the start position of the mutation's center
+    int mReadLen;
     int mPos;
+    unsigned char mDistance;
     char mMeanQual;
 };
 

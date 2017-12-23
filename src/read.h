@@ -18,7 +18,7 @@ public:
 	Read(string name, string seq, string strand);
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
-    Read(char* seqBuf, char meanQual);
+    Read(char* twoBitBuf, int readLen, char meanQual);
 	void print();
     void printFile(ofstream& file);
     Read* reverseComplement();
@@ -31,6 +31,9 @@ public:
     void printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid, int matchid);
     void printJSWithBreaks(ofstream& file, vector<int>& breaks);
     char meanQuality();
+    int numOfBase(char base);
+    char base2char(char base);
+    char* to2bit();
 
 public:
     static bool test();

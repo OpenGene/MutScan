@@ -100,7 +100,7 @@ Match* Mutation::searchInRead(Read* r, char* simplifiedBuf, int distanceReq, int
                     continue;
             }
             if(simplifiedBuf != NULL) {
-                return new Match(simplifiedBuf, r->meanQuality(), start, dis);
+                return new Match(simplifiedBuf, r->length(), r->meanQuality(), start, dis);
             }
             else
                 return new Match(r, start, dis);

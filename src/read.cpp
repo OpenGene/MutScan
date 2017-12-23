@@ -40,12 +40,20 @@ Read::Read(Read &r) {
 	mHasQuality = r.mHasQuality;
 }
 
-Read::Read(char* seqBuf, char meanQual) {
+Read::Read(char* twoBitBuf, int readLen, char meanQual) {
 	mName = "Unknown";
-	string seq(seqBuf);
+	string seq(readLen, '\0');
+	const char bases[4] = {'A', 'T', 'C', 'G'};
+	for(int i=0; i<readLen; i++) {
+		int pos = i/4;
+		int shift = (i%4)*2;
+		char b = (twoBitBuf[pos] & (0x03 << shift)) >> shift;
+		seq[i] = bases[b];
+	}
+
 	mSeq = Sequence(seq);
 	mStrand = "+";
-	mQuality = string(seq.length(), meanQual);
+	mQuality = string(readLen, meanQual);
 	mHasQuality = true;
 }
 
@@ -59,6 +67,50 @@ char Read::meanQuality() {
 
 	total /= length();
 	return (char)total;
+}
+
+int Read::numOfBase(char base) {
+	int num = 0;
+	for(int i=0; i<length(); i++) {
+		if(mSeq.mStr[i] == base)
+			num++;
+	}
+	return num;
+}
+
+char Read::base2char(char base) {
+	switch(base) {
+		case 'A':
+			return 0;
+		case 'T':
+			return 1;
+		case 'C':
+			return 2;
+		case 'G':
+			return 3;
+		default:
+			return -1;
+	}
+}
+
+char* Read::to2bit() {
+	int readLen = length();
+	int bufLen = (readLen + 3) / 4;
+	char* buf = new char[bufLen];
+	memset(buf, 0, sizeof(char) * bufLen);
+	for(int i=0; i<readLen; i++) {
+		char val = base2char(mSeq.mStr[i]);
+		// invalid base
+		if(val < 0) {
+			delete buf;
+			return NULL;
+		}
+		int pos = i/4;
+		int shift = (i%4)*2;
+		val = (val<<shift);
+		buf[pos] |= val;
+	}
+	return buf;
 }
 
 void Read::print(){

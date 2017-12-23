@@ -120,9 +120,9 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
     // just copy the sequence buffer
     char* simplifiedBuf = NULL;
     if(GlobalSettings::simplifiedMode) {
-        simplifiedBuf = new char[r->length() + 1];
-        memcpy(simplifiedBuf, r->mSeq.mStr.c_str(), r->length());
-        simplifiedBuf[r->length()] = '\0';
+        simplifiedBuf = r->to2bit();
+        if(simplifiedBuf == NULL)
+            return false;
     }
     bool matched = false;
     if(!GlobalSettings::legacyMode){
