@@ -110,6 +110,7 @@ Match* Mutation::searchInRead(Read* r, char* simplifiedBuf, int distanceReq, int
 }
 
 vector<Mutation> Mutation::parseCsv(string filename) {
+    int num = 0;
     if(GlobalSettings::verbose) {
         cerr << "Parsing target mutations from CSV file: " << filename << endl;
     }
@@ -160,7 +161,8 @@ vector<Mutation> Mutation::parseCsv(string filename) {
         else {
             mutations.push_back(mut);
             if(GlobalSettings::verbose) {
-                cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
+                num++;
+                cerr <<num<<", "<<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
             }
         }
     }
@@ -172,6 +174,7 @@ vector<Mutation> Mutation::parseCsv(string filename) {
 }
 
 vector<Mutation> Mutation::parseBuiltIn() {
+    int num = 0;
     if(GlobalSettings::verbose) {
         cerr << "Using built-in target mutations" << endl;
     }
@@ -198,7 +201,8 @@ vector<Mutation> Mutation::parseBuiltIn() {
         Mutation mut(name, left, center, right, chr);
         mutations.push_back(mut);
         if(GlobalSettings::verbose) {
-            cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
+            num++;
+            cerr <<num<<", "<<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chr <<endl;
         }
     }
     if(mutations.size() <= 0){
@@ -208,6 +212,7 @@ vector<Mutation> Mutation::parseBuiltIn() {
 }
 
 vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
+    int num = 0;
     if(GlobalSettings::verbose) {
         cerr << "Parsing target mutations from VCF file: " << vcfFile << endl;
         cerr << "With reference genome: " << refFile << endl; 
@@ -272,7 +277,8 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
             mut.setSmallIndel(true);
         mutations.push_back(mut);
         if(GlobalSettings::verbose) {
-            cerr <<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chrom <<endl;
+            num++;
+            cerr <<num<<", "<<name<<" "<<left<<" "<<center<<" "<<right<< " "<<chrom <<endl;
         }
     }
     if(mutations.size() <= 0){

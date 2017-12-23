@@ -15,6 +15,7 @@ public:
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
+    static void evaluateSimplifiedMode(string r1file, string r2file, int mutationNum);
 
 private:
     bool scanPairEnd();

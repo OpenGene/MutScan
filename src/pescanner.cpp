@@ -9,6 +9,7 @@
 #include <memory.h>
 #include "util.h"
 #include "globalsettings.h"
+#include "mutscan.h"
 
 PairEndScanner::PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html, int threadNum){
     mRead1File = read1File;
@@ -47,6 +48,12 @@ bool PairEndScanner::scan(){
     }
     else
         mutationList = Mutation::parseBuiltIn();
+
+    if(GlobalSettings::verbose)
+        cerr << "Scanning "<< mutationList.size() << " mutations..."<<endl;
+
+    if(GlobalSettings::simplifiedModeToEvaluate)
+        MutScan::evaluateSimplifiedMode(mRead1File, mRead2File, mutationList.size());
 
     if(!GlobalSettings::legacyMode && mRollingHash==NULL){
         mRollingHash = new RollingHash();
