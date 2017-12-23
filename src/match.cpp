@@ -63,7 +63,7 @@ void Match::addOriginalPair(ReadPair* pair){
 void Match::print(int leftlen, int centerlen, int rightlen){
     if(GlobalSettings::simplifiedMode)
         mRead = new Read(mSequence, mReadLen, mMeanQual);
-    cout<<"pos: "<<mPos<<", distance: "<<mDistance;
+    cout<<"pos: "<<mPos<<", distance: "<<(int)mDistance;
     if(mReversed)
         cout<<", reverse";
     else
@@ -85,7 +85,7 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     if(GlobalSettings::simplifiedMode)
         mRead = new Read(mSequence, mReadLen, mMeanQual);
     file<<"<a title='"<<mRead->mName<<"'>";
-    file<<"d:" << mDistance;
+    file<<"d:" << (int)mDistance;
     if(mReversed)
         file<<", <--";
     else
