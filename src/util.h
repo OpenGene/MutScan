@@ -102,6 +102,15 @@ inline bool file_exists(const  string& s)
     return exists;
 }
 
+inline string basename(const string& filename){
+    string::size_type pos = filename.find_last_of('/');
+    if (pos == string::npos)
+        return filename;
+    else if(pos == filename.length()-1)
+        return ""; // a bad filename
+    else
+        return filename.substr(pos+1, filename.length() - pos - 1);
+}
 
 // check if a string is a directory
 inline bool is_directory(const  string& path)

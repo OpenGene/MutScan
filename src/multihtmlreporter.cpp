@@ -9,7 +9,7 @@ MultiHtmlReporter::MultiHtmlReporter(string filename, vector<Mutation>& mutation
     mMutationList = mutationList;
     mMutationMatches = mutationMatches;
     mFilename = filename;
-    mFolderName = mFilename + ".files";
+    mFolderName = basename(mFilename) + ".files";
     mkdir(mFolderName.c_str(), 0777);
     stat();
 }
