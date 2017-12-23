@@ -1,6 +1,7 @@
 #include "read.h"
 #include <sstream>
 #include "util.h"
+#include <memory.h>
 
 Read::Read(string name, string seq, string strand, string quality){
 	mName = name;
