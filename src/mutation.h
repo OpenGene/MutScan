@@ -21,7 +21,7 @@ public:
     //search this mutation in a read, and return the matchment info
     //by default, Q20 is required, and distance should be <=2
     //return NULL if not found
-    Match* searchInRead(Read* r, int distanceReq = 2, int qualReq=20);
+    Match* searchInRead(Read* r, char* simplifiedBuf = NULL, int distanceReq = 2, int qualReq=20);
     static vector<Mutation> parseCsv(string filename);
     static vector<Mutation> parseBuiltIn();
 

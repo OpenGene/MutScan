@@ -117,6 +117,13 @@ bool SingleEndScanner::scanSingleEnd(ReadPack* pack){
 }
 
 bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
+    // just copy the sequence buffer
+    char* simplifiedBuf = NULL;
+    if(GlobalSettings::simplifiedMode) {
+        simplifiedBuf = new char[r->length() + 1];
+        memcpy(simplifiedBuf, r->mSeq.mStr.c_str(), r->length());
+        simplifiedBuf[r->length()] = '\0';
+    }
     bool matched = false;
     if(!GlobalSettings::legacyMode){
         map<int, int> targets = mRollingHash->hitTargets(r->mSeq.mStr);
@@ -126,7 +133,7 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
             int count = iter->second;
             if(count==0)
                 continue;
-            Match* match = mutationList[t].searchInRead(r);
+            Match* match = mutationList[t].searchInRead(r, simplifiedBuf);
             if(match) {
                 if(!GlobalSettings::simplifiedMode)
                     match->addOriginalRead(originalRead);
@@ -137,7 +144,7 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
         }
     } else {
         for(int i=0;i<mutationList.size();i++){
-            Match* match = mutationList[i].searchInRead(r);
+            Match* match = mutationList[i].searchInRead(r, simplifiedBuf);
             if(match) {
                 if(!GlobalSettings::simplifiedMode)
                     match->addOriginalRead(originalRead);
@@ -146,6 +153,10 @@ bool SingleEndScanner::scanRead(Read* r, Read* originalRead, bool reversed) {
                 matched = true;
             }
         }
+    }
+    if(!matched && simplifiedBuf!=NULL) {
+        delete simplifiedBuf;
+        simplifiedBuf = NULL;
     }
     return matched;
 }

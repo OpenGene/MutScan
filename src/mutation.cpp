@@ -22,7 +22,7 @@ Mutation::Mutation(string name, string left, string center, string right, string
     mChr = chr;
 }
 
-Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
+Match* Mutation::searchInRead(Read* r, char* simplifiedBuf, int distanceReq, int qualReq){
     char phredQualReq= (char)(qualReq + 33);
     int readLen = r->mSeq.length();
     int lLen = mLeft.length();
@@ -99,12 +99,8 @@ Match* Mutation::searchInRead(Read* r, int distanceReq, int qualReq){
                 if(noIndelDis > 2)
                     continue;
             }
-            if(GlobalSettings::simplifiedMode) {
-                // just copy the sequence buffer
-                char* buf = new char[r->length() + 1];
-                memcpy(buf, r->mSeq.mStr.c_str(), r->length());
-                buf[r->length()] = '\0';
-                return new Match(buf, r->meanQuality(), start, dis);
+            if(simplifiedBuf != NULL) {
+                return new Match(simplifiedBuf, r->meanQuality(), start, dis);
             }
             else
                 return new Match(r, start, dis);
