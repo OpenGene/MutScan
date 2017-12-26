@@ -9,8 +9,9 @@ MultiHtmlReporter::MultiHtmlReporter(string filename, vector<Mutation>& mutation
     mMutationList = mutationList;
     mMutationMatches = mutationMatches;
     mFilename = filename;
+    mFolderPath = mFilename + ".files";
     mFolderName = basename(mFilename) + ".files";
-    mkdir(mFolderName.c_str(), 0777);
+    mkdir(mFolderPath.c_str(), 0777);
     stat();
 }
 
@@ -55,7 +56,7 @@ void MultiHtmlReporter::printMainFrame() {
 
 void MultiHtmlReporter::printMainPage() {
     ofstream file;
-    string mainFile = mFolderName + "/main.html";
+    string mainFile = mFolderPath + "/main.html";
     file.open(mainFile.c_str(), ifstream::out);
     printHeader(file);
     printAllChromosomeLink(file);
@@ -109,7 +110,7 @@ void MultiHtmlReporter::printMutationHtml() {
         vector<Match*> matches = mMutationMatches[m];
         if(matches.size()>=GlobalSettings::minReadSupport) {
             string chr = mMutationList[m].mChr;
-            string folder = mFolderName + "/" + chr;
+            string folder = mFolderPath + "/" + chr;
             string filename = folder + "/" + to_string(m) + ".html";
             vector<Mutation> mutList;
             mutList.push_back(mMutationList[m]);
@@ -121,7 +122,7 @@ void MultiHtmlReporter::printMutationHtml() {
 
 void MultiHtmlReporter::printIndexPage() {
     ofstream file;
-    string indexFile = mFolderName + "/index.html";
+    string indexFile = mFolderPath + "/index.html";
     file.open(indexFile.c_str(), ifstream::out);
     printHeader(file);
     file << "<div id='logo' style='text-align:center;'> <span style='font-size:30px;font-weight:bold;'> MutScan </span> <span style='font-size:20px;'> " << MUTSCAN_VER << " </span> </div>";
@@ -141,10 +142,10 @@ void MultiHtmlReporter::printChrHtml() {
     map<string, int>::iterator iter;
     for(iter= mChrCount.begin(); iter!= mChrCount.end(); iter++){
         string chr = iter->first;
-        string folder = mFolderName + "/" + chr;
+        string folder = mFolderPath + "/" + chr;
         mkdir(folder.c_str(), 0777);
         ofstream file;
-        string chrFilename = mFolderName + "/" + chr + ".html";
+        string chrFilename = mFolderPath + "/" + chr + ".html";
         file.open(chrFilename.c_str(), ifstream::out);
         printHeader(file);
         file << "<ul id='menu'>";
@@ -178,7 +179,7 @@ void MultiHtmlReporter::printHeader(ofstream& file){
 
 void MultiHtmlReporter::printCSS(){
     ofstream file;
-    string filename = mFolderName + "/mutscan.css";
+    string filename = mFolderPath + "/mutscan.css";
     file.open(filename.c_str(), ifstream::out);
     file << "td {border:1px solid #dddddd;padding-left:2px;padding-right:2px;font-size:10px;}";
     file << "table {border:1px solid #999999;padding:2x;border-collapse:collapse;}";
@@ -206,7 +207,7 @@ void MultiHtmlReporter::printCSS(){
 
 void MultiHtmlReporter::printJS(){
     ofstream file;
-    string filename = mFolderName + "/mutscan.js";
+    string filename = mFolderPath + "/mutscan.js";
     file.open(filename.c_str(), ifstream::out);
     file << "function toggle(targetid){ \n\
                 if (document.getElementById){ \n\

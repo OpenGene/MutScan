@@ -37,6 +37,7 @@ private:
 private:
     string mFilename;
     string mFolderName;
+    string mFolderPath;
     vector<Mutation> mMutationList;
     vector<Match*>* mMutationMatches;
     map<string, int> mChrCount;
