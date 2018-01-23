@@ -128,3 +128,6 @@ If you want to run MutScan with BAM/CRAM files, you can use `samtools` to conver
 * `MutScan` requires at least 50 bp long reads, if your reads are too short, do not use it
 * If you want to extract mutations even with only one read support, add `-S 1` or `--support=1` in the command
 * Feel free to raise an issue if you meet any problem
+
+# Cite MutScan
+Shifu Chen, Tanxiao Huang, TieXiang Wen, Hong Li, Mingyan Xu and Jia Gu. MutScan: fast detection and visualization of target mutations by scanning FASTQ data. BMC Bioinformatics. https://doi.org/10.1186/s12859-018-2024-6
