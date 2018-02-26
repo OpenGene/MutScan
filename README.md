@@ -28,26 +28,27 @@ Detect and visualize target mutations by scanning FastQ files directly
 mutscan -1 R1.fq.gz -2 R2.fq.gz
 ```
 
-# Download
-Get latest (may be not stable)
+# get mutscan
+## download binary (only for Linux systems, http://opengene.org/MutScan/mutscan)
 ```shell
-# download use http
-https://github.com/OpenGene/MutScan/archive/master.zip
-
-# or download use git
-git clone https://github.com/OpenGene/MutScan.git
+# this binary was compiled on CentOS, and tested on CentOS/Ubuntu
+wget http://opengene.org/MutScan/mutscan
+chmod a+x ./mutscan
 ```
-Get the stable releases  
-https://github.com/OpenGene/MutScan/releases/latest
-
-# Build
-MutScan only depends on `libz`, which is always available on Linux or Mac systems. If your system has no `libz`, install it first.
+## or compile from source
 ```shell
-cd MutScan
+# get source (you can also use browser to download from master or releases)
+git clone https://github.com/OpenGene/mutscan.git
+
+# build
+cd mutscan
 make
+
+# Install
+sudo make install
 ```
 
-# Windows version
+# Windows version (may be not the latest version)
 If you want to compile MutScan on Windows, you should use `cygwin`. We already built one with cygwin-2.6.0/g++ 5.4, and it can be downloaded from:   
 http://opengene.org/MutScan/windows_mutscan.zip
 
