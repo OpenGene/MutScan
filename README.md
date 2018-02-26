@@ -28,8 +28,9 @@ Detect and visualize target mutations by scanning FastQ files directly
 mutscan -1 R1.fq.gz -2 R2.fq.gz
 ```
 
-# get mutscan
-## download binary (only for Linux systems, http://opengene.org/MutScan/mutscan)
+# Get MutScan
+## download binary 
+This binary is only for Linux systems: http://opengene.org/MutScan/mutscan
 ```shell
 # this binary was compiled on CentOS, and tested on CentOS/Ubuntu
 wget http://opengene.org/MutScan/mutscan
