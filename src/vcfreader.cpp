@@ -64,7 +64,11 @@ bool VcfReader::readNext()
         var.pos = pos;
         var.id = trim(items[2]);
         var.ref = trim(items[3]);
+        if(var.ref == "-")
+            var.ref = "";
         var.alt = alts[a];
+        if(var.alt == "-")
+            var.alt = "";
         var.qual = trim(items[5]);
         var.filter = trim(items[6]);
         var.info = trim(items[7]);
