@@ -3,7 +3,7 @@
 #include "util.h"
 #include <sstream>
 
-FastaReader::FastaReader(string faFile)
+FastaReader::FastaReader(string faFile, bool forceUpperCase)
 {
     // Set locale and disable stdio synchronization to improve iostream performance
     // http://www.drdobbs.com/the-standard-librarian-iostreams-and-std/184401305
@@ -12,6 +12,7 @@ FastaReader::FastaReader(string faFile)
     ios_base::sync_with_stdio(false);
 
     mFastaFile = faFile;
+    mForceUpperCase = forceUpperCase;
     if (is_directory(mFastaFile)) {
         string error_msg = "There is a problem with the provided fasta file: \'";
         error_msg.append(mFastaFile);
@@ -58,8 +59,12 @@ void FastaReader::readNext()
         if(c == '>' || mFastaFileStream.eof())
             break;
         else {
-            if (foundHeader)
+            if (foundHeader){
+                if(mForceUpperCase && c>='a' && c<='z') {
+                    c -= ('a' - 'A');
+                }
                 ssSeq << c;
+            }
             else
                 ssHeader << c;
         }
@@ -67,12 +72,15 @@ void FastaReader::readNext()
         string line = "";
         getline(mFastaFileStream,line,'\n');
 
+
         if(foundHeader == false) {
             ssHeader << line;
             foundHeader = true;
         }
-        else
-            ssSeq << str_keep_valid_sequence(line);
+        else {
+            str_keep_valid_sequence(line, mForceUpperCase);
+            ssSeq << line;
+        }
     }
     mCurrentSequence = ssSeq.str();
     string header = ssHeader.str();

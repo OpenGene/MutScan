@@ -16,7 +16,7 @@ using namespace std;
 class FastaReader
 {
 public:
-    FastaReader(string fastaFile);
+    FastaReader(string fastaFile, bool forceUpperCase = true);
     ~FastaReader();
     bool hasNext();
     void readNext();
@@ -58,6 +58,7 @@ private:
 private:
     string mFastaFile;
     ifstream mFastaFileStream;
+    bool mForceUpperCase;
 };
 
 
