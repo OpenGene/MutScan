@@ -7,7 +7,7 @@ Detect and visualize target mutations by scanning FastQ files directly
 * [HTML report](#html-report)
 * [JSON report](#json-report)
 * [All options](#all-options)
-* [Custom your mutation file](#mutation-file)
+* [Customize your mutation file](#mutation-file)
 * [Work with BAM/CRAM](#work-with-bamcram)
 * [Remarks](#remarks)
 * [Cite MutScan](#cite-mutscan)
