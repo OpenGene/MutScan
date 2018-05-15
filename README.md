@@ -53,7 +53,7 @@ sudo make install
 If you want to compile MutScan on Windows, you should use `cygwin`. We already built one with cygwin-2.6.0/g++ 5.4, and it can be downloaded from:   
 http://opengene.org/MutScan/windows_mutscan.zip
 
-# HTML output
+# HTML report
 * A HTML report will be generated, and written to the given filename. See http://opengene.org/MutScan/report.html for an example.
 * ***If you run the command in your Linux server and want to view the HTML report on your local system. DO remember to copy all of the `xxxx.html` and `xxxx.html.files` and keep them in the same folder, then click `xxxx.html` to view it in browser.***
 * The default file name is `mutscan.html`, and a folder `mutscan.html.files` will be also generated.
@@ -65,6 +65,51 @@ http://opengene.org/MutScan/windows_mutscan.zip
 * The color of each base indicates its quality, and the quality will be shown when mouse over.
 * In first column, d means the edit distance of match, and --> means forward, <-- means reverse 
 
+# JSON report
+JSON report is disabled by default. You can enable it by specifying a JSON file name using `-j` or `--json`. A JSON report is like this:
+
+```json
+{
+	"command":"./mutscan -1 /Users/shifu/data/fq/S010_20170320003-4_ffpedna_pan-cancer-v1_S10_R1_001.fastq -2 /Users/shifu/data/fq/S010_20170320003-4_ffpedna_pan-cancer-v1_S10_R2_001.fastq -h z.html -j z.json -v --simplified=off ",
+	"version":"1.14.0",
+	"time":"2018-05-15  15:48:21",
+	"mutations":{
+		"NRAS-neg-1-115258747-2-c.35G>C-p.G12A-COSM565":{
+			"chr":"chr1",
+			"ref":["TGGATTGTCAGTGCGCTTTTCCCAACACCA","G","CTGCTCCAACCACCACCAGTTTGTACTCAG"],
+			"reads":[
+				{
+					"breaks":[31,61,62,76], 
+					"seq":"ATATTCATCTACAAAGTGGTTCTGGATTAGCTGGATTGTCAGTGCGCTTTTCCCAACACCAGCTGCTCCAACCACC",
+					"qual":"eeeeeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiieiiiiiiiiiiieieeeee"
+				},
+				{
+					"breaks":[31,61,62,76], 
+					"seq":"ATATTCATCTACAAAGTGGTTCTGGATTAGCTGGATTGTCAGTGCGCTTTTCCCAACACCAGCTGCTCCAACCACC",
+					"qual":"eeeeeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiieeeee"
+				}
+			]
+		},
+		"PIK3CA-pos-3-178936082-9-c.1624G>A-E542K-COSM760":{
+			"chr":"chr3",
+			"ref":["AAAGCAATTTCTACACGAGATCCTCTCTCT","A","AAATCACTGAGCAGGAGAAAGATTTTCTAT"],
+			"reads":[
+				{
+					"breaks":[22,52,53,83], 
+					"seq":"GGAAAATGACAAAGAACAGCTCAAAGCAATTTCTACACGAGATCCTCTCTCTAAAATCACTGAGCAGGAGAAAGATTTTCCAAAGATGTTTCTCAGAACGCTGCAGTCTGCAATTTGTATGAATTCCC",
+					"qual":"eeeeeiiiQiiiiiieiiiieiSeiiiiiie`iiii`i`iiiiiiiiiiiiii`iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaiiiiiiiiiiiiiiiiiieiiiiiieeeee"
+				},
+				{
+					"breaks":[0,27,28,58], 
+					"seq":"GCAATTTCTACACGAGATCCTCTCTCTAAAATCACTGCGCAGGAGAAAGATTTTCTATGGACCACAGGTAAGTGCTAAAATGGAGATTCTCTGTTTCTTTTTCTTTATTACAGAAAAAATAACTGACTTTGGCTGATCTCAGCATGTTTTTACCATACC",
+					"qual":"AAAAAEEEEiieiiieiiiiiiiiiieiiiiiiiie``iiiiiieiiiiiiiiiieiiiieiieieeiiiSiiiiiieiiiiiiiiiiiiiieiiiiiSiiiiiiiiiiiiieiiiiiiiiiiii`ieiiieiii`ieiiiii`eS``eieEEEAAAAA"
+				}
+			]
+		}
+	}
+}
+```
+
 # Usage
 ```shell
 usage: mutscan -1 <read1_file> -2 <read2_file> [options]...
@@ -74,6 +119,7 @@ options:
   -m, --mutation             mutation file name, can be a CSV format or a VCF format
   -r, --ref                  reference fasta file name (only needed when mutation file is a VCF)
   -h, --html                 filename of html report, default is mutscan.html in work directory
+  -j, --json                 filename of JSON report, default is no JSON report (string [=])
   -t, --thread               worker thread number, default is 4
   -S, --support              min read support required to report a mutation, default is 2.
   -k, --mark                 when mutation file is a vcf file, --mark means only process the records with FILTER column is M
