@@ -1,9 +1,9 @@
 # MutScan
 Detect and visualize target mutations by scanning FastQ files directly
-* [features](#features)
+* [Features](#features)
 * [Application scenarios](#application-scenarios)
 * [Take a quick glance](#take-a-quick-glance)
-* [download, compile and install](#get-mutscan)
+* [Download, compile and install](#get-mutscan)
 * [HTML report](#html-report)
 * [JSON report](#json-report)
 * [All options](#all-options)
@@ -12,7 +12,7 @@ Detect and visualize target mutations by scanning FastQ files directly
 * [Remarks](#remarks)
 * [Cite MutScan](#cite-mutscan)
 
-# features
+# Features
 * Ultra sensitive, guarantee that all reads supporting the mutations will be detected
 * Can be 50X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect).
 * Very easy to use and need nothing else. No alignment, no reference genome, no variant call, no...
