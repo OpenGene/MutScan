@@ -19,9 +19,9 @@ extern string command;
 
 void JsonReporter::run() {
     mFile << "{" << endl;
-    mFile << "\"command\":\"" << command << "\"," << endl;
-    mFile << "\"version\":\"" << MUTSCAN_VER << "\"," << endl;
-    mFile << "\"time\":\"" << getCurrentSystemTime() << "\"," << endl;
+    mFile << "\t\"command\":\"" << command << "\"," << endl;
+    mFile << "\t\"version\":\"" << MUTSCAN_VER << "\"," << endl;
+    mFile << "\t\"time\":\"" << getCurrentSystemTime() << "\"," << endl;
     mFile << "\t\"mutations\":{";
 
     bool isFirstMut = true;
