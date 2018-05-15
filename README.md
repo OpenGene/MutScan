@@ -1,5 +1,18 @@
 # MutScan
 Detect and visualize target mutations by scanning FastQ files directly
+* [features](#features)
+* [Application scenarios](#application-scenarios)
+* [Take a quick glance](#take-a-quick-glance)
+* [download, compile and install](#get-mutscan)
+* [HTML report](#html-report)
+* [JSON report](#json-report)
+* [All options](#all-options)
+* [Custom your mutation file](#mutation-file)
+* [Work with BAM/CRAM](#work-with-bamcram)
+* [Remarks](#remarks)
+* [Cite MutScan](#cite-mutscan)
+
+# features
 * Ultra sensitive, guarantee that all reads supporting the mutations will be detected
 * Can be 50X+ faster than normal pipeline (i.e. BWA + Samtools + GATK/VarScan/Mutect).
 * Very easy to use and need nothing else. No alignment, no reference genome, no variant call, no...
@@ -110,7 +123,7 @@ JSON report is disabled by default. You can enable it by specifying a JSON file 
 }
 ```
 
-# Usage
+# All options
 ```shell
 usage: mutscan -1 <read1_file> -2 <read2_file> [options]...
 options:
