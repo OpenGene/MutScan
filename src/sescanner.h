@@ -36,11 +36,12 @@ typedef struct ReadRepository ReadRepository;
 
 class SingleEndScanner{
 public:
-    SingleEndScanner(string mutationFile, string refFile, string read1File, string html="", int threadnum=1);
+    SingleEndScanner(string mutationFile, string refFile, string read1File, string html="", string json = "", int threadnum=1);
     ~SingleEndScanner();
     bool scan();
     void textReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
     void htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
+    void jsonReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches);
 
 private:
     bool scanSingleEnd(ReadPack* pack);
@@ -59,6 +60,7 @@ private:
     string mRead1File;
     string mRead2File;
     string mHtmlFile;
+    string mJsonFile;
     ReadRepository mRepo;
     bool mProduceFinished;
     vector<Mutation> mutationList;

@@ -105,6 +105,32 @@ void Match::printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen
     }
 }
 
+void Match::printBreaksToJson(ofstream& file, int leftlen, int centerlen, int rightlen){
+    vector<int> breaks;
+    breaks.push_back(max(mPos-leftlen, 0));
+    breaks.push_back( mPos );
+    breaks.push_back( mPos+centerlen );
+    breaks.push_back( min(mPos+centerlen+rightlen, mReadLen));
+    file << "[";
+    for(int i=0; i<breaks.size(); i++) {
+        file << breaks[i];
+        if(i!=breaks.size() - 1) 
+            file << ",";
+    }
+    file << "]";
+}
+
+void Match::printReadToJson(ofstream& file, string pad) {
+    if(GlobalSettings::simplifiedMode)
+        mRead = new Read(mSequence, mReadLen, mMeanQual);
+    file << pad << "\"seq\":" << "\"" <<  mRead->mSeq.mStr << "\"," << endl;
+    file << pad << "\"qual\":" << "\"" <<  mRead->mQuality << "\"" << endl;
+    if(GlobalSettings::simplifiedMode) {
+        delete mRead;
+        mRead = NULL;
+    }
+}
+
 void Match::printJS(ofstream& file, int leftlen, int centerlen, int rightlen) {
     if(GlobalSettings::simplifiedMode)
         mRead = new Read(mSequence, mReadLen, mMeanQual);

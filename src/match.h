@@ -19,6 +19,8 @@ public:
     Match(char* seq, int readLen, char meanQual, int pos, int distance, bool reversed = false);
     ~Match();
     void print(int leftlen, int centerlen, int rightlen);
+    void printBreaksToJson(ofstream& file, int leftlen, int centerlen, int rightlen);
+    void printReadToJson(ofstream& file, string pad);
     void printHtmlTD(ofstream& file, int leftlen, int centerlen, int rightlen, int mutid, int matchid);
     void printJS(ofstream& file, int leftlen, int centerlen, int rightlen);
     void printReadsToFile(ofstream& file);

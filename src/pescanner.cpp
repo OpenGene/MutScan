@@ -2,6 +2,7 @@
 #include "fastqreader.h"
 #include <iostream>
 #include "htmlreporter.h"
+#include "jsonreporter.h"
 #include "multihtmlreporter.h"
 #include <unistd.h>
 #include <functional>
@@ -11,12 +12,13 @@
 #include "globalsettings.h"
 #include "mutscan.h"
 
-PairEndScanner::PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html, int threadNum){
+PairEndScanner::PairEndScanner(string mutationFile, string refFile, string read1File, string read2File, string html, string json, int threadNum){
     mRead1File = read1File;
     mRead2File = read2File;
     mMutationFile = mutationFile;
     mRefFile = refFile;
     mHtmlFile = html;
+    mJsonFile = json;
     mProduceFinished = false;
     mThreadNum = threadNum;
     mRollingHash = NULL;
@@ -90,6 +92,7 @@ bool PairEndScanner::scan(){
 
     textReport(mutationList, mutationMatches);
     htmlReport(mutationList, mutationMatches);
+    jsonReport(mutationList, mutationMatches);
 
     // free memory
     for(int i=0;i<mutationList.size();i++){
@@ -362,6 +365,14 @@ void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *
             }
         }
     }
+}
+
+void PairEndScanner::jsonReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+    if(mJsonFile == "")
+        return;
+
+    JsonReporter reporter(mJsonFile, mutationList, mutationMatches);
+    reporter.run();
 }
 
 void PairEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {

@@ -22,6 +22,7 @@ int main(int argc, char* argv[]){
     cmd.add<string>("mutation", 'm', "mutation file name, can be a CSV format or a VCF format", false, "");
     cmd.add<string>("ref", 'r', "reference fasta file name (only needed when mutation file is a VCF)", false, "");
     cmd.add<string>("html", 'h', "filename of html report, default is mutscan.html in work directory", false, "mutscan.html");
+    cmd.add<string>("json", 'j', "filename of JSON report, default is no JSON report", false, "");
     cmd.add<int>("thread", 't', "worker thread number, default is 4", false, 4);
     cmd.add<int>("support", 'S', "min read support for reporting a mutation, default is 2", false, 2);
     cmd.add("mark", 'k', "when mutation file is a vcf file, --mark means only process the records with FILTER column is M");
@@ -34,6 +35,7 @@ int main(int argc, char* argv[]){
     string r2file = cmd.get<string>("read2");
     string mutationFile = cmd.get<string>("mutation");
     string html = cmd.get<string>("html");
+    string json = cmd.get<string>("json");
     string refFile = cmd.get<string>("ref");
     int threadNum = cmd.get<int>("thread");
 
@@ -97,7 +99,7 @@ int main(int argc, char* argv[]){
     }
 
     time_t t1 = time(NULL);
-    MutScan scanner(mutationFile, refFile, r1file, r2file, html, threadNum);
+    MutScan scanner(mutationFile, refFile, r1file, r2file, html, json, threadNum);
     scanner.scan();
     time_t t2 = time(NULL);
     printf("\n%s\n", command.c_str());

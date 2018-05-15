@@ -3,6 +3,7 @@
 #include <iostream>
 #include "htmlreporter.h"
 #include "multihtmlreporter.h"
+#include "jsonreporter.h"
 #include <unistd.h>
 #include <functional>
 #include <thread>
@@ -11,11 +12,12 @@
 #include "globalsettings.h"
 #include "mutscan.h"
 
-SingleEndScanner::SingleEndScanner(string mutationFile, string refFile, string read1File, string html, int threadNum){
+SingleEndScanner::SingleEndScanner(string mutationFile, string refFile, string read1File, string html, string json, int threadNum){
     mRead1File = read1File;
     mMutationFile = mutationFile;
     mRefFile = refFile;
     mHtmlFile = html;
+    mJsonFile = json;
     mProduceFinished = false;
     mThreadNum = threadNum;
     mRollingHash = NULL;
@@ -88,6 +90,7 @@ bool SingleEndScanner::scan(){
 
     textReport(mutationList, mutationMatches);
     htmlReport(mutationList, mutationMatches);
+    jsonReport(mutationList, mutationMatches);
 
     // free memory
     for(int i=0;i<mutationList.size();i++){
@@ -331,6 +334,14 @@ void SingleEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*>
             }
         }
     }
+}
+
+void SingleEndScanner::jsonReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
+    if(mJsonFile == "")
+        return;
+
+    JsonReporter reporter(mJsonFile, mutationList, mutationMatches);
+    reporter.run();
 }
 
 void SingleEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *mutationMatches) {
