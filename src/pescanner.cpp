@@ -237,7 +237,7 @@ void PairEndScanner::consumePack(){
     ReadPairPack* data;
     std::unique_lock<std::mutex> lock(mRepo.mtx);
     // read buffer is empty, just wait here.
-    while(mRepo.writePos == mRepo.readPos) {
+    while(mRepo.writePos % PACK_NUM_LIMIT == mRepo.readPos % PACK_NUM_LIMIT) {
         if(mProduceFinished){
             lock.unlock();
             return;
@@ -246,16 +246,15 @@ void PairEndScanner::consumePack(){
     }
 
     data = mRepo.packBuffer[mRepo.readPos];
-    (mRepo.readPos)++;
-    lock.unlock();
-
-    scanPairEnd(data);
-
+    mRepo.readPos++;
 
     if (mRepo.readPos >= PACK_NUM_LIMIT)
         mRepo.readPos = 0;
 
+    lock.unlock();
     mRepo.repoNotFull.notify_all();
+
+    scanPairEnd(data);
 }
 
 void PairEndScanner::producerTask()
