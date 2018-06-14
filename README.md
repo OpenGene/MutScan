@@ -34,7 +34,8 @@ Detect and visualize target mutations by scanning FastQ files directly
 * ...
 
 # Take a quick glance
-* Sample report: http://opengene.org/MutScan/report.html
+* Sample HTML report: http://opengene.org/MutScan/report.html
+* Sample JSON report: http://opengene.org/MutScan/report.json
 * Dataset for testing: http://opengene.org/dataset.html
 * Command to test
 ```shell
