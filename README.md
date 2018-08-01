@@ -53,7 +53,7 @@ chmod a+x ./mutscan
 ## or compile from source
 ```shell
 # get source (you can also use browser to download from master or releases)
-git clone https://github.com/OpenGene/mutscan.git
+git clone https://github.com/OpenGene/MutScan.git
 
 # build
 cd mutscan
