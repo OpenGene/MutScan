@@ -33,3 +33,6 @@ mutscan
 *.exe
 *.out
 *.app
+
+# ignore example dir
+**/example/**
