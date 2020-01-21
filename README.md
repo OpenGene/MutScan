@@ -1,3 +1,5 @@
+[![install with conda](
+https://anaconda.org/bioconda/mutscan/badges/version.svg)](https://anaconda.org/bioconda/mutscan)
 # MutScan
 Detect and visualize target mutations by scanning FastQ files directly
 * [Features](#features)
@@ -43,6 +45,12 @@ mutscan -1 R1.fq.gz -2 R2.fq.gz
 ```
 
 # Get MutScan
+## install with Bioconda
+[![install with conda](
+https://anaconda.org/bioconda/mutscan/badges/version.svg)](https://anaconda.org/bioconda/mutscan)
+```shell
+conda install -c bioconda mutscan
+```
 ## download binary 
 This binary is only for Linux systems: http://opengene.org/MutScan/mutscan
 ```shell
