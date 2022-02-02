@@ -48,7 +48,7 @@ Read::Read(char* twoBitBuf, int readLen, char meanQual) {
 	for(int i=0; i<readLen; i++) {
 		int pos = i/4;
 		int shift = (i%4)*2;
-		char b = (twoBitBuf[pos] & (0x03 << shift)) >> shift;
+		unsigned char b = (twoBitBuf[pos] & (0x03 << shift)) >> shift;
 		seq[i] = bases[b];
 	}
 
