@@ -10,6 +10,9 @@ mutscan
 *.o
 *.obj
 
+# Dependency files
+*.d
+
 # Precompiled Headers
 *.gch
 *.pch
