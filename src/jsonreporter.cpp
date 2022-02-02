@@ -25,10 +25,10 @@ void JsonReporter::run() {
     mFile << "\t\"mutations\":{";
 
     bool isFirstMut = true;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         Mutation mut = mMutationList[i];
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>=GlobalSettings::minReadSupport){
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
             if(isFirstMut) {
                 mFile << endl;
                 isFirstMut = false;
@@ -40,7 +40,7 @@ void JsonReporter::run() {
             mFile << "\t\t\t\"" <<  "chr" << "\":" << "\"" << mut.mChr << "\"," << endl;
             mFile << "\t\t\t\"" <<  "ref" << "\":[" << "\"" << mut.mLeft << "\"," << "\"" << mut.mCenter << "\"," << "\"" << mut.mRight << "\"]," << endl;
             mFile << "\t\t\t\"" <<  "reads" << "\":[" << endl;
-            for(int m=0; m<matches.size(); m++){
+            for(size_t m=0; m<matches.size(); m++){
                 mFile << "\t\t\t\t{" << endl;
                 mFile << "\t\t\t\t\t\"breaks\":"; 
                 matches[m]->printBreaksToJson(mFile, mut.mLeft.length(), mut.mCenter.length(), mut.mRight.length());

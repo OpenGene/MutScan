@@ -25,7 +25,7 @@ void RollingHash::initMutations(vector<Mutation>& mutationList) {
     if(mutationList.size() > 5000)
         mAllowEditDistanceIs2 = false;
 
-    for(int i=0; i<mutationList.size(); i++) {
+    for(size_t i=0; i<mutationList.size(); i++) {
         Mutation m = mutationList[i];
         string s1 = m.mLeft + m.mCenter + m.mRight;
         add(s1, i, !m.isSmallIndel());
@@ -46,7 +46,7 @@ map<long, vector<int> > RollingHash::getKeyTargets() {
 }
 
 bool RollingHash::add(string s, int target, bool allowIndel) {
-    if(s.length() < mWindow + 2)
+    if((ssize_t)s.length() < mWindow + 2)
         return false;
 
     int center = s.length() / 2;
@@ -169,7 +169,7 @@ bool RollingHash::add(string s, int target, bool allowIndel) {
 
 map<int, int> RollingHash::hitTargets(const string s) {
     map<int, int> ret;
-    if(s.length() < mWindow)
+    if((ssize_t)s.length() < mWindow)
         return ret;
 
     const char* data = s.c_str();
@@ -182,7 +182,7 @@ map<int, int> RollingHash::hitTargets(const string s) {
     }
     addHit(ret, curHash);
 
-    for(int i=mWindow; i<s.length(); i++) {
+    for(int i=mWindow; i<(ssize_t)s.length(); i++) {
         curHash = ((curHash - hash(data[i - mWindow], 0))>>1) + hash(data[i], mWindow-1);
         addHit(ret, curHash);
     }
@@ -199,7 +199,7 @@ inline void RollingHash::addHit(map<int, int>& ret, long hash) {
     }
 
     if(mKeyTargets.count(hash)) {
-        for(int i=0; i<mKeyTargets[hash].size(); i++) {
+        for(size_t i=0; i<mKeyTargets[hash].size(); i++) {
             int val = mKeyTargets[hash][i];
             if(ret.count(val)) {
                 //cout << "-";
@@ -217,7 +217,7 @@ void RollingHash::addHash(long hash, int target) {
     if(mKeyTargets.count(hash) == 0)
         mKeyTargets[hash] = vector<int>();
     else {
-        for(int i=0; i<mKeyTargets[hash].size(); i++) {
+        for(size_t i=0; i<mKeyTargets[hash].size(); i++) {
             if(mKeyTargets[hash][i] == target)
                 return ;
         }
@@ -261,7 +261,7 @@ void RollingHash::dump() {
         if(iter->second.size() < 2)
             continue;
         cout << iter->first << endl;
-        for(int i=0; i<iter->second.size(); i++)
+        for(size_t i=0; i<iter->second.size(); i++)
             cout << iter->second[i] << "\t";
         cout << endl;
     }
@@ -271,7 +271,7 @@ bool RollingHash::test(){
     RollingHash rh(48);
     rh.initMutations(mutationList);
     bool result = true;
-    for(int i=0; i<mutationList.size(); i++) {
+    for(size_t i=0; i<mutationList.size(); i++) {
         Mutation m = mutationList[i];
         string s = m.mLeft + m.mCenter + m.mRight;
         map<int, int> targets = rh.hitTargets(s);
@@ -279,7 +279,7 @@ bool RollingHash::test(){
         bool found = false;
         map<int, int>::iterator iter;
         for(iter=targets.begin(); iter!=targets.end(); iter++) {
-            int t = iter->first;
+            size_t t = iter->first;
             int count = iter->second;
             cout << t << "\t";
             if(t == i)

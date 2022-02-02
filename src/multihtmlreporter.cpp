@@ -20,9 +20,9 @@ MultiHtmlReporter::~MultiHtmlReporter(){
 
 void MultiHtmlReporter::stat(){
     mTotalCount = 0;
-    for(int m=0; m<mMutationList.size(); m++) {
+    for(size_t m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>=GlobalSettings::minReadSupport) {
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport) {
             mTotalCount++;
             string chr = mMutationList[m].mChr;
             if(mChrCount.count(chr)==0)
@@ -69,9 +69,9 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
     map<string, int>::iterator iter;
     file << "<ul id='menu'>";
     file << "<div style='font-size:12px;padding-top:20px;text-align:left;color:#aaaaaa'>Mutations found of all chromosomes:</div>";
-    for(int m=0; m<mMutationList.size(); m++) {
+    for(size_t m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>=GlobalSettings::minReadSupport) {
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport) {
             found = true;
             string chr = mMutationList[m].mChr;
             string filename = chr + "/" + to_string(m) + ".html";
@@ -88,9 +88,9 @@ void MultiHtmlReporter::printAllChromosomeLink(ofstream& file) {
 
 void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
     bool found = false;
-    for(int m=0; m<mMutationList.size(); m++) {
+    for(size_t m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>=GlobalSettings::minReadSupport) {
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport) {
             found = true;
             if(chr == mMutationList[m].mChr) {
                 string filename = chr + "/" + to_string(m) + ".html";
@@ -106,9 +106,9 @@ void MultiHtmlReporter::printChrLink(ofstream& file, string chr) {
 }
 
 void MultiHtmlReporter::printMutationHtml() {
-    for(int m=0; m<mMutationList.size(); m++) {
+    for(size_t m=0; m<mMutationList.size(); m++) {
         vector<Match*> matches = mMutationMatches[m];
-        if(matches.size()>=GlobalSettings::minReadSupport) {
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport) {
             string chr = mMutationList[m].mChr;
             string folder = mFolderPath + "/" + chr;
             string filename = folder + "/" + to_string(m) + ".html";
@@ -262,7 +262,7 @@ void MultiHtmlReporter::printScanTargets(ofstream& file){
     file << "<p> scanned " << mMutationList.size() << " mutation spots...<input type='button' id='target_view_btn', onclick=toggle_target_list('target_list'); value='show'></input></p>";
     file << "<ul id='target_list' style='display:none'>";
     int id=0;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         id++;
         file<<"<li> " << id << ", " << mMutationList[i].mName << "</li>";
     }

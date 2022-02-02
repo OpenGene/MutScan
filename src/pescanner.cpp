@@ -29,11 +29,11 @@ PairEndScanner::~PairEndScanner() {
         delete mRollingHash;
         mRollingHash = NULL;
     }
-    for(int i=0; i<mReadToDelete.size(); i++) {
+    for(size_t i=0; i<mReadToDelete.size(); i++) {
         delete mReadToDelete[i];
         mReadToDelete[i] = NULL;
     }
-    for(int i=0; i<mBufToDelete.size(); i++) {
+    for(size_t i=0; i<mBufToDelete.size(); i++) {
         delete mBufToDelete[i];
         mBufToDelete[i] = NULL;
     }
@@ -63,7 +63,7 @@ bool PairEndScanner::scan(){
     }
 
     mutationMatches = new vector<Match*>[mutationList.size()];
-    for(int i=0;i<mutationList.size();i++){
+    for(size_t i=0;i<mutationList.size();i++){
         mutationMatches[i] = vector<Match*>();
     }
 
@@ -86,7 +86,7 @@ bool PairEndScanner::scan(){
     }
 
     // sort the matches to make the pileup more clear
-    for(int i=0;i<mutationList.size();i++){
+    for(size_t i=0;i<mutationList.size();i++){
         sort(mutationMatches[i].begin(), mutationMatches[i].end(), Match::greater); 
     }
 
@@ -95,7 +95,7 @@ bool PairEndScanner::scan(){
     jsonReport(mutationList, mutationMatches);
 
     // free memory
-    for(int i=0;i<mutationList.size();i++){
+    for(size_t i=0;i<mutationList.size();i++){
         mutationMatches[i].clear();
     }
     return true;
@@ -184,7 +184,7 @@ bool PairEndScanner::scanRead(Read* r, ReadPair* originalPair, bool reversed) {
             }
         }
     } else {
-        for(int i=0;i<mutationList.size();i++){
+        for(size_t i=0;i<mutationList.size();i++){
             Match* match = mutationList[i].searchInRead(r, simplifiedBuf);
             if(match) {
                 if(!GlobalSettings::simplifiedMode)
@@ -333,13 +333,13 @@ void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *
     //output result
     bool found = false;
     int undetected = 0;
-    for(int i=0;i<mutationList.size();i++){
+    for(size_t i=0;i<mutationList.size();i++){
         vector<Match*> matches = mutationMatches[i];
-        if(matches.size()>=GlobalSettings::minReadSupport){
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
             found = true;
             cout<<endl<<"---------------"<<endl;
             mutationList[i].print();
-            for(int m=0; m<matches.size(); m++){
+            for(size_t m=0; m<matches.size(); m++){
                 cout<<m+1<<", ";
                 matches[m]->print(mutationList[i].mLeft.length(), mutationList[i].mCenter.length(), mutationList[i].mRight.length());
             }
@@ -353,9 +353,9 @@ void PairEndScanner::textReport(vector<Mutation>& mutationList, vector<Match*> *
     // if processing VCF, output those with no supporting reads found
     if(GlobalSettings::processingVCF && undetected>0) {
         cerr << undetected << " mutations of this VCF are not detected" << endl;
-        for(int i=0;i<mutationList.size();i++){
+        for(size_t i=0;i<mutationList.size();i++){
             vector<Match*> matches = mutationMatches[i];
-            if(matches.size()<GlobalSettings::minReadSupport){
+            if((ssize_t)matches.size()<GlobalSettings::minReadSupport){
                 Mutation m = mutationList[i];
                 cerr <<m.mChr << " " <<m.mName<<" "<<m.mLeft<<" "<<m.mCenter<<" "<<m.mRight <<endl;
             }
@@ -378,7 +378,7 @@ void PairEndScanner::htmlReport(vector<Mutation>& mutationList, vector<Match*> *
     // display a warning for too many reads with standalone mode
     if(GlobalSettings::standaloneHtml){
         int totalReadSize = 0;
-        for(int i=0;i<mutationList.size();i++){
+        for(size_t i=0;i<mutationList.size();i++){
             vector<Match*> matches = mutationMatches[i];
             totalReadSize += matches.size();
         }
