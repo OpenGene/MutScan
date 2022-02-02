@@ -157,9 +157,10 @@ void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid,
 			file << " class='alignright'";
 		file << ">" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
 	}
-	if(breaks[breaks.size()-1]>0)
+	if(breaks[breaks.size()-1]>0) {
 		file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<breaks.size()<<"' ";
 		file << "class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
+	}
 }
 
 string Read::makeHtmlSeqWithQual(int start, int length) {
