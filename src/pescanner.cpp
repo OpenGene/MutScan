@@ -305,8 +305,10 @@ void PairEndScanner::producerTask()
         }
     }
 
-    std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+    std::unique_lock<std::mutex> lock(mRepo.mtx);
     mProduceFinished = true;
+    // ensure all waiting consommers exit
+    mRepo.repoNotEmpty.notify_all();
     lock.unlock();
 
     // if the last data initialized is not used, free it
@@ -317,18 +319,13 @@ void PairEndScanner::producerTask()
 void PairEndScanner::consumerTask()
 {
     while(true) {
-        std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+        std::unique_lock<std::mutex> lock(mRepo.mtx);
         if(mProduceFinished && mRepo.writePos == mRepo.readPos){
             lock.unlock();
             break;
         }
-        if(mProduceFinished){
-            consumePack();
-            lock.unlock();
-        } else {
-            lock.unlock();
-            consumePack();
-        }
+        lock.unlock();
+        consumePack();
     }
 }
 
