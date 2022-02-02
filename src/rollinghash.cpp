@@ -280,7 +280,7 @@ bool RollingHash::test(){
         map<int, int>::iterator iter;
         for(iter=targets.begin(); iter!=targets.end(); iter++) {
             size_t t = iter->first;
-            int count = iter->second;
+            //int count = iter->second;
             cout << t << "\t";
             if(t == i)
                 found = true;
