@@ -27,6 +27,7 @@ public:
     void setReversed(bool flag);
     void addOriginalRead(Read* r);
     void addOriginalPair(ReadPair* pair);
+    template <class ReadData> void addOriginalReadData(ReadData* r);
     int readlength() const;
 
     inline bool operator <(const Match& other) const 
@@ -62,5 +63,14 @@ private:
     char mMeanQual;
 };
 
+template <>
+inline void Match::addOriginalReadData<Read> (Read* r) {
+    addOriginalRead(r);
+}
+
+template <>
+inline void Match::addOriginalReadData<ReadPair> (ReadPair* pair) {
+    addOriginalPair(pair);
+}
 
 #endif
