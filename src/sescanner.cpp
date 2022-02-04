@@ -220,8 +220,8 @@ void SingleEndScanner::consumePack(){
     if (mRepo.readPos >= PACK_NUM_LIMIT)
         mRepo.readPos = 0;
 
-    lock.unlock();
     mRepo.repoNotFull.notify_all();
+    lock.unlock();
 
     scanSingleEnd(data);
 }
@@ -274,8 +274,10 @@ void SingleEndScanner::producerTask()
         }
     }
 
-    std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+    std::unique_lock<std::mutex> lock(mRepo.mtx);
     mProduceFinished = true;
+    // ensure all waiting consommers exit
+    mRepo.repoNotEmpty.notify_all();
     lock.unlock();
 
     // if the last data initialized is not used, free it
@@ -286,18 +288,13 @@ void SingleEndScanner::producerTask()
 void SingleEndScanner::consumerTask()
 {
     while(true) {
-        std::unique_lock<std::mutex> lock(mRepo.readCounterMtx);
+        std::unique_lock<std::mutex> lock(mRepo.mtx);
         if(mProduceFinished && mRepo.writePos == mRepo.readPos){
             lock.unlock();
             break;
         }
-        if(mProduceFinished){
-            consumePack();
-            lock.unlock();
-        } else {
-            lock.unlock();
-            consumePack();
-        }
+        lock.unlock();
+        consumePack();
     }
 }
 

@@ -27,7 +27,6 @@ struct ReadRepository {
     size_t writePos;
     size_t readCounter;
     std::mutex mtx;
-    std::mutex readCounterMtx;
     std::condition_variable repoNotFull;
     std::condition_variable repoNotEmpty;
 };
