@@ -181,7 +181,7 @@ vector<Mutation> Mutation::parseBuiltIn() {
     vector<Mutation> mutations;
     vector<string> lines;
     split(BUILT_IN_MUTATIONS, lines, "\n");
-    for(int i=0;i<lines.size();i++){
+    for(size_t i=0;i<lines.size();i++){
         string linestr = lines[i];
         vector<string> splitted;
         split(linestr, splitted, ",");
@@ -228,7 +228,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
     fr.readAll();
     map<string, string> ref = fr.contigs();
 
-    for(int i=0;i<variants.size();i++) {
+    for(size_t i=0;i<variants.size();i++) {
         Variant& v = variants[i];
         // skip the unmasked if markedOnly flag is set true
         if(markedOnly && (v.filter!="m" && v.filter!="M"))
@@ -248,7 +248,7 @@ vector<Mutation> Mutation::parseVcf(string vcfFile, string refFile) {
         }
         // the variant is out of this contig, or in the front or tail
         // note that VCF is 1-based, and string is 0-based
-        if(v.pos > ref[chrom].length() + 25 + v.ref.length() || v.pos < 25 + v.ref.length())
+        if((size_t)v.pos > ref[chrom].length() + 25 + v.ref.length() || (size_t)v.pos < 25 + v.ref.length())
             continue;
 
         string gene = v.gene();

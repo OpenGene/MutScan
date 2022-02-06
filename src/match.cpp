@@ -34,7 +34,7 @@ Match::~Match(){
     // we don't delete mRead or mSequence here since they are shared by different objects
     // and will be deleted in other places
     if(mOriginalReads) {
-        for(int i=0;i<mOriginalReads->size();i++){
+        for(size_t i=0;i<mOriginalReads->size();i++){
             delete (*mOriginalReads)[i];
             (*mOriginalReads)[i] = NULL;
         }
@@ -112,7 +112,7 @@ void Match::printBreaksToJson(ofstream& file, int leftlen, int centerlen, int ri
     breaks.push_back( mPos+centerlen );
     breaks.push_back( min(mPos+centerlen+rightlen, mReadLen));
     file << "[";
-    for(int i=0; i<breaks.size(); i++) {
+    for(size_t i=0; i<breaks.size(); i++) {
         file << breaks[i];
         if(i!=breaks.size() - 1) 
             file << ",";
@@ -149,7 +149,7 @@ void Match::printJS(ofstream& file, int leftlen, int centerlen, int rightlen) {
 void Match::printReadsToFile(ofstream& file){
     if(!mOriginalReads)
         return;
-    for(int i=0;i<mOriginalReads->size();i++){
+    for(size_t i=0;i<mOriginalReads->size();i++){
         (*mOriginalReads)[i]->printFile(file);
     }
 }
@@ -163,7 +163,7 @@ int Match::countUnique(vector<Match*>& matches) {
         return 0;
     int count = 1;
     Match* cur = matches[0];
-    for(int i=1;i<matches.size();i++){
+    for(size_t i=1;i<matches.size();i++){
         Match* m = matches[i];
         if( *m > *cur || *m < *cur) {
             cur = m;

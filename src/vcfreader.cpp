@@ -57,7 +57,7 @@ bool VcfReader::readNext()
     //split the alt by comma to make multiple variants, GATK usually output such kind of variant like C>T,AT
     vector<string> alts;
     split(trim(items[4]), alts, ",");
-    for(int a=0; a<alts.size(); a++){
+    for(size_t a=0; a<alts.size(); a++){
         int pos =  atoi(items[1].c_str());
         Variant var;
         var.chrom = trim(items[0]);
@@ -91,7 +91,7 @@ void VcfReader::readAll() {
 }
 
 void VcfReader::printAll() {
-    for(int i=0;i<mVariants.size();i++) {
+    for(size_t i=0;i<mVariants.size();i++) {
         Variant& v = mVariants[i];
 
         cout <<v.chrom<<"\t";

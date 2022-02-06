@@ -17,7 +17,7 @@ int Sequence::length(){
 
 Sequence Sequence::reverseComplement(){
     string str(mStr.length(), 0);
-    for(int c=0;c<mStr.length();c++){
+    for(size_t c=0;c<mStr.length();c++){
         char base = mStr[c];
         switch(base){
             case 'A':

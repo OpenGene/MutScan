@@ -43,9 +43,9 @@ void HtmlReporter::printHelper() {
 void HtmlReporter::printMutations() {
     // calculate the found mutation
     int found = 0;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>=GlobalSettings::minReadSupport){
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
             found++;
         }
     }
@@ -56,9 +56,9 @@ void HtmlReporter::printMutations() {
         if(found>1)
             mFile<<"s";
         mFile<<":</p><ul>";
-        for(int i=0;i<mMutationList.size();i++){
+        for(size_t i=0;i<mMutationList.size();i++){
             vector<Match*> matches = mMutationMatches[i];
-            if(matches.size()>=GlobalSettings::minReadSupport){
+            if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
                 id++;
                 mFile<<"<li class='menu_item'><a href='#"<<mMutationList[i].mName<<"'> " << id << ", " << mMutationList[i].mName;
                 mFile<< " (" << matches.size() << " reads support, " << Match::countUnique(matches) << " unique)" << "</a></li>";
@@ -67,9 +67,9 @@ void HtmlReporter::printMutations() {
         mFile<<"</ul></div>";
     }
     id=0;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>=GlobalSettings::minReadSupport){
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
             id++;
             printMutation(id, mMutationList[i], matches);
         }
@@ -80,11 +80,11 @@ void HtmlReporter::printMutationsJS() {
     mFile << "\n<script type=\"text/javascript\">" << endl;
     mFile << "var data_break = [";
     int id=0;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         vector<Match*> matches = mMutationMatches[i];
-        if(matches.size()>=GlobalSettings::minReadSupport){
+        if((ssize_t)matches.size()>=GlobalSettings::minReadSupport){
             mFile << "\n[";
-            for(int m=0; m<matches.size(); m++){
+            for(size_t m=0; m<matches.size(); m++){
                 mFile << "\n[";
                 matches[m]->printJS(mFile, mMutationList[i].mLeft.length(), mMutationList[i].mCenter.length(), mMutationList[i].mRight.length());
                 mFile << "],"; 
@@ -140,7 +140,7 @@ void HtmlReporter::printMutation(int id, Mutation& mutation, vector<Match*>& mat
     mFile << "<td>" << mutation.mRight << "</td>";
     mFile << "<td>" << "" << "</td>";
     mFile << "</tr>";
-    for(int m=0; m<matches.size(); m++){
+    for(size_t m=0; m<matches.size(); m++){
         long rowid = id*100000 + m;
         if(!GlobalSettings::simplifiedMode)
             mFile << "<tr onclick='toggle(" << rowid << ");'>";
@@ -266,7 +266,7 @@ void HtmlReporter::printScanTargets(){
     mFile << "<p> scanned " << mMutationList.size() << " mutation spots...<input type='button' id='target_view_btn', onclick=toggle_target_list('target_list'); value='show'></input></p>";
     mFile << "<ul id='target_list' style='display:none'>";
     int id=0;
-    for(int i=0;i<mMutationList.size();i++){
+    for(size_t i=0;i<mMutationList.size();i++){
         id++;
         mFile<<"<li> " << id << ", " << mMutationList[i].mName << "</li>";
     }

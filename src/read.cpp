@@ -48,7 +48,7 @@ Read::Read(char* twoBitBuf, int readLen, char meanQual) {
 	for(int i=0; i<readLen; i++) {
 		int pos = i/4;
 		int shift = (i%4)*2;
-		char b = (twoBitBuf[pos] & (0x03 << shift)) >> shift;
+		unsigned char b = (twoBitBuf[pos] & (0x03 << shift)) >> shift;
 		seq[i] = bases[b];
 	}
 
@@ -141,7 +141,7 @@ void Read::printWithBreaks(vector<int>& breaks){
 
 string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
 	string ret = origin.substr(0, breaks[0]);
-	for(int i=0;i<breaks.size()-1;i++){
+	for(size_t i=0;i<breaks.size()-1;i++){
 		ret += " " + origin.substr(breaks[i], breaks[i+1]-breaks[i]);
 	}
 	if(breaks[breaks.size()-1]>0)
@@ -151,15 +151,16 @@ string Read::makeStringWithBreaks(const string origin, vector<int>& breaks) {
 
 void Read::printHtmlTDWithBreaks(ofstream& file, vector<int>& breaks, int mutid, int matchid) {
 	file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<"0' class='alignright'>" << makeHtmlSeqWithQual(0, breaks[0]) << "</td>";
-	for(int i=0;i<breaks.size()-1;i++){
+	for(size_t i=0;i<breaks.size()-1;i++){
 		file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<i+1<<"' ";
 		if(i==0)
 			file << " class='alignright'";
 		file << ">" << makeHtmlSeqWithQual(breaks[i], breaks[i+1]-breaks[i]) << "</td>";
 	}
-	if(breaks[breaks.size()-1]>0)
+	if(breaks[breaks.size()-1]>0) {
 		file << "<td id='b-"<<mutid<<"-"<<matchid<<"-"<<breaks.size()<<"' ";
 		file << "class='alignleft'>" << makeHtmlSeqWithQual(breaks[breaks.size()-1], mSeq.mStr.length() - breaks[breaks.size()-1]) << "</td>";
+	}
 }
 
 string Read::makeHtmlSeqWithQual(int start, int length) {
@@ -176,7 +177,7 @@ string Read::makeHtmlSeqWithQual(int start, int length) {
 
 void Read::escapeSpecialQualityChar(string& str) {
 	const char* data = str.c_str();
-	for(int i=0;i<str.length();i++){
+	for(size_t i=0;i<str.length();i++){
 		if(data[i] == '\'' || data[i] == '\\')
 			str[i] = data[i] + 1;
 	}
@@ -192,7 +193,7 @@ void Read::printJSWithBreaks(ofstream& file, vector<int>& breaks) {
 		file << "'" << qualstr << "'";
 		file << "],";
 	}
-	for(int i=0;i<breaks.size()-1;i++){
+	for(size_t i=0;i<breaks.size()-1;i++){
 		file << "\n[";
 		file << "'" << mSeq.mStr.substr(breaks[i], breaks[i+1]-breaks[i]) << "'";
 		file << ", " ;
@@ -248,7 +249,7 @@ string Read::lastIndex(){
 
 int Read::lowQualCount(int qual){
 	int count = 0;
-	for(int q=0;q<mQuality.size();q++){
+	for(size_t q=0;q<mQuality.size();q++){
 		if(mQuality[q] < qual + 33)
 			count++;
 	}

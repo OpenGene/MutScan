@@ -11,24 +11,24 @@ TARGET = mutscan
 BIN_TARGET = ${TARGET}
 
 CC = g++
+CPPFLAGS = -Wall
 CFLAGS = -std=c++11 -g -I${DIR_INC}
 
 ${BIN_TARGET}:${OBJ}
 	$(CC) $(OBJ) -lz -lpthread -o $@
     
-${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp make_obj_dir
-	$(CC) $(CFLAGS) -O3 -c  $< -o $@
+${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp
+	@mkdir -p "${DIR_OBJ}"
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MMD -O3 -c  $< -o $@
+
+-include $(wildcard ${DIR_OBJ}/*.d)
+
 .PHONY:clean
 clean:
 	rm obj/*.o
+	rm obj/*.d
 	rm mutscan
 
-make_obj_dir:
-	@if test ! -d $(DIR_OBJ) ; \
-	then \
-		mkdir $(DIR_OBJ) ; \
-	fi
-
 install:
-	install $(TARGET) $(BINDIR)/$(TARGET)
+	install $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
 	@echo "Installed."

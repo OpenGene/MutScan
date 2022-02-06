@@ -42,7 +42,7 @@ unsigned int edit_distance_bpv(T &cmap, char const *vec, size_t const &vecsize, 
     for(size_t i = 0; i < tlen; ++i) VP[tmax] |= (1L << i);
     for(size_t i = 0; i < vecsize; ++i) {
         TVALUE &PM = cmap[vec[i]];
-        for(int r = 0; r <= tmax; ++r) {
+        for(unsigned int r = 0; r <= tmax; ++r) {
             uint64_t X = PM[r];
             if(r > 0 && (HN[r - 1] & lmb)) X |= 1L;
             D0[r] = (((X & VP[r]) + VP[r]) ^ VP[r]) | X | VN[r];
@@ -65,10 +65,10 @@ unsigned int edit_distance_bpv(T &cmap, char const *vec, size_t const &vecsize, 
 template<typename T>
 unsigned int edit_distance_dp(T const *str1, size_t const size1, T const *str2, size_t const size2) {
     vector< vector<uint32_t> > d(size1 + 1, vector<uint32_t>(size2 + 1));
-    for (int i = 0; i < size1 + 1; i++) d[i][0] = i;
-    for (int i = 0; i < size2 + 1; i++) d[0][i] = i;
-    for (int i = 1; i < size1 + 1; i++) {
-        for (int j = 1; j < size2 + 1; j++) {
+    for (size_t i = 0; i < size1 + 1; i++) d[i][0] = i;
+    for (size_t i = 0; i < size2 + 1; i++) d[0][i] = i;
+    for (size_t i = 1; i < size1 + 1; i++) {
+        for (size_t j = 1; j < size2 + 1; j++) {
             d[i][j] = min(min(d[i-1][j], d[i][j-1]) + 1, d[i-1][j-1] + (str1[i-1] == str2[j-1] ? 0 : 1));
         }
     }
@@ -131,7 +131,7 @@ unsigned int edit_distance(string a, string b) {
 
 unsigned int hamming_distance(const char *a, const unsigned int asize, const char *b, const unsigned int bsize) {
     int dis = 0;
-    for(int i=0; i<min(asize, bsize); i++) {
+    for(unsigned int i=0; i<min(asize, bsize); i++) {
         if(a[i]!=b[i])
             dis++;
     }
